@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import About from "@/components/About";
+import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import {
   Dialog,
@@ -157,6 +158,7 @@ const Index = () => {
       </Dialog>
 
       <About />
+      <FAQ />
       <Contact />
       
       <footer className="py-8 border-t border-border">
