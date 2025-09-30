@@ -1,7 +1,7 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { Mail, MessageSquare } from "lucide-react";
+import { Mail, MessageSquare, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
@@ -31,8 +31,25 @@ const Contact = () => {
             </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Vamos Conversar?</h2>
             <p className="text-lg text-muted-foreground">
-              Tem um projeto em mente? Entre em contato e vamos criar algo incrível juntos.
+              Tem um projeto em mente? Entre em contato por e-mail ou WhatsApp.
             </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4 mb-8 animate-fade-up">
+            <Button 
+              size="lg" 
+              className="flex-1"
+              onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Gostaria de conversar sobre um projeto.', '_blank')}
+            >
+              <MessageCircle className="mr-2 h-5 w-5" />
+              Chamar no WhatsApp
+            </Button>
+            <div className="text-center text-muted-foreground py-4 md:py-0 md:flex md:items-center">
+              ou
+            </div>
+            <div className="flex-1 flex items-center justify-center text-muted-foreground font-medium">
+              Envie um e-mail
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6 animate-scale-in">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MessageCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
@@ -161,9 +162,22 @@ const Index = () => {
       <FAQ />
       <Contact />
       
-      <footer className="py-8 border-t border-border">
-        <div className="container mx-auto px-6 text-center text-muted-foreground">
-          <p>© 2025 Portfolio. Todos os direitos reservados.</p>
+      <footer className="py-8 border-t border-border relative">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-muted-foreground text-center md:text-left">
+              © 2025 Portfolio. Todos os direitos reservados.
+            </p>
+            <a
+              href="https://wa.me/5511999999999?text=Olá! Vim através do seu portfólio."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+            >
+              <MessageCircle className="h-5 w-5" />
+              Fale no WhatsApp
+            </a>
+          </div>
         </div>
       </footer>
     </div>
