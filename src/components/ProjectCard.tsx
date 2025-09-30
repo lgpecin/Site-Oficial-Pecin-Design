@@ -5,11 +5,12 @@ interface ProjectCardProps {
   category: string;
   image: string;
   description: string;
+  onClick?: () => void;
 }
 
-const ProjectCard = ({ title, category, image, description }: ProjectCardProps) => {
+const ProjectCard = ({ title, category, image, description, onClick }: ProjectCardProps) => {
   return (
-    <Card className="group overflow-hidden border-0 shadow-lg hover-lift cursor-pointer bg-card">
+    <Card onClick={onClick} className="group overflow-hidden border-0 shadow-lg hover-lift cursor-pointer bg-card">
       <div className="relative aspect-square overflow-hidden">
         <img
           src={image}
