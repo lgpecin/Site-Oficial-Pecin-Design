@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
@@ -49,6 +49,7 @@ const Hero = () => {
               variant="outline"
               size="lg"
             >
+              <MessageCircle className="mr-2 h-4 w-4" />
               Fale Comigo
             </Button>
           </div>
