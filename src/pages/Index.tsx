@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
+import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
 import About from "@/components/About";
 import FAQ from "@/components/FAQ";
@@ -24,6 +25,10 @@ import project3Detail1 from "@/assets/project3-detail1.jpg";
 import project3Detail2 from "@/assets/project3-detail2.jpg";
 import project4Detail1 from "@/assets/project4-detail1.jpg";
 import project4Detail2 from "@/assets/project4-detail2.jpg";
+import project1Banner from "@/assets/project1-banner.jpg";
+import project2Banner from "@/assets/project2-banner.jpg";
+import project3Banner from "@/assets/project3-banner.jpg";
+import project4Banner from "@/assets/project4-banner.jpg";
 
 const Index = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
@@ -33,48 +38,59 @@ const Index = () => {
       title: "App Mobile Fitness",
       category: "UI/UX Design",
       image: project1,
+      bannerImage: project1Banner,
       description: "Design de interface moderna para app de exercícios",
       fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
       gallery: [project1, project1Detail1, project1Detail2],
       technologies: ["Figma", "Adobe XD", "Prototyping"],
       year: "2024",
+      featured: true,
     },
     {
       title: "Identidade Visual Brand",
       category: "Branding",
       image: project2,
+      bannerImage: project2Banner,
       description: "Criação completa de identidade visual corporativa",
       fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
       gallery: [project2, project2Detail1, project2Detail2],
       technologies: ["Illustrator", "Photoshop", "InDesign"],
       year: "2024",
+      featured: true,
     },
     {
       title: "Website E-commerce",
       category: "Web Design",
       image: project3,
+      bannerImage: project3Banner,
       description: "Landing page otimizada para conversão",
       fullDescription: "Design de website e-commerce com foco em UX e otimização de conversão. Inclui sistema de navegação intuitivo, páginas de produto otimizadas e checkout simplificado.",
       gallery: [project3, project3Detail1, project3Detail2],
       technologies: ["Figma", "HTML/CSS", "React"],
       year: "2024",
+      featured: false,
     },
     {
       title: "Ilustrações 3D",
       category: "3D Design",
       image: project4,
+      bannerImage: project4Banner,
       description: "Conjunto de ilustrações 3D para marketing",
       fullDescription: "Série de ilustrações 3D criadas para campanhas de marketing digital. Cada ilustração foi desenvolvida com atenção aos detalhes, cores vibrantes e estilo moderno para aumentar o engajamento.",
       gallery: [project4, project4Detail1, project4Detail2],
       technologies: ["Blender", "Cinema 4D", "After Effects"],
       year: "2024",
+      featured: true,
     },
   ];
+
+  const featuredProjects = projects.filter(project => project.featured);
 
   return (
     <div className="min-h-screen">
       <Navigation />
       <Hero />
+      <FeaturedProjects projects={featuredProjects} />
       
       <section id="projects" className="py-32">
         <div className="container mx-auto px-6">
