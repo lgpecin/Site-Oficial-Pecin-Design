@@ -34,7 +34,7 @@ const FAQ = () => {
   ];
 
   return (
-    <section id="faq" className="py-32 bg-muted/30">
+    <section id="faq" className="py-16 bg-muted/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 animate-fade-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Perguntas Frequentes</h2>

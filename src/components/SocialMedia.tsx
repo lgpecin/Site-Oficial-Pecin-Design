@@ -35,7 +35,7 @@ const SocialMedia = () => {
   ];
 
   return (
-    <section className="py-16 bg-muted/30 border-t border-border">
+    <section className="py-12 bg-muted/30 border-t border-border">
       <div className="container mx-auto px-6">
         <div className="text-center mb-10 animate-fade-up">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
