@@ -36,6 +36,17 @@ npm i
 npm run dev
 ```
 
+### Working with Playwright behind a proxy
+
+The build now attempts to download Playwright browsers automatically, but restricted networks may still block the download.
+If you need to populate the Playwright cache manually, you can do so on a machine with open internet access and copy it over:
+
+1. Run `npx playwright install --with-deps` on the machine that has access.
+2. Locate the generated cache directory (typically `~/.cache/ms-playwright`).
+3. Copy that directory to the same path on the target machine that is behind the proxy.
+
+Once the cache is in place, Playwright can run locally without re-downloading the browsers.
+
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).
