@@ -5,6 +5,7 @@ import Hero from "@/components/Hero";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
 import About from "@/components/About";
+import BentoGrid from "@/components/BentoGrid";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import SocialMedia from "@/components/SocialMedia";
@@ -176,6 +177,7 @@ const Index = () => {
       </Dialog>
 
       <About />
+      <BentoGrid />
       <FAQ />
       <Contact />
       <SocialMedia />
