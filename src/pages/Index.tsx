@@ -7,6 +7,7 @@ import ProjectCard from "@/components/ProjectCard";
 import About from "@/components/About";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
+import SocialMedia from "@/components/SocialMedia";
 import {
   Dialog,
   DialogContent,
@@ -177,6 +178,7 @@ const Index = () => {
       <About />
       <FAQ />
       <Contact />
+      <SocialMedia />
       
       <footer className="py-8 border-t border-border relative">
         <div className="container mx-auto px-6">
