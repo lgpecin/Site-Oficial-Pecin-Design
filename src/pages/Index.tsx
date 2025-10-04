@@ -52,7 +52,7 @@ const Index = () => {
     },
     {
       title: "Shopping Avenida Center",
-      category: "Branding", "Social Media",
+      category: "Branding e Social Media",
       image: project2,
       bannerImage: project2Banner,
       description: "Criação completa de identidade visual corporativa",
@@ -76,7 +76,7 @@ const Index = () => {
     },
     {
       title: "Retrospectiva 2025",
-      category: "Social Media", "Branding",
+      category: "Social Media e Branding",
       image: project4,
       bannerImage: project4Banner,
       description: "Conjunto de ilustrações 3D para marketing",
