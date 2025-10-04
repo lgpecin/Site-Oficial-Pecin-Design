@@ -28,19 +28,19 @@ const Hero = () => {
             </span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight px-4">
             Transformando ideias em{" "}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               experiências visuais
             </span>
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto px-4">
             Design focado em criar conexões autênticas entre marcas e pessoas através de soluções criativas e inovadoras.
           </p>
           
-          <div className="flex items-center justify-center gap-4">
-            <Button onClick={scrollToProjects} size="lg" className="group">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
+            <Button onClick={scrollToProjects} size="lg" className="group w-full sm:w-auto">
               Ver Projetos
               <ArrowDown className="ml-2 h-4 w-4 group-hover:translate-y-1 transition-transform" />
             </Button>
@@ -48,6 +48,7 @@ const Hero = () => {
               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
               variant="outline"
               size="lg"
+              className="w-full sm:w-auto"
             >
               <MessageCircle className="mr-2 h-4 w-4" />
               Fale Comigo
