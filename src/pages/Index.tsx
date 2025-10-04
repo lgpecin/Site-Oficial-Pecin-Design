@@ -41,7 +41,7 @@ const Index = () => {
     {
       title: "Have Fun Turismo",
       category: "Social Media",
-      image: project1,
+      image: project5,
       bannerImage: project1Banner,
       description: "Design de interface moderna para app de exercícios",
       fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
