@@ -25,9 +25,9 @@ const FeaturedProjects = ({ projects, onProjectClick }: FeaturedProjectsProps) =
     <section className="py-12 bg-muted/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12 animate-fade-up">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Projetos em Destaque</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">A prova do que eu faço:</h2>
           <p className="text-muted-foreground">
-            Conheça alguns dos meus trabalhos mais impactantes
+            Aqui estão algums projetos que mostram como transformei desafios de marca em soluções visuais estratégicas. Prepare-se para ver resultados reais.
           </p>
         </div>
 
