@@ -36,7 +36,7 @@ const Hero = () => {
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto px-4">
-            	Transformo a sua visão de marca em estratégias visuais completas, prontas para sair do padrão e gerar resultados reais. Vamos colocar sua ideia em jogo?
+            	Transformo a sua visão de marca em estratégias visuais completas e resultados reais. Vamos colocar sua ideia em jogo?
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
