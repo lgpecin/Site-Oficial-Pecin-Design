@@ -29,7 +29,7 @@ const Navigation = () => {
             onClick={() => scrollToSection("hero")}
             className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent hover:opacity-80 transition-opacity"
           >
-            Portfolio
+            Pecin Design
           </button>
 
           <div className="hidden md:flex items-center gap-8">
