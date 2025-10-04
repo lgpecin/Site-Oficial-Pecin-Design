@@ -17,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import project5 from "@/assets/project1.jpg";
+import project1 from "@/assets/project1.jpg";
 import project2 from "@/assets/project2.jpg";
 import project3 from "@/assets/project3.jpg";
 import project4 from "@/assets/project4.jpg";
@@ -41,11 +41,11 @@ const Index = () => {
     {
       title: "Have Fun Turismo",
       category: "Social Media",
-      image: project5,
+      image: project1,
       bannerImage: project1Banner,
       description: "Design de interface moderna para app de exercícios",
       fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
-      gallery: [project5, project1Detail1, project1Detail2],
+      gallery: [project1, project1Detail1, project1Detail2],
       technologies: ["Figma", "Adobe XD", "Prototyping"],
       year: "2024",
       featured: true,
@@ -57,7 +57,7 @@ const Index = () => {
       bannerImage: project1Banner,
       description: "Criação completa de identidade visual corporativa",
       fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
-      gallery: [project5, project1Detail1, project1Detail2],
+      gallery: [project1, project1Detail1, project1Detail2],
       technologies: ["Illustrator", "Photoshop", "InDesign"],
       year: "2024",
       featured: true,
