@@ -94,7 +94,17 @@ const Index = () => {
     <div className="min-h-screen">
       <Navigation />
       <Hero />
-      <FeaturedProjects projects={featuredProjects} />
+      <FeaturedProjects 
+        projects={featuredProjects} 
+        onProjectClick={(index) => {
+          // Encontra o índice real do projeto no array completo
+          const realIndex = projects.findIndex(p => p === featuredProjects[index]);
+          // Rola até a seção de projetos
+          document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+          // Aguarda um pouco para o scroll completar antes de abrir o modal
+          setTimeout(() => setSelectedProject(realIndex), 500);
+        }}
+      />
       
       <section id="projects" className="py-16">
         <div className="container mx-auto px-6">

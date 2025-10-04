@@ -17,9 +17,10 @@ interface FeaturedProject {
 
 interface FeaturedProjectsProps {
   projects: FeaturedProject[];
+  onProjectClick?: (index: number) => void;
 }
 
-const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
+const FeaturedProjects = ({ projects, onProjectClick }: FeaturedProjectsProps) => {
   return (
     <section className="py-12 bg-muted/30">
       <div className="container mx-auto px-6">
@@ -45,7 +46,10 @@ const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
           <CarouselContent>
             {projects.map((project, index) => (
               <CarouselItem key={index}>
-                <Card className="overflow-hidden border-0 shadow-lg">
+                <Card 
+                  className="overflow-hidden border-0 shadow-lg cursor-pointer transition-transform hover:scale-[1.02]"
+                  onClick={() => onProjectClick?.(index)}
+                >
                   <div className="relative h-[400px] md:h-[500px] lg:h-[600px]">
                     <img
                       src={project.bannerImage}
