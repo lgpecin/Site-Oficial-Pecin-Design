@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { MessageCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
-import About from "@/components/About";
-import BentoGrid from "@/components/BentoGrid";
-import FAQ from "@/components/FAQ";
-import Contact from "@/components/Contact";
-import SocialMedia from "@/components/SocialMedia";
+
+// Lazy loading de componentes menos críticos para otimizar carregamento inicial
+const About = lazy(() => import("@/components/About"));
+const BentoGrid = lazy(() => import("@/components/BentoGrid"));
+const FAQ = lazy(() => import("@/components/FAQ"));
+const Contact = lazy(() => import("@/components/Contact"));
+const SocialMedia = lazy(() => import("@/components/SocialMedia"));
 import {
   Dialog,
   DialogContent,
@@ -176,11 +178,13 @@ const Index = () => {
         </DialogContent>
       </Dialog>
 
-      <About />
-      <BentoGrid />
-      <FAQ />
-      <Contact />
-      <SocialMedia />
+      <Suspense fallback={<div className="py-16" />}>
+        <About />
+        <BentoGrid />
+        <FAQ />
+        <Contact />
+        <SocialMedia />
+      </Suspense>
       
       <footer className="py-8 border-t border-border relative">
         <div className="container mx-auto px-6">
