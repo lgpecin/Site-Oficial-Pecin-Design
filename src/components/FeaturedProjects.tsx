@@ -27,7 +27,7 @@ const FeaturedProjects = ({ projects, onProjectClick }: FeaturedProjectsProps) =
         <div className="text-center mb-12 animate-fade-up">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">A prova do que eu faço:</h2>
           <p className="text-muted-foreground">
-            Aqui estão algums projetos que mostram como transformei desafios de marca em soluções visuais estratégicas. Prepare-se para ver resultados reais.
+            Aqui estão algums projetos que mostram como transformei desafios de marca em soluções visuais estratégicas.
           </p>
         </div>
 
