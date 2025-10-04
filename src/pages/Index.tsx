@@ -53,7 +53,7 @@ const Index = () => {
     {
       title: "Shopping Avenida Center",
       category: "Branding e Social Media",
-      image: iconeavcenter,
+      image: project1,
       bannerImage: banner-avcenter,
       description: "Criação completa de identidade visual corporativa",
       fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
