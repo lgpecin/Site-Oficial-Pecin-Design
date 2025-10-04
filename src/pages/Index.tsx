@@ -39,8 +39,8 @@ const Index = () => {
 
   const projects = [
     {
-      title: "App Mobile Fitness",
-      category: "UI/UX Design",
+      title: "Have Fun Turismo",
+      category: "Social Media",
       image: project1,
       bannerImage: project1Banner,
       description: "Design de interface moderna para app de exercícios",
@@ -51,8 +51,8 @@ const Index = () => {
       featured: true,
     },
     {
-      title: "Identidade Visual Brand",
-      category: "Branding",
+      title: "Shopping Avenida Center",
+      category: "Branding", "Social Media",
       image: project2,
       bannerImage: project2Banner,
       description: "Criação completa de identidade visual corporativa",
@@ -63,8 +63,8 @@ const Index = () => {
       featured: true,
     },
     {
-      title: "Website E-commerce",
-      category: "Web Design",
+      title: "Orla",
+      category: "Branding",
       image: project3,
       bannerImage: project3Banner,
       description: "Landing page otimizada para conversão",
@@ -75,8 +75,8 @@ const Index = () => {
       featured: false,
     },
     {
-      title: "Ilustrações 3D",
-      category: "3D Design",
+      title: "Retrospectiva 2025",
+      category: "Social Media", "Branding",
       image: project4,
       bannerImage: project4Banner,
       description: "Conjunto de ilustrações 3D para marketing",
@@ -109,9 +109,9 @@ const Index = () => {
       <section id="projects" className="py-16">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16 animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Projetos Selecionados</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Resultados. Sem Enrolação.</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Uma coleção dos meus trabalhos mais recentes, focados em criar experiências visuais únicas e impactantes.
+              Estes são alguns projetos com resultados únicos.
             </p>
           </div>
           
