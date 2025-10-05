@@ -31,6 +31,35 @@ const FeaturedProjects = ({ projects, onProjectClick }: FeaturedProjectsProps) =
           </p>
         </div>
 
+        {/* Grid para mobile e tablet */}
+        <div className="grid grid-cols-2 gap-3 md:hidden mb-8">
+          {projects.map((project, index) => (
+            <Card 
+              key={index}
+              className="overflow-hidden border-0 shadow-lg cursor-pointer transition-transform hover:scale-[1.02]"
+              onClick={() => onProjectClick?.(index)}
+            >
+              <div className="relative h-[200px]">
+                <img
+                  src={project.bannerImage}
+                  alt={project.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <span className="inline-block px-2 py-1 bg-primary/90 text-primary-foreground rounded-full text-xs font-medium mb-2">
+                    {project.category}
+                  </span>
+                  <h3 className="text-sm font-bold mb-1 line-clamp-2">
+                    {project.title}
+                  </h3>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Carousel para desktop */}
         <Carousel
           opts={{
             align: "start",
@@ -41,7 +70,7 @@ const FeaturedProjects = ({ projects, onProjectClick }: FeaturedProjectsProps) =
               delay: 5000,
             }),
           ]}
-          className="w-full max-w-6xl mx-auto"
+          className="w-full max-w-6xl mx-auto hidden md:block"
         >
           <CarouselContent>
             {projects.map((project, index) => (
