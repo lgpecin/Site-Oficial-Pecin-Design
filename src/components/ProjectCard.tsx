@@ -26,7 +26,7 @@ const ProjectCard = ({ title, category, image, description, onClick }: ProjectCa
       </div>
       <div className="p-6">
         <span className="text-xs font-medium text-primary mb-2 block">{category}</span>
-        <h3 className="text-xl font-semibold text-card-foreground">{title}</h3>
+        <h3 className="text-xl font-semibold text-card-foreground min-h-[3.5rem] line-clamp-2">{title}</h3>
       </div>
     </Card>
   );

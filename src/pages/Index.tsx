@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 // Lazy loading de componentes menos críticos para otimizar carregamento inicial
 const About = lazy(() => import("@/components/About"));
@@ -21,14 +22,6 @@ import project1 from "@/assets/project1.jpg";
 import project2 from "@/assets/project2.jpg";
 import project3 from "@/assets/project3.jpg";
 import project4 from "@/assets/project4.jpg";
-import project1Detail1 from "@/assets/project1-detail1.jpg";
-import project1Detail2 from "@/assets/project1-detail2.jpg";
-import project2Detail1 from "@/assets/project2-detail1.jpg";
-import project2Detail2 from "@/assets/project2-detail2.jpg";
-import project3Detail1 from "@/assets/project3-detail1.jpg";
-import project3Detail2 from "@/assets/project3-detail2.jpg";
-import project4Detail1 from "@/assets/project4-detail1.jpg";
-import project4Detail2 from "@/assets/project4-detail2.jpg";
 import project1Banner from "@/assets/project1-banner.jpg";
 import project2Banner from "@/assets/project2-banner.jpg";
 import project3Banner from "@/assets/project3-banner.jpg";
@@ -45,7 +38,6 @@ const Index = () => {
       bannerImage: project1Banner,
       description: "Design de interface moderna para app de exercícios",
       fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
-      gallery: [project1, project1Detail1, project1Detail2],
       technologies: ["Figma", "Adobe XD", "Prototyping"],
       year: "2024",
       featured: true,
@@ -57,7 +49,6 @@ const Index = () => {
       bannerImage: project1Banner,
       description: "Criação completa de identidade visual corporativa",
       fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
-      gallery: [project1, project1Detail1, project1Detail2],
       technologies: ["Illustrator", "Photoshop", "InDesign"],
       year: "2024",
       featured: true,
@@ -69,7 +60,6 @@ const Index = () => {
       bannerImage: project3Banner,
       description: "Landing page otimizada para conversão",
       fullDescription: "Design de website e-commerce com foco em UX e otimização de conversão. Inclui sistema de navegação intuitivo, páginas de produto otimizadas e checkout simplificado.",
-      gallery: [project3, project3Detail1, project3Detail2],
       technologies: ["Figma", "HTML/CSS", "React"],
       year: "2024",
       featured: false,
@@ -81,7 +71,6 @@ const Index = () => {
       bannerImage: project4Banner,
       description: "Conjunto de ilustrações 3D para marketing",
       fullDescription: "Série de ilustrações 3D criadas para campanhas de marketing digital. Cada ilustração foi desenvolvida com atenção aos detalhes, cores vibrantes e estilo moderno para aumentar o engajamento.",
-      gallery: [project4, project4Detail1, project4Detail2],
       technologies: ["Blender", "Cinema 4D", "After Effects"],
       year: "2024",
       featured: true,
@@ -144,17 +133,6 @@ const Index = () => {
               </DialogHeader>
               
               <div className="space-y-6 mt-4">
-                <div className="grid grid-cols-1 gap-4">
-                  {projects[selectedProject].gallery.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`${projects[selectedProject].title} - ${idx + 1}`}
-                      className="w-full rounded-lg object-cover"
-                    />
-                  ))}
-                </div>
-                
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Sobre o Projeto</h3>
                   <p className="text-muted-foreground leading-relaxed">
@@ -187,6 +165,8 @@ const Index = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      <FloatingWhatsApp />
 
       <Suspense fallback={<div className="py-16" />}>
         <About />
