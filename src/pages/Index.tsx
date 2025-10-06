@@ -8,7 +8,6 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 // Lazy loading de componentes menos críticos para otimizar carregamento inicial
 const About = lazy(() => import("@/components/About"));
-const BentoGrid = lazy(() => import("@/components/BentoGrid"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
 const SocialMedia = lazy(() => import("@/components/SocialMedia"));
@@ -170,7 +169,6 @@ const Index = () => {
 
       <Suspense fallback={<div className="py-16" />}>
         <About />
-        <BentoGrid />
         <FAQ />
         <Contact />
         <SocialMedia />
