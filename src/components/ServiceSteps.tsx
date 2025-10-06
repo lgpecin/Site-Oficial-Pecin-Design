@@ -88,26 +88,23 @@ const ServiceSteps = () => {
             Como Funciona Meus Serviços
           </h2>
 
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto relative">
             {steps.map((step, index) => (
               <div
                 key={index}
-                className={`absolute inset-x-0 transition-all duration-700 ${
+                className={`transition-all duration-700 ${
                   currentStep === index
-                    ? "opacity-100 translate-y-0"
-                    : currentStep > index
-                    ? "opacity-0 -translate-y-20"
-                    : "opacity-0 translate-y-20"
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-95 absolute inset-0 pointer-events-none"
                 }`}
               >
-                <div className="bg-card border border-border rounded-2xl p-6 md:p-8 lg:p-12 shadow-lg max-w-full mx-4 md:mx-auto">
-                  <div className="flex flex-col items-center text-center gap-6">
-                    <div className="text-primary mb-4">
-                      {step.icon}
+                <div className="bg-card border border-border rounded-2xl p-6 md:p-8 lg:p-12 shadow-lg mx-4 md:mx-0">
+                  <div className="flex flex-col items-center text-center gap-4 md:gap-6">
+                    <div className="text-primary">
                       {step.icon}
                     </div>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                       <div className="inline-block px-3 py-1.5 bg-primary/10 text-primary rounded-full text-xs md:text-sm font-medium">
                         {step.duration}
                       </div>
@@ -116,7 +113,7 @@ const ServiceSteps = () => {
                       </h3>
                     </div>
                     
-                    <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                    <p className="text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed">
                       {step.description}
                     </p>
                   </div>
