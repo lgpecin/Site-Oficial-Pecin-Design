@@ -159,19 +159,17 @@ const ServiceSteps = () => {
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Disclaimer fixo no final da seção */}
-      <div className="absolute bottom-8 left-0 right-0">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-6 flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                  <span className="font-semibold text-foreground">Observação:</span> O cronograma de trabalho e entrega pode variar e é definido com precisão conforme o escopo do projeto durante a fase de briefing e contrato.
-                </p>
+          {/* Disclaimer */}
+          <div className="mt-8 md:mt-12">
+            <div className="max-w-3xl mx-auto mx-4 md:mx-0">
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-6 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                    <span className="font-semibold text-foreground">Observação:</span> O cronograma de trabalho e entrega pode variar e é definido com precisão conforme o escopo do projeto durante a fase de briefing e contrato.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
