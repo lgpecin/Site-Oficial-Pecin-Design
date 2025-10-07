@@ -25,7 +25,7 @@ const Index = () => {
 
   const projects = [
     {
-      title: "Have Fun Turismo",
+      title: "Algum projeto",
       category: "Social Media",
       image: placeholderProject,
       bannerImage: placeholderProject,
