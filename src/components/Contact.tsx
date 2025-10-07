@@ -35,10 +35,9 @@ const Contact = () => {
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 mb-8 animate-fade-up">
+          <div className="flex flex-col md:flex-row gap-4 mb-8 animate-fade-up items-center justify-center">
             <Button 
-              size="lg" 
-              className="flex-1"
+              size="lg"
               onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Gostaria de conversar sobre um projeto.', '_blank')}
             >
               <MessageCircle className="mr-2 h-5 w-5" />
@@ -47,7 +46,7 @@ const Contact = () => {
             <div className="text-center text-muted-foreground py-4 md:py-0 md:flex md:items-center">
               ou
             </div>
-            <div className="flex-1 flex items-center justify-center text-muted-foreground font-medium">
+            <div className="flex items-center justify-center text-muted-foreground font-medium">
               Envie um e-mail
             </div>
           </div>
