@@ -108,7 +108,7 @@ export default {
           transform: "translateY(0px)",
         },
         "50%": {
-          transform: "translateY(-10px)",
+          transform: "translateY(-5px)",
         },
       },
       },
@@ -117,7 +117,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.6s ease-out",
         "scale-in": "scale-in 0.4s ease-out",
-        "float": "float 25s ease-in-out infinite",
+        "float": "float 4s cubic-bezier(0.4, 0, 0.2, 1) infinite",
       },
     },
   },
