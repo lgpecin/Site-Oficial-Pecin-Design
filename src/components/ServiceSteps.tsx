@@ -84,7 +84,7 @@ const ServiceSteps = () => {
     >
       <div className="sticky top-0 h-screen flex items-center justify-center py-8">
         {/* Barra lateral de progresso */}
-        <div className="hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-10">
+        <div className="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 z-10">
           <div className="flex flex-col items-center gap-3">
             <span className="text-xs text-muted-foreground mb-2">Etapa {currentStep + 1}/{steps.length}</span>
             {steps.map((step, idx) => (
