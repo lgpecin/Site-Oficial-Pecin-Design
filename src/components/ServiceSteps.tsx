@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Users, FileText, FileSignature, Presentation, CheckCircle, Package } from "lucide-react";
+import { Users, FileText, FileSignature, Presentation, CheckCircle, Package, AlertCircle } from "lucide-react";
 
 interface Step {
   icon: React.ReactNode;
@@ -83,6 +83,31 @@ const ServiceSteps = () => {
       style={{ minHeight: `${steps.length * 60}vh` }}
     >
       <div className="sticky top-0 h-screen flex items-center justify-center py-8">
+        {/* Barra lateral de progresso */}
+        <div className="hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-10">
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-xs text-muted-foreground mb-2">Etapa {currentStep + 1}/{steps.length}</span>
+            {steps.map((step, idx) => (
+              <div key={idx} className="flex flex-col items-center gap-1">
+                <div
+                  className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
+                    idx === currentStep
+                      ? "border-primary bg-primary scale-125"
+                      : idx < currentStep
+                      ? "border-primary/50 bg-primary/50"
+                      : "border-border bg-transparent"
+                  }`}
+                />
+                {idx < steps.length - 1 && (
+                  <div className={`w-0.5 h-8 transition-all duration-300 ${
+                    idx < currentStep ? "bg-primary/50" : "bg-border"
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-20 text-foreground">
             Como Funciona Meus Serviços
@@ -133,6 +158,22 @@ const ServiceSteps = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Disclaimer fixo no final da seção */}
+      <div className="absolute bottom-8 left-0 right-0">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-6 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                  <span className="font-semibold text-foreground">Observação:</span> O cronograma de trabalho e entrega pode variar e é definido com precisão conforme o escopo do projeto durante a fase de briefing e contrato.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
