@@ -18,22 +18,7 @@ const ServiceSteps = lazy(() => import("@/components/ServiceSteps"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
 const SocialMedia = lazy(() => import("@/components/SocialMedia"));
-import project1 from "@/assets/project1.jpg";
-import project2 from "@/assets/project2.jpg";
-import project3 from "@/assets/project3.jpg";
-import project4 from "@/assets/project4.jpg";
-import project1Banner from "@/assets/project1-banner.jpg";
-import project2Banner from "@/assets/project2-banner.jpg";
-import project3Banner from "@/assets/project3-banner.jpg";
-import project4Banner from "@/assets/project4-banner.jpg";
-import project1Detail1 from "@/assets/project1-detail1.jpg";
-import project1Detail2 from "@/assets/project1-detail2.jpg";
-import project2Detail1 from "@/assets/project2-detail1.jpg";
-import project2Detail2 from "@/assets/project2-detail2.jpg";
-import project3Detail1 from "@/assets/project3-detail1.jpg";
-import project3Detail2 from "@/assets/project3-detail2.jpg";
-import project4Detail1 from "@/assets/project4-detail1.jpg";
-import project4Detail2 from "@/assets/project4-detail2.jpg";
+import placeholderProject from "@/assets/placeholder-project.jpg";
 
 const Index = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
@@ -42,9 +27,9 @@ const Index = () => {
     {
       title: "Have Fun Turismo",
       category: "Social Media",
-      image: project1,
-      bannerImage: project1Banner,
-      detailImages: [project1Detail1, project1Detail2],
+      image: placeholderProject,
+      bannerImage: placeholderProject,
+      detailImages: [placeholderProject, placeholderProject],
       description: "Design de interface moderna para app de exercícios",
       fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
       technologies: ["Figma", "Adobe XD", "Prototyping"],
@@ -54,9 +39,9 @@ const Index = () => {
     {
       title: "Shopping Avenida Center",
       category: "Branding e Social Media",
-      image: project2,
-      bannerImage: project2Banner,
-      detailImages: [project2Detail1, project2Detail2],
+      image: placeholderProject,
+      bannerImage: placeholderProject,
+      detailImages: [placeholderProject, placeholderProject],
       description: "Criação completa de identidade visual corporativa",
       fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
       technologies: ["Illustrator", "Photoshop", "InDesign"],
@@ -66,9 +51,9 @@ const Index = () => {
     {
       title: "Orla",
       category: "Branding",
-      image: project3,
-      bannerImage: project3Banner,
-      detailImages: [project3Detail1, project3Detail2],
+      image: placeholderProject,
+      bannerImage: placeholderProject,
+      detailImages: [placeholderProject, placeholderProject],
       description: "Landing page otimizada para conversão",
       fullDescription: "Design de website e-commerce com foco em UX e otimização de conversão. Inclui sistema de navegação intuitivo, páginas de produto otimizadas e checkout simplificado.",
       technologies: ["Figma", "HTML/CSS", "React"],
@@ -78,9 +63,9 @@ const Index = () => {
     {
       title: "Retrospectiva 2025",
       category: "Social Media e Branding",
-      image: project4,
-      bannerImage: project4Banner,
-      detailImages: [project4Detail1, project4Detail2],
+      image: placeholderProject,
+      bannerImage: placeholderProject,
+      detailImages: [placeholderProject, placeholderProject],
       description: "Conjunto de ilustrações 3D para marketing",
       fullDescription: "Série de ilustrações 3D criadas para campanhas de marketing digital. Cada ilustração foi desenvolvida com atenção aos detalhes, cores vibrantes e estilo moderno para aumentar o engajamento.",
       technologies: ["Blender", "Cinema 4D", "After Effects"],
