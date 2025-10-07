@@ -1,5 +1,6 @@
-import { useState, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { MessageCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import FeaturedProjects from "@/components/FeaturedProjects";
@@ -12,12 +13,6 @@ const ServiceSteps = lazy(() => import("@/components/ServiceSteps"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
 const SocialMedia = lazy(() => import("@/components/SocialMedia"));
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import project1 from "@/assets/project1.jpg";
 import project2 from "@/assets/project2.jpg";
 import project3 from "@/assets/project3.jpg";
@@ -28,7 +23,7 @@ import project3Banner from "@/assets/project3-banner.jpg";
 import project4Banner from "@/assets/project4-banner.jpg";
 
 const Index = () => {
-  const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   const projects = [
     {
@@ -88,10 +83,7 @@ const Index = () => {
         onProjectClick={(index) => {
           // Encontra o índice real do projeto no array completo
           const realIndex = projects.findIndex(p => p === featuredProjects[index]);
-          // Rola até a seção de projetos
-          document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
-          // Aguarda um pouco para o scroll completar antes de abrir o modal
-          setTimeout(() => setSelectedProject(realIndex), 500);
+          navigate(`/project/${realIndex}`);
         }}
       />
       
@@ -113,58 +105,13 @@ const Index = () => {
               >
                 <ProjectCard 
                   {...project} 
-                  onClick={() => setSelectedProject(index)}
+                  onClick={() => navigate(`/project/${index}`)}
                 />
               </div>
             ))}
           </div>
         </div>
       </section>
-
-      <Dialog open={selectedProject !== null} onOpenChange={() => setSelectedProject(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          {selectedProject !== null && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-3xl font-bold">
-                  {projects[selectedProject].title}
-                </DialogTitle>
-                <p className="text-primary font-medium">{projects[selectedProject].category}</p>
-              </DialogHeader>
-              
-              <div className="space-y-6 mt-4">
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Sobre o Projeto</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {projects[selectedProject].fullDescription}
-                  </p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Tecnologias</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {projects[selectedProject].technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Ano</h3>
-                    <p className="text-muted-foreground">{projects[selectedProject].year}</p>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
 
       <FloatingWhatsApp />
 
