@@ -79,12 +79,12 @@ const ServiceSteps = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative py-16 md:py-20"
+      className="relative py-16 md:py-20 bg-[hsl(0_0%_8%)]"
       style={{ minHeight: `${steps.length * 60}vh` }}
     >
       <div className="sticky top-0 h-screen flex items-center justify-center py-8">
         <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-20">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-20 text-white">
             Como Funciona Meus Serviços
           </h2>
 
@@ -98,7 +98,7 @@ const ServiceSteps = () => {
                     : "opacity-0 scale-95 absolute inset-0 pointer-events-none"
                 }`}
               >
-                <div className="bg-card border border-border rounded-2xl p-6 md:p-8 lg:p-12 shadow-lg mx-4 md:mx-0">
+                <div className="bg-[hsl(0_0%_12%)] border border-[hsl(0_0%_20%)] rounded-2xl p-6 md:p-8 lg:p-12 shadow-lg mx-4 md:mx-0">
                   <div className="flex flex-col items-center text-center gap-4 md:gap-6">
                     <div className="text-primary">
                       {step.icon}
@@ -108,12 +108,12 @@ const ServiceSteps = () => {
                       <div className="inline-block px-3 py-1.5 bg-primary/10 text-primary rounded-full text-xs md:text-sm font-medium">
                         {step.duration}
                       </div>
-                      <h3 className="text-2xl md:text-3xl font-bold">
+                      <h3 className="text-2xl md:text-3xl font-bold text-white">
                         {step.title}
                       </h3>
                     </div>
                     
-                    <p className="text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed">
+                    <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">
                       {step.description}
                     </p>
                   </div>
