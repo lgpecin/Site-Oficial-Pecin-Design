@@ -161,8 +161,8 @@ const ServiceSteps = () => {
           </div>
 
           {/* Disclaimer */}
-          <div className="mt-8 md:mt-12">
-            <div className="max-w-3xl mx-auto mx-4 md:mx-0">
+          <div className="mt-8 md:mt-12 px-4 md:px-0">
+            <div className="max-w-3xl mx-auto">
               <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-6 flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <div>
