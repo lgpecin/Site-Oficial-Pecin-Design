@@ -8,24 +8,24 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 270 5% 15%;
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 270 5% 15%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 270 5% 15%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 174 72% 45%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 174 72% 55%;
 
-    --secondary: 174 15% 96%;
-    --secondary-foreground: 174 10% 15%;
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 174 15% 96%;
-    --muted-foreground: 174 10% 50%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
 
     --accent: 174 72% 45%;
     --accent-foreground: 0 0% 100%;
@@ -33,19 +33,19 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 10% 90%;
-    --input: 270 10% 90%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
     --ring: 174 72% 56%;
 
     --radius: 1rem;
 
     /* Custom gradient tokens */
     --gradient-primary: linear-gradient(135deg, hsl(174 72% 45%), hsl(180 72% 55%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(174 20% 98%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 8%), hsl(0 0% 12%));
     
     /* Shadow tokens */
-    --shadow-elegant: 0 10px 40px -10px hsl(174 72% 45% / 0.2);
-    --shadow-soft: 0 4px 20px -4px hsl(174 10% 15% / 0.1);
+    --shadow-elegant: 0 10px 40px -10px hsl(174 72% 45% / 0.3);
+    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
     
     /* Animation tokens */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
