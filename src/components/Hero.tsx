@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { ArrowDown, MessageCircle, Hand } from "lucide-react";
+import { ArrowDown, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
@@ -58,7 +58,7 @@ const Hero = () => {
       </div>
       
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <Hand className="w-8 h-8 text-primary/60 rotate-90" />
+        <ArrowDown className="w-8 h-8 text-primary/60" />
       </div>
     </section>
   );
