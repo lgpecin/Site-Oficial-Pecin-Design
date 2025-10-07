@@ -1,11 +1,16 @@
-import { lazy, Suspense } from "react";
-import { MessageCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { lazy, Suspense, useState } from "react";
+import { MessageCircle, X } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Lazy loading de componentes menos críticos para otimizar carregamento inicial
 const About = lazy(() => import("@/components/About"));
@@ -21,9 +26,17 @@ import project1Banner from "@/assets/project1-banner.jpg";
 import project2Banner from "@/assets/project2-banner.jpg";
 import project3Banner from "@/assets/project3-banner.jpg";
 import project4Banner from "@/assets/project4-banner.jpg";
+import project1Detail1 from "@/assets/project1-detail1.jpg";
+import project1Detail2 from "@/assets/project1-detail2.jpg";
+import project2Detail1 from "@/assets/project2-detail1.jpg";
+import project2Detail2 from "@/assets/project2-detail2.jpg";
+import project3Detail1 from "@/assets/project3-detail1.jpg";
+import project3Detail2 from "@/assets/project3-detail2.jpg";
+import project4Detail1 from "@/assets/project4-detail1.jpg";
+import project4Detail2 from "@/assets/project4-detail2.jpg";
 
 const Index = () => {
-  const navigate = useNavigate();
+  const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
   const projects = [
     {
@@ -31,6 +44,7 @@ const Index = () => {
       category: "Social Media",
       image: project1,
       bannerImage: project1Banner,
+      detailImages: [project1Detail1, project1Detail2],
       description: "Design de interface moderna para app de exercícios",
       fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
       technologies: ["Figma", "Adobe XD", "Prototyping"],
@@ -41,7 +55,8 @@ const Index = () => {
       title: "Shopping Avenida Center",
       category: "Branding e Social Media",
       image: project2,
-      bannerImage: project1Banner,
+      bannerImage: project2Banner,
+      detailImages: [project2Detail1, project2Detail2],
       description: "Criação completa de identidade visual corporativa",
       fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
       technologies: ["Illustrator", "Photoshop", "InDesign"],
@@ -53,6 +68,7 @@ const Index = () => {
       category: "Branding",
       image: project3,
       bannerImage: project3Banner,
+      detailImages: [project3Detail1, project3Detail2],
       description: "Landing page otimizada para conversão",
       fullDescription: "Design de website e-commerce com foco em UX e otimização de conversão. Inclui sistema de navegação intuitivo, páginas de produto otimizadas e checkout simplificado.",
       technologies: ["Figma", "HTML/CSS", "React"],
@@ -64,6 +80,7 @@ const Index = () => {
       category: "Social Media e Branding",
       image: project4,
       bannerImage: project4Banner,
+      detailImages: [project4Detail1, project4Detail2],
       description: "Conjunto de ilustrações 3D para marketing",
       fullDescription: "Série de ilustrações 3D criadas para campanhas de marketing digital. Cada ilustração foi desenvolvida com atenção aos detalhes, cores vibrantes e estilo moderno para aumentar o engajamento.",
       technologies: ["Blender", "Cinema 4D", "After Effects"],
@@ -73,6 +90,7 @@ const Index = () => {
   ];
 
   const featuredProjects = projects.filter(project => project.featured);
+  const project = selectedProject !== null ? projects[selectedProject] : null;
 
   return (
     <div className="min-h-screen">
@@ -81,9 +99,8 @@ const Index = () => {
       <FeaturedProjects 
         projects={featuredProjects} 
         onProjectClick={(index) => {
-          // Encontra o índice real do projeto no array completo
           const realIndex = projects.findIndex(p => p === featuredProjects[index]);
-          navigate(`/project/${realIndex}`);
+          setSelectedProject(realIndex);
         }}
       />
       
@@ -105,7 +122,7 @@ const Index = () => {
               >
                 <ProjectCard 
                   {...project} 
-                  onClick={() => navigate(`/project/${index}`)}
+                  onClick={() => setSelectedProject(index)}
                 />
               </div>
             ))}
@@ -114,6 +131,80 @@ const Index = () => {
       </section>
 
       <FloatingWhatsApp />
+
+      <Dialog open={selectedProject !== null} onOpenChange={() => setSelectedProject(null)}>
+        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+          {project && (
+            <div className="space-y-12">
+              {/* Título e metadados */}
+              <div>
+                <DialogTitle className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                  {project.title}
+                </DialogTitle>
+                <div className="flex flex-wrap gap-3">
+                  <span className="inline-block px-4 py-2 bg-primary/90 text-primary-foreground rounded-full text-sm font-medium">
+                    {project.category}
+                  </span>
+                  <span className="inline-block px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">
+                    {project.year}
+                  </span>
+                </div>
+              </div>
+
+              {/* Imagem principal */}
+              <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
+                <img
+                  src={project.bannerImage}
+                  alt={project.title}
+                  className="w-full h-auto object-cover"
+                  style={{ aspectRatio: "16/9" }}
+                />
+              </div>
+
+              {/* Sobre o projeto */}
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                  Sobre o Projeto
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {project.fullDescription}
+                </p>
+              </div>
+
+              {/* Imagens de detalhes */}
+              <div className="space-y-8">
+                {project.detailImages.map((image, index) => (
+                  <div key={index} className="relative w-full overflow-hidden rounded-2xl shadow-xl">
+                    <img
+                      src={image}
+                      alt={`${project.title} - Detalhe ${index + 1}`}
+                      className="w-full h-auto object-cover"
+                      style={{ aspectRatio: "16/9" }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Softwares Utilizados */}
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                  Softwares Utilizados
+                </h2>
+                <div className="flex flex-wrap gap-3">
+                  {project.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="inline-block px-6 py-3 bg-primary/10 text-primary rounded-full text-base font-medium hover:bg-primary/20 transition-colors"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Suspense fallback={<div className="py-16" />}>
         <About />
