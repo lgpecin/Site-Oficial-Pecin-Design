@@ -126,7 +126,7 @@ export default {
         "fade-up": "fade-up 1.0s ease-out",
         "scale-in": "scale-in 1.0s ease-out",
         "float": "float 400s ease-in-out infinite",
-        "pulse-slow": "pulse-slow 10s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 500s ease-in-out infinite",
       },
     },
   },
