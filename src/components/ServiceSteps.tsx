@@ -10,6 +10,8 @@ interface Step {
 
 const ServiceSteps = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const steps: Step[] = [
@@ -60,11 +62,17 @@ const ServiceSteps = () => {
       const sectionHeight = section.offsetHeight;
       const viewportHeight = window.innerHeight;
       
-      // Calcula a posição do scroll dentro da seção
-      const scrollProgress = -rect.top / (sectionHeight - viewportHeight);
+      // Verifica se a seção está visível
+      const isVisible = rect.top < viewportHeight && rect.bottom > 0;
+      setIsInView(isVisible);
+      
+      // Calcula a posição do scroll dentro da seção (0 a 1)
+      const rawProgress = -rect.top / (sectionHeight - viewportHeight);
+      const clampedProgress = Math.max(0, Math.min(1, rawProgress));
+      setScrollProgress(clampedProgress);
       
       // Determina qual step deve ser mostrado baseado no progresso do scroll
-      const stepIndex = Math.floor(scrollProgress * steps.length);
+      const stepIndex = Math.floor(clampedProgress * steps.length);
       const clampedIndex = Math.max(0, Math.min(steps.length - 1, stepIndex));
       
       setCurrentStep(clampedIndex);
@@ -83,28 +91,28 @@ const ServiceSteps = () => {
       style={{ minHeight: `${steps.length * 60}vh` }}
     >
       <div className="sticky top-0 h-screen flex items-center justify-center py-8">
-        {/* Barra lateral de progresso */}
-        <div className="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 z-10">
+        {/* Barra lateral de progresso fluida */}
+        <div 
+          className={`hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${
+            isInView ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
           <div className="flex flex-col items-center gap-3">
-            <span className="text-xs text-muted-foreground mb-2">Etapa {currentStep + 1}/{steps.length}</span>
-            {steps.map((step, idx) => (
-              <div key={idx} className="flex flex-col items-center gap-1">
-                <div
-                  className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
-                    idx === currentStep
-                      ? "border-primary bg-primary scale-125"
-                      : idx < currentStep
-                      ? "border-primary/50 bg-primary/50"
-                      : "border-border bg-transparent"
-                  }`}
-                />
-                {idx < steps.length - 1 && (
-                  <div className={`w-0.5 h-8 transition-all duration-300 ${
-                    idx < currentStep ? "bg-primary/50" : "bg-border"
-                  }`} />
-                )}
-              </div>
-            ))}
+            <span className="text-xs text-muted-foreground mb-2">
+              {Math.round(scrollProgress * 100)}%
+            </span>
+            
+            {/* Barra de progresso vertical */}
+            <div className="relative w-1 h-64 bg-border rounded-full overflow-hidden">
+              <div 
+                className="absolute top-0 left-0 w-full bg-primary transition-all duration-100 ease-out rounded-full"
+                style={{ height: `${scrollProgress * 100}%` }}
+              />
+            </div>
+            
+            <span className="text-xs text-muted-foreground mt-2">
+              Etapa {currentStep + 1}/{steps.length}
+            </span>
           </div>
         </div>
 
