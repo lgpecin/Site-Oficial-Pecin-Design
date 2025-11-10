@@ -38,7 +38,7 @@ const About = () => {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Espaço para foto */}
           <AnimatedSection>
             <div className="relative aspect-square rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
@@ -56,15 +56,15 @@ const About = () => {
           </AnimatedSection>
 
           {/* Grid 2x2 de skills */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
             {skills.map((skill, index) => (
               <AnimatedSection key={skill.title}>
-                <div className="text-center p-6 rounded-2xl bg-background shadow-sm hover:shadow-md transition-shadow h-full flex flex-col justify-center">
-                  <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                    <skill.icon className="w-6 h-6 text-primary" />
+                <div className="text-center p-4 md:p-6 rounded-2xl bg-background shadow-sm hover:shadow-md transition-shadow h-full flex flex-col justify-center">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-2 md:mb-3">
+                    <skill.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{skill.title}</h3>
-                  <p className="text-sm text-muted-foreground">{skill.description}</p>
+                  <h3 className="text-base md:text-lg font-semibold mb-1 md:mb-2">{skill.title}</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">{skill.description}</p>
                 </div>
               </AnimatedSection>
             ))}

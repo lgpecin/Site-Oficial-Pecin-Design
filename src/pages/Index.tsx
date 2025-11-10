@@ -2,7 +2,6 @@ import { lazy, Suspense, useState } from "react";
 import { MessageCircle, X } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
-import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { useInView } from "@/hooks/use-in-view";
@@ -38,7 +37,6 @@ const Index = () => {
       fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
       technologies: ["Figma", "Adobe XD", "Prototyping"],
       year: "2024",
-      featured: true,
     },
     {
       title: "Shopping Avenida Center",
@@ -50,7 +48,6 @@ const Index = () => {
       fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
       technologies: ["Illustrator", "Photoshop", "InDesign"],
       year: "2024",
-      featured: true,
     },
     {
       title: "Orla",
@@ -62,7 +59,6 @@ const Index = () => {
       fullDescription: "Design de website e-commerce com foco em UX e otimização de conversão. Inclui sistema de navegação intuitivo, páginas de produto otimizadas e checkout simplificado.",
       technologies: ["Figma", "HTML/CSS", "React"],
       year: "2024",
-      featured: false,
     },
     {
       title: "Retrospectiva 2025",
@@ -74,24 +70,15 @@ const Index = () => {
       fullDescription: "Série de ilustrações 3D criadas para campanhas de marketing digital. Cada ilustração foi desenvolvida com atenção aos detalhes, cores vibrantes e estilo moderno para aumentar o engajamento.",
       technologies: ["Blender", "Cinema 4D", "After Effects"],
       year: "2024",
-      featured: true,
     },
   ];
 
-  const featuredProjects = projects.filter(project => project.featured);
   const project = selectedProject !== null ? projects[selectedProject] : null;
 
   return (
     <div className="min-h-screen">
       <Navigation />
       <Hero />
-      <FeaturedProjects 
-        projects={featuredProjects} 
-        onProjectClick={(index) => {
-          const realIndex = projects.findIndex(p => p === featuredProjects[index]);
-          setSelectedProject(realIndex);
-        }}
-      />
       
       <section id="projects" className="py-16">
         <div className="container mx-auto px-6">
@@ -104,7 +91,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
             {projects.map((project, index) => (
               <AnimatedSection key={project.title}>
                 <ProjectCard 
