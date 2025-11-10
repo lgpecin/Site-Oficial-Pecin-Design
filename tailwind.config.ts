@@ -113,7 +113,7 @@ export default {
       },
       "pulse-slow": {
         "0%, 100%": {
-          transform: "scale(0.9)",
+          transform: "scale(0.97)",
         },
         "50%": {
           transform: "scale(1)",
