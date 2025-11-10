@@ -11,6 +11,7 @@ interface Step {
 const ServiceSteps = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [visibleSteps, setVisibleSteps] = useState(0);
+  const [isSectionVisible, setIsSectionVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   
   const steps: Step[] = [{
@@ -53,12 +54,16 @@ const ServiceSteps = () => {
       const sectionHeight = section.offsetHeight;
       const viewportHeight = window.innerHeight;
 
-      // Calcula progresso do scroll (0 a 1)
-      const rawProgress = Math.max(0, Math.min(1, -rect.top / (sectionHeight - viewportHeight)));
+      // Verifica se a seção está visível na viewport
+      const isVisible = rect.top < viewportHeight && rect.bottom > 0;
+      setIsSectionVisible(isVisible);
+
+      // Calcula progresso do scroll (0 a 1) - ajustado para começar mais cedo
+      const rawProgress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (sectionHeight + viewportHeight * 0.3)));
       setScrollProgress(rawProgress);
 
-      // Determina quantos steps devem estar visíveis
-      const stepsToShow = Math.min(steps.length, Math.floor(rawProgress * (steps.length + 1)));
+      // Determina quantos steps devem estar visíveis - aparecem mais cedo
+      const stepsToShow = Math.min(steps.length, Math.floor(rawProgress * (steps.length + 2)));
       setVisibleSteps(stepsToShow);
     };
     
@@ -76,7 +81,7 @@ const ServiceSteps = () => {
         </h2>
 
         {/* Barra lateral de progresso */}
-        <div className="hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-10">
+        <div className={`hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${isSectionVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
           <div className="flex flex-col items-center gap-3">
             <span className="text-xs text-muted-foreground mb-2">
               {Math.round(scrollProgress * 100)}%
