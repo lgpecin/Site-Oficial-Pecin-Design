@@ -1,6 +1,11 @@
 import { Palette, Sparkles, Target } from "lucide-react";
+import { useInView } from "@/hooks/use-in-view";
+import { AnimatedText } from "./AnimatedText";
+import { AnimatedSection } from "./AnimatedSection";
 
 const About = () => {
+  const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  
   const skills = [
     {
       icon: Palette,
@@ -22,8 +27,10 @@ const About = () => {
   return (
     <section id="about" className="py-16 bg-secondary/30">
       <div className="container mx-auto px-6">
-        <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Sobre Mim</h2>
+        <div ref={ref} className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <AnimatedText text="Sobre Mim" isInView={isInView} />
+          </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
             Sou um designer apaixonado por criar experiências visuais memoráveis. 
             Com foco em minimalismo e funcionalidade, trabalho para transformar 
@@ -33,17 +40,16 @@ const About = () => {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {skills.map((skill, index) => (
-            <div
-              key={skill.title}
-              className="text-center p-8 rounded-2xl bg-background shadow-sm hover:shadow-md transition-shadow animate-scale-in"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
+            <AnimatedSection key={skill.title}>
+              <div className="text-center p-8 rounded-2xl bg-background shadow-sm hover:shadow-md transition-shadow">
+
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <skill.icon className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">{skill.title}</h3>
-              <p className="text-muted-foreground">{skill.description}</p>
-            </div>
+                <h3 className="text-xl font-semibold mb-3">{skill.title}</h3>
+                <p className="text-muted-foreground">{skill.description}</p>
+              </div>
+            </AnimatedSection>
           ))}
         </div>
       </div>

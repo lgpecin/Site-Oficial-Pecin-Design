@@ -4,8 +4,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useInView } from "@/hooks/use-in-view";
+import { AnimatedText } from "./AnimatedText";
+import { AnimatedSection } from "./AnimatedSection";
 
 const FAQ = () => {
+  const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  
   const faqs = [
     {
       question: "Quais serviços de design você oferece?",
@@ -36,8 +41,10 @@ const FAQ = () => {
   return (
     <section id="faq" className="py-16 bg-muted/30">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16 animate-fade-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Perguntas Frequentes</h2>
+        <div ref={ref} className="text-center mb-16 animate-fade-up">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <AnimatedText text="Perguntas Frequentes" isInView={isInView} />
+          </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Respostas para as dúvidas mais comuns sobre meus serviços e processo de trabalho.
           </p>
@@ -46,18 +53,19 @@ const FAQ = () => {
         <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem 
-                key={index} 
-                value={`item-${index}`}
-                className="bg-card rounded-lg px-6 border-0 shadow-sm"
-              >
+              <AnimatedSection key={index}>
+                <AccordionItem 
+                  value={`item-${index}`}
+                  className="bg-card rounded-lg px-6 border-0 shadow-sm"
+                >
                 <AccordionTrigger className="text-left hover:no-underline py-6">
                   <span className="font-semibold text-lg">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+                  <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              </AnimatedSection>
             ))}
           </Accordion>
         </div>

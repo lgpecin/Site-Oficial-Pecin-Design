@@ -5,6 +5,9 @@ import Hero from "@/components/Hero";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import { useInView } from "@/hooks/use-in-view";
+import { AnimatedText } from "@/components/AnimatedText";
+import { AnimatedSection } from "@/components/AnimatedSection";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +24,7 @@ const SocialMedia = lazy(() => import("@/components/SocialMedia"));
 import placeholderProject from "@/assets/placeholder-project.jpg";
 
 const Index = () => {
+  const { ref: projectsRef, isInView: projectsInView } = useInView({ threshold: 0.1, triggerOnce: true });
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
   const projects = [
@@ -91,8 +95,10 @@ const Index = () => {
       
       <section id="projects" className="py-16">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16 animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Resultados. Sem Enrolação.</h2>
+          <div ref={projectsRef} className="text-center mb-16 animate-fade-up">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <AnimatedText text="Resultados. Sem Enrolação." isInView={projectsInView} />
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Estes são alguns projetos com resultados únicos.
             </p>
@@ -100,16 +106,12 @@ const Index = () => {
           
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
             {projects.map((project, index) => (
-              <div
-                key={project.title}
-                className="animate-fade-up"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
+              <AnimatedSection key={project.title}>
                 <ProjectCard 
                   {...project} 
                   onClick={() => setSelectedProject(index)}
                 />
-              </div>
+              </AnimatedSection>
             ))}
           </div>
         </div>

@@ -1,8 +1,12 @@
 import { Button } from "./ui/button";
 import { ArrowDown, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import { useInView } from "@/hooks/use-in-view";
+import { AnimatedText } from "./AnimatedText";
 
 const Hero = () => {
+  const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  
   const scrollToProjects = () => {
     const element = document.getElementById("projects");
     element?.scrollIntoView({ behavior: "smooth" });
@@ -20,7 +24,7 @@ const Hero = () => {
         }}
       />
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div ref={ref} className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-up">
           <div className="mb-6">
             <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
@@ -29,9 +33,9 @@ const Hero = () => {
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight px-4">
-            Design que impacta,{" "}
+            <AnimatedText text="Design que impacta, " isInView={isInView} />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              visão que transforma.
+              <AnimatedText text="visão que transforma." isInView={isInView} delay={400} />
             </span>
           </h1>
           

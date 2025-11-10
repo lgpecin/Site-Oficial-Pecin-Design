@@ -4,8 +4,13 @@ import { Textarea } from "./ui/textarea";
 import { Mail, MessageSquare, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useInView } from "@/hooks/use-in-view";
+import { AnimatedText } from "./AnimatedText";
+import { AnimatedSection } from "./AnimatedSection";
 
 const Contact = () => {
+  const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,11 +30,13 @@ const Contact = () => {
     <section id="contact" className="py-16">
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12 animate-fade-up">
+          <div ref={ref} className="text-center mb-12 animate-fade-up">
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <MessageSquare className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Vamos Conversar?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <AnimatedText text="Vamos Conversar?" isInView={isInView} />
+            </h2>
             <p className="text-lg text-muted-foreground">
               Tem um projeto em mente? Entre em contato por e-mail ou WhatsApp.
             </p>
@@ -51,7 +58,8 @@ const Contact = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6 animate-scale-in">
+          <AnimatedSection>
+            <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <Input
                 placeholder="Seu nome"
@@ -80,11 +88,12 @@ const Contact = () => {
                 className="min-h-[150px] resize-none"
               />
             </div>
-            <Button type="submit" size="lg" className="w-full">
-              <Mail className="mr-2 h-4 w-4" />
-              Enviar Mensagem
-            </Button>
-          </form>
+              <Button type="submit" size="lg" className="w-full">
+                <Mail className="mr-2 h-4 w-4" />
+                Enviar Mensagem
+              </Button>
+            </form>
+          </AnimatedSection>
         </div>
       </div>
     </section>
