@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
+import DashboardLayout from '@/components/admin/DashboardLayout';
 import ProjectList from '@/components/admin/ProjectList';
 import ProjectForm from '@/components/admin/ProjectForm';
-import { LogOut, Plus } from 'lucide-react';
+import ClientsSection from '@/components/admin/ClientsSection';
+import SheetsSection from '@/components/admin/SheetsSection';
+import UsersSection from '@/components/admin/UsersSection';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 const Admin = () => {
+  const [currentSection, setCurrentSection] = useState('projects');
   const [showForm, setShowForm] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | undefined>();
   const [refreshKey, setRefreshKey] = useState(0);
@@ -54,20 +59,10 @@ const Admin = () => {
     return null;
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Painel Administrativo</h1>
-          <Button variant="outline" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Sair
-          </Button>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
-        {showForm ? (
+  const renderSection = () => {
+    switch (currentSection) {
+      case 'projects':
+        return showForm ? (
           <ProjectForm
             projectId={editingProjectId}
             onSuccess={handleSuccess}
@@ -76,7 +71,7 @@ const Admin = () => {
         ) : (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Projetos</h2>
+              <h2 className="text-3xl font-bold">Projetos</h2>
               <Button onClick={() => setShowForm(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Novo Projeto
@@ -84,9 +79,30 @@ const Admin = () => {
             </div>
             <ProjectList onEdit={handleEdit} refresh={refreshKey} />
           </div>
-        )}
-      </main>
-    </div>
+        );
+      case 'clients':
+        return <ClientsSection />;
+      case 'sheets':
+        return <SheetsSection />;
+      case 'users':
+        return <UsersSection />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <DashboardLayout
+      currentSection={currentSection}
+      onSectionChange={(section) => {
+        setCurrentSection(section);
+        setShowForm(false);
+        setEditingProjectId(undefined);
+      }}
+      onSignOut={handleSignOut}
+    >
+      {renderSection()}
+    </DashboardLayout>
   );
 };
 

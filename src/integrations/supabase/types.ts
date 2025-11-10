@@ -14,6 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_products: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          price: number | null
+          product_name: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          price?: number | null
+          product_name: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          price?: number | null
+          product_name?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_products_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          company: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -132,6 +206,90 @@ export type Database = {
         }
         Relationships: []
       }
+      rpg_sheets: {
+        Row: {
+          alignment: string | null
+          armor_class: number | null
+          background: string | null
+          character_class: string | null
+          character_name: string
+          charisma: number | null
+          constitution: number | null
+          created_at: string | null
+          current_hp: number | null
+          dexterity: number | null
+          equipment: Json | null
+          id: string
+          initiative: number | null
+          intelligence: number | null
+          level: number | null
+          max_hp: number | null
+          notes: string | null
+          race: string | null
+          skills: Json | null
+          speed: number | null
+          spells: Json | null
+          strength: number | null
+          updated_at: string | null
+          user_id: string | null
+          wisdom: number | null
+        }
+        Insert: {
+          alignment?: string | null
+          armor_class?: number | null
+          background?: string | null
+          character_class?: string | null
+          character_name: string
+          charisma?: number | null
+          constitution?: number | null
+          created_at?: string | null
+          current_hp?: number | null
+          dexterity?: number | null
+          equipment?: Json | null
+          id?: string
+          initiative?: number | null
+          intelligence?: number | null
+          level?: number | null
+          max_hp?: number | null
+          notes?: string | null
+          race?: string | null
+          skills?: Json | null
+          speed?: number | null
+          spells?: Json | null
+          strength?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          wisdom?: number | null
+        }
+        Update: {
+          alignment?: string | null
+          armor_class?: number | null
+          background?: string | null
+          character_class?: string | null
+          character_name?: string
+          charisma?: number | null
+          constitution?: number | null
+          created_at?: string | null
+          current_hp?: number | null
+          dexterity?: number | null
+          equipment?: Json | null
+          id?: string
+          initiative?: number | null
+          intelligence?: number | null
+          level?: number | null
+          max_hp?: number | null
+          notes?: string | null
+          race?: string | null
+          skills?: Json | null
+          speed?: number | null
+          spells?: Json | null
+          strength?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          wisdom?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -167,7 +325,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "visitor" | "sheet_user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -295,7 +453,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "visitor", "sheet_user"],
     },
   },
 } as const
