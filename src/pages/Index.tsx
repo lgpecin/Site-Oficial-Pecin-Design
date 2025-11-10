@@ -6,7 +6,7 @@ import FeaturedProjects from "@/components/FeaturedProjects";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { useInView } from "@/hooks/use-in-view";
-import { AnimatedText } from "@/components/AnimatedText";
+import { TypewriterText } from "@/components/TypewriterText";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import {
   Dialog,
@@ -95,9 +95,9 @@ const Index = () => {
       
       <section id="projects" className="py-16">
         <div className="container mx-auto px-6">
-          <div ref={projectsRef} className="text-center mb-16 animate-fade-up">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <AnimatedText text="Resultados. Sem Enrolação." isInView={projectsInView} />
+          <div ref={projectsRef} className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
+              <TypewriterText text="Resultados. Sem Enrolação." isInView={projectsInView} speed={50} />
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Estes são alguns projetos com resultados únicos.

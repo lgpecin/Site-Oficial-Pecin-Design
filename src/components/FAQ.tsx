@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useInView } from "@/hooks/use-in-view";
-import { AnimatedText } from "./AnimatedText";
+import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
 
 const FAQ = () => {
@@ -41,9 +41,9 @@ const FAQ = () => {
   return (
     <section id="faq" className="py-16 bg-muted/30">
       <div className="container mx-auto px-6">
-        <div ref={ref} className="text-center mb-16 animate-fade-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <AnimatedText text="Perguntas Frequentes" isInView={isInView} />
+        <div ref={ref} className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
+            <TypewriterText text="Perguntas Frequentes" isInView={isInView} speed={60} />
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Respostas para as dúvidas mais comuns sobre meus serviços e processo de trabalho.

@@ -5,7 +5,7 @@ import { Mail, MessageSquare, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useInView } from "@/hooks/use-in-view";
-import { AnimatedText } from "./AnimatedText";
+import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
 
 const Contact = () => {
@@ -30,12 +30,12 @@ const Contact = () => {
     <section id="contact" className="py-16">
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto">
-          <div ref={ref} className="text-center mb-12 animate-fade-up">
+          <div ref={ref} className="text-center mb-12">
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <MessageSquare className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <AnimatedText text="Vamos Conversar?" isInView={isInView} />
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
+              <TypewriterText text="Vamos Conversar?" isInView={isInView} speed={70} />
             </h2>
             <p className="text-lg text-muted-foreground">
               Tem um projeto em mente? Entre em contato por e-mail ou WhatsApp.

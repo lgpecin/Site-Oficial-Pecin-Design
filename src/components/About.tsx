@@ -1,6 +1,6 @@
 import { Palette, Sparkles, Target } from "lucide-react";
 import { useInView } from "@/hooks/use-in-view";
-import { AnimatedText } from "./AnimatedText";
+import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
 
 const About = () => {
@@ -27,9 +27,9 @@ const About = () => {
   return (
     <section id="about" className="py-16 bg-secondary/30">
       <div className="container mx-auto px-6">
-        <div ref={ref} className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <AnimatedText text="Sobre Mim" isInView={isInView} />
+        <div ref={ref} className="max-w-3xl mx-auto text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
+            <TypewriterText text="Sobre Mim" isInView={isInView} speed={80} />
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
             Sou um designer apaixonado por criar experiências visuais memoráveis. 
