@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +19,11 @@ const Navigation = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
 
   return (
@@ -48,6 +57,11 @@ const Navigation = () => {
             <Button onClick={() => scrollToSection("contact")} size="sm">
               Contato
             </Button>
+            {user && (
+              <Button onClick={handleSignOut} variant="outline" size="sm">
+                Sair
+              </Button>
+            )}
           </div>
         </div>
       </div>
