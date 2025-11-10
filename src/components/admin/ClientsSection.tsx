@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, FolderOpen } from 'lucide-react';
+import ClientDetail from './ClientDetail';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +33,7 @@ const ClientsSection = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -119,6 +121,15 @@ const ClientsSection = () => {
     setShowForm(false);
   };
 
+  if (selectedClientId) {
+    return (
+      <ClientDetail
+        clientId={selectedClientId}
+        onBack={() => setSelectedClientId(null)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -201,6 +212,10 @@ const ClientsSection = () => {
                   {client.notes && <p className="text-sm mt-2 text-muted-foreground">{client.notes}</p>}
                 </div>
                 <div className="flex gap-2">
+                  <Button variant="default" size="sm" onClick={() => setSelectedClientId(client.id)}>
+                    <FolderOpen className="h-4 w-4 mr-1" />
+                    Abrir
+                  </Button>
                   <Button variant="outline" size="sm" onClick={() => handleEdit(client)}>
                     <Pencil className="h-4 w-4" />
                   </Button>

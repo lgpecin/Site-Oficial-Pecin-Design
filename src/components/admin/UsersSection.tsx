@@ -15,7 +15,7 @@ import {
 interface UserWithRole {
   id: string;
   email: string;
-  role: 'admin' | 'sheet_user' | 'visitor' | null;
+  role: 'admin' | 'client' | 'sheet_user' | 'visitor' | null;
 }
 
 const UsersSection = () => {
@@ -93,6 +93,7 @@ const UsersSection = () => {
     
     const roleMap = {
       admin: <Badge variant="destructive">Admin</Badge>,
+      client: <Badge>Cliente</Badge>,
       sheet_user: <Badge variant="default">Usuário de Ficha</Badge>,
       visitor: <Badge variant="outline">Visitante</Badge>,
     };
@@ -127,6 +128,7 @@ const UsersSection = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">Visitante</SelectItem>
+                      <SelectItem value="client">Cliente</SelectItem>
                       <SelectItem value="sheet_user">Usuário de Ficha</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>

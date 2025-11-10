@@ -55,6 +55,35 @@ export type Database = {
           },
         ]
       }
+      client_users: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_users_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           company: string | null
@@ -87,6 +116,126 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      material_approvals: {
+        Row: {
+          action_type: string
+          comment: string | null
+          created_at: string | null
+          id: string
+          material_id: string
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          material_id: string
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          material_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_approvals_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      material_files: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          file_path: string
+          file_size: number | null
+          file_type: string
+          id: string
+          material_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          file_path: string
+          file_size?: number | null
+          file_type: string
+          id?: string
+          material_id: string
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          file_path?: string
+          file_size?: number | null
+          file_type?: string
+          id?: string
+          material_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_files_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materials: {
+        Row: {
+          caption: string | null
+          client_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          post_date: string | null
+          status: string
+          title: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          caption?: string | null
+          client_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          post_date?: string | null
+          status?: string
+          title: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          caption?: string | null
+          client_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          post_date?: string | null
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materials_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -325,7 +474,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user" | "visitor" | "sheet_user"
+      app_role: "admin" | "user" | "visitor" | "sheet_user" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -453,7 +602,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "visitor", "sheet_user"],
+      app_role: ["admin", "user", "visitor", "sheet_user", "client"],
     },
   },
 } as const
