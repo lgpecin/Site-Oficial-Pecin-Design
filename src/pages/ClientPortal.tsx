@@ -6,8 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, ThumbsUp, ThumbsDown, MessageSquare, Image as ImageIcon, Video } from 'lucide-react';
+import { LogOut, ThumbsUp, ThumbsDown, MessageSquare, Search, Filter } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Material {
   id: string;
@@ -42,6 +50,9 @@ const ClientPortal = () => {
   const [approvals, setApprovals] = useState<(Approval & { userEmail?: string })[]>([]);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -171,6 +182,15 @@ const ClientPortal = () => {
     navigate('/');
   };
 
+  const filteredMaterials = materials.filter((material) => {
+    const matchesSearch = material.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         material.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === 'all' || material.type === filterType;
+    const matchesStatus = filterStatus === 'all' || material.status === filterStatus;
+    
+    return matchesSearch && matchesType && matchesStatus;
+  });
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -196,10 +216,77 @@ const ClientPortal = () => {
 
       <div className="container mx-auto px-4 py-8">
         {!selectedMaterial ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h2 className="text-2xl font-bold">Materiais para Aprovação</h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {materials.map((material) => (
+            
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end">
+                  <div className="flex-1">
+                    <label className="text-sm font-medium mb-2 block">Buscar</label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Buscar por título ou descrição..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <label className="text-sm font-medium mb-2 block">Tipo</label>
+                    <Select value={filterType} onValueChange={setFilterType}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos os tipos</SelectItem>
+                        <SelectItem value="Estático">Estático</SelectItem>
+                        <SelectItem value="Stories">Stories</SelectItem>
+                        <SelectItem value="Reels">Reels</SelectItem>
+                        <SelectItem value="Thumb">Thumb</SelectItem>
+                        <SelectItem value="Ícone">Ícone</SelectItem>
+                        <SelectItem value="Carrossel">Carrossel</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <label className="text-sm font-medium mb-2 block">Status</label>
+                    <Select value={filterStatus} onValueChange={setFilterStatus}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos os status</SelectItem>
+                        <SelectItem value="Ideia">Ideia</SelectItem>
+                        <SelectItem value="Planejamento">Planejamento</SelectItem>
+                        <SelectItem value="Em Processo">Em Processo</SelectItem>
+                        <SelectItem value="Pronto">Pronto</SelectItem>
+                        <SelectItem value="Cancelado">Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Filter className="h-4 w-4" />
+                  <span>{filteredMaterials.length} {filteredMaterials.length === 1 ? 'material encontrado' : 'materiais encontrados'}</span>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {filteredMaterials.length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center text-muted-foreground">
+                  Nenhum material encontrado com os filtros selecionados.
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {filteredMaterials.map((material) => (
                 <Card
                   key={material.id}
                   className="cursor-pointer hover:shadow-lg transition-shadow"
@@ -221,7 +308,8 @@ const ClientPortal = () => {
                   </CardContent>
                 </Card>
               ))}
-            </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-6">
