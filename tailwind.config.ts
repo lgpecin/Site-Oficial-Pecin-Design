@@ -113,12 +113,10 @@ export default {
       },
       "pulse-slow": {
         "0%, 100%": {
-          opacity: "1",
-          transform: "scale(1)",
+          transform: "scale(0.75)",
         },
         "50%": {
-          opacity: "0.9",
-          transform: "scale(1.05)",
+          transform: "scale(1)",
         },
       },
       },
@@ -128,7 +126,7 @@ export default {
         "fade-up": "fade-up 1.0s ease-out",
         "scale-in": "scale-in 1.0s ease-out",
         "float": "float 400s ease-in-out infinite",
-        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 10s ease-in-out infinite",
       },
     },
   },
