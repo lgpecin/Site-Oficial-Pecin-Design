@@ -2,6 +2,7 @@ import { Button } from "./ui/button";
 import { ArrowDown, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import { useEffect, useRef } from "react";
+import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
 const Hero = () => {
   const parallaxRef = useRef<HTMLDivElement>(null);
@@ -47,9 +48,15 @@ const Hero = () => {
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight px-4">
             Design que impacta,{" "}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              visão que transforma
+              visão que{" "}
+              <AlternatingTypewriter
+                words={["transforma", "realiza", "gera resultados", "resignifica", "humaniza"]}
+                className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+                typingSpeed={100}
+                deletingSpeed={50}
+                pauseTime={2000}
+              />
             </span>
-            <span className="inline-block w-1 h-[0.8em] bg-primary ml-1 animate-blink align-middle"></span>
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto px-4">
