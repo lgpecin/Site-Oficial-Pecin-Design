@@ -1,4 +1,4 @@
-import { Palette, Sparkles, Target } from "lucide-react";
+import { Palette, Sparkles, Target, Zap } from "lucide-react";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
@@ -22,6 +22,11 @@ const About = () => {
       title: "Estratégia Visual",
       description: "Soluções de design alinhadas aos objetivos do negócio",
     },
+    {
+      icon: Zap,
+      title: "Branding",
+      description: "Desenvolvimento completo de marcas com propósito e personalidade",
+    },
   ];
 
   return (
@@ -31,11 +36,6 @@ const About = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
             <TypewriterText text="Sobre Mim" isInView={isInView} speed={80} />
           </h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Sou um designer apaixonado por criar experiências visuais memoráveis. 
-            Com foco em minimalismo e funcionalidade, trabalho para transformar 
-            ideias complexas em designs simples e elegantes que comunicam de forma eficaz.
-          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -69,6 +69,14 @@ const About = () => {
               </AnimatedSection>
             ))}
           </div>
+        </div>
+
+        <div className="max-w-3xl mx-auto text-center mt-16">
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            Sou um designer apaixonado por criar experiências visuais memoráveis. 
+            Com foco em minimalismo e funcionalidade, trabalho para transformar 
+            ideias complexas em designs simples e elegantes que comunicam de forma eficaz.
+          </p>
         </div>
       </div>
     </section>
