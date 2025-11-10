@@ -119,6 +119,14 @@ export default {
           transform: "scale(1)",
         },
       },
+      "blink": {
+        "0%, 100%": {
+          opacity: "1",
+        },
+        "50%": {
+          opacity: "0",
+        },
+      },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -127,6 +135,7 @@ export default {
         "scale-in": "scale-in 1.0s ease-out",
         "float": "float 400s ease-in-out infinite",
         "pulse-slow": "pulse-slow 500s ease-in-out infinite",
+        "blink": "blink 1s step-end infinite",
       },
     },
   },

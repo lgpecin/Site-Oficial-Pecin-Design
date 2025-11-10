@@ -1,8 +1,23 @@
 import { Button } from "./ui/button";
 import { ArrowDown, MessageCircle } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import { useEffect, useRef } from "react";
 
 const Hero = () => {
+  const parallaxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (parallaxRef.current) {
+        const scrolled = window.scrollY;
+        parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const scrollToProjects = () => {
     const element = document.getElementById("projects");
     element?.scrollIntoView({ behavior: "smooth" });
@@ -11,7 +26,8 @@ const Hero = () => {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div
-        className="absolute inset-0 z-0"
+        ref={parallaxRef}
+        className="absolute inset-0 z-0 will-change-transform"
         style={{
           backgroundImage: `url(${heroBg})`,
           backgroundSize: "cover",
@@ -31,8 +47,9 @@ const Hero = () => {
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight px-4">
             Design que impacta,{" "}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              visão que transforma.
+              visão que transforma
             </span>
+            <span className="inline-block w-1 h-[0.8em] bg-primary ml-1 animate-blink align-middle"></span>
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto px-4">
