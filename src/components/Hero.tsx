@@ -46,7 +46,8 @@ const Hero = () => {
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight px-4">
-            Design que impacta,{" "}
+            Design que impacta,
+            <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               visão que{" "}
               <AlternatingTypewriter
