@@ -19,13 +19,15 @@ export const TypewriterText = ({
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    if (!isInView || isTyping) return;
-
+    if (!isInView) return;
+    
+    setDisplayText("");
     setIsTyping(true);
     let currentIndex = 0;
+    let interval: NodeJS.Timeout;
 
     const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         if (currentIndex <= text.length) {
           setDisplayText(text.slice(0, currentIndex));
           currentIndex++;
@@ -34,12 +36,13 @@ export const TypewriterText = ({
           setIsTyping(false);
         }
       }, speed);
-
-      return () => clearInterval(interval);
     }, delay);
 
-    return () => clearTimeout(timeout);
-  }, [isInView, text, delay, speed, isTyping]);
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
+  }, [isInView, text, delay, speed]);
 
   return (
     <span className={className}>
