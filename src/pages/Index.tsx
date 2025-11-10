@@ -1,5 +1,5 @@
-import { lazy, Suspense, useState } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { lazy, Suspense, useState, useEffect } from "react";
+import { MessageCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
@@ -13,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import placeholderProject from "@/assets/placeholder-project.jpg";
 
 // Lazy loading de componentes menos críticos para otimizar carregamento inicial
 const About = lazy(() => import("@/components/About"));
@@ -20,58 +22,65 @@ const ServiceSteps = lazy(() => import("@/components/ServiceSteps"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
 const SocialMedia = lazy(() => import("@/components/SocialMedia"));
-import placeholderProject from "@/assets/placeholder-project.jpg";
+
+interface Project {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  bannerImage: string;
+  detailImages: string[];
+  description: string;
+  fullDescription: string;
+  technologies: string[];
+  year: string;
+}
 
 const Index = () => {
   const { ref: projectsRef, isInView: projectsInView } = useInView({ threshold: 0.1, triggerOnce: true });
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const projects = [
-    {
-      title: "Algum projeto",
-      category: "Social Media",
-      image: placeholderProject,
-      bannerImage: placeholderProject,
-      detailImages: [placeholderProject, placeholderProject],
-      description: "Design de interface moderna para app de exercícios",
-      fullDescription: "Desenvolvimento completo de interface para aplicativo mobile de fitness, focado em usabilidade e engajamento do usuário. O projeto incluiu pesquisa de usuário, wireframes, prototipagem e testes de usabilidade.",
-      technologies: ["Figma", "Adobe XD", "Prototyping"],
-      year: "2024",
-    },
-    {
-      title: "Shopping Avenida Center",
-      category: "Branding e Social Media",
-      image: placeholderProject,
-      bannerImage: placeholderProject,
-      detailImages: [placeholderProject, placeholderProject],
-      description: "Criação completa de identidade visual corporativa",
-      fullDescription: "Projeto completo de identidade visual incluindo logotipo, paleta de cores, tipografia e aplicações em diversos materiais. Desenvolvido com foco em transmitir os valores da marca e criar impacto visual memorável.",
-      technologies: ["Illustrator", "Photoshop", "InDesign"],
-      year: "2024",
-    },
-    {
-      title: "Orla",
-      category: "Branding",
-      image: placeholderProject,
-      bannerImage: placeholderProject,
-      detailImages: [placeholderProject, placeholderProject],
-      description: "Landing page otimizada para conversão",
-      fullDescription: "Design de website e-commerce com foco em UX e otimização de conversão. Inclui sistema de navegação intuitivo, páginas de produto otimizadas e checkout simplificado.",
-      technologies: ["Figma", "HTML/CSS", "React"],
-      year: "2024",
-    },
-    {
-      title: "Retrospectiva 2025",
-      category: "Social Media e Branding",
-      image: placeholderProject,
-      bannerImage: placeholderProject,
-      detailImages: [placeholderProject, placeholderProject],
-      description: "Conjunto de ilustrações 3D para marketing",
-      fullDescription: "Série de ilustrações 3D criadas para campanhas de marketing digital. Cada ilustração foi desenvolvida com atenção aos detalhes, cores vibrantes e estilo moderno para aumentar o engajamento.",
-      technologies: ["Blender", "Cinema 4D", "After Effects"],
-      year: "2024",
-    },
-  ];
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select(`
+          *,
+          project_images (image_url, display_order),
+          project_technologies (technology)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedProjects: Project[] = (data || []).map((project) => ({
+        id: project.id,
+        title: project.title,
+        category: project.category,
+        image: project.banner_image || placeholderProject,
+        bannerImage: project.banner_image || placeholderProject,
+        detailImages: project.project_images
+          ?.sort((a, b) => a.display_order - b.display_order)
+          .map((img) => img.image_url) || [placeholderProject],
+        description: project.description,
+        fullDescription: project.full_description,
+        technologies: project.project_technologies?.map((t) => t.technology) || [],
+        year: project.year.toString(),
+      }));
+
+      setProjects(formattedProjects);
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const project = selectedProject !== null ? projects[selectedProject] : null;
 
@@ -91,16 +100,26 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
-            {projects.map((project, index) => (
-              <AnimatedSection key={project.title}>
-                <ProjectCard 
-                  {...project} 
-                  onClick={() => setSelectedProject(index)}
-                />
-              </AnimatedSection>
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-12 text-muted-foreground">
+              Carregando projetos...
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              Nenhum projeto disponível no momento.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
+              {projects.map((project, index) => (
+                <AnimatedSection key={project.id}>
+                  <ProjectCard 
+                    {...project} 
+                    onClick={() => setSelectedProject(index)}
+                  />
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
