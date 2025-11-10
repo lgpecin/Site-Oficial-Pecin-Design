@@ -111,6 +111,16 @@ export default {
           transform: "translateY(-20px)",
         },
       },
+      "pulse-slow": {
+        "0%, 100%": {
+          opacity: "1",
+          transform: "scale(1)",
+        },
+        "50%": {
+          opacity: "0.9",
+          transform: "scale(1.05)",
+        },
+      },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -118,6 +128,7 @@ export default {
         "fade-up": "fade-up 1.0s ease-out",
         "scale-in": "scale-in 1.0s ease-out",
         "float": "float 400s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
       },
     },
   },
