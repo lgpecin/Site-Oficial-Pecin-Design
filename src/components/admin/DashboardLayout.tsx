@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { LogOut, FolderOpen, Users, FileText, UserCog } from 'lucide-react';
+import { LogOut, FolderOpen, Users, DollarSign, UserCog } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
@@ -13,7 +13,7 @@ interface DashboardLayoutProps {
 const sections = [
   { id: 'projects', label: 'Projetos', icon: FolderOpen },
   { id: 'clients', label: 'Clientes', icon: Users },
-  { id: 'sheets', label: 'Fichas', icon: FileText },
+  { id: 'services', label: 'Orçamentos', icon: DollarSign },
   { id: 'users', label: 'Usuários', icon: UserCog },
 ];
 

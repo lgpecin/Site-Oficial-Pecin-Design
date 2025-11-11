@@ -448,6 +448,120 @@ export type Database = {
         }
         Relationships: []
       }
+      service_link_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          link_id: string
+          service_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          link_id: string
+          service_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          link_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_link_items_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "service_share_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_link_items_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_share_links: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          recipient_name: string | null
+          share_token: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          recipient_name?: string | null
+          share_token: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          recipient_name?: string | null
+          share_token?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          category: Database["public"]["Enums"]["service_category"]
+          color: string | null
+          created_at: string | null
+          delivery_days: number
+          description: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price: number
+          updated_at: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["service_category"]
+          color?: string | null
+          created_at?: string | null
+          delivery_days: number
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price: number
+          updated_at?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["service_category"]
+          color?: string | null
+          created_at?: string | null
+          delivery_days?: number
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -484,6 +598,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user" | "visitor" | "sheet_user" | "client"
+      service_category:
+        | "arte_estatica"
+        | "carrossel"
+        | "reels"
+        | "branding"
+        | "marca"
+        | "ebook"
+        | "outros"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -612,6 +734,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user", "visitor", "sheet_user", "client"],
+      service_category: [
+        "arte_estatica",
+        "carrossel",
+        "reels",
+        "branding",
+        "marca",
+        "ebook",
+        "outros",
+      ],
     },
   },
 } as const

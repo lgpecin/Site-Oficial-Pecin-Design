@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/admin/DashboardLayout';
 import ProjectList from '@/components/admin/ProjectList';
 import ProjectForm from '@/components/admin/ProjectForm';
 import ClientsSection from '@/components/admin/ClientsSection';
-import SheetsSection from '@/components/admin/SheetsSection';
+import ServicesSection from '@/components/admin/ServicesSection';
 import UsersSection from '@/components/admin/UsersSection';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -82,8 +82,8 @@ const Admin = () => {
         );
       case 'clients':
         return <ClientsSection />;
-      case 'sheets':
-        return <SheetsSection />;
+      case 'services':
+        return <ServicesSection />;
       case 'users':
         return <UsersSection />;
       default:
