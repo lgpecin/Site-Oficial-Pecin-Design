@@ -7,7 +7,7 @@ import { Clock, DollarSign, Search, Download } from "lucide-react";
 import * as Icons from "lucide-react";
 import logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -23,15 +23,33 @@ type Service = {
   color: string | null;
 };
 
+type ShareLink = {
+  id: string;
+  name: string;
+  share_token: string;
+  recipient_name: string | null;
+  expires_at: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+};
+
 const ServicesCatalog = () => {
   const { token } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [isExporting, setIsExporting] = useState(false);
 
-  const { data: shareLink, isError, isLoading } = useQuery({
+  console.log("[ServicesCatalog] Component mounted with token:", token);
+
+  const { data: shareLink, isError, isLoading, error: shareLinkError } = useQuery<ShareLink>({
     queryKey: ["share-link", token],
     queryFn: async () => {
-      if (!token) throw new Error("Token não fornecido");
+      console.log("[ServicesCatalog] Fetching share link...");
+      if (!token) {
+        console.error("[ServicesCatalog] No token provided");
+        throw new Error("Token não fornecido");
+      }
       
       const { data, error } = await supabase
         .from("service_share_links")
@@ -40,32 +58,59 @@ const ServicesCatalog = () => {
         .eq("is_active", true)
         .maybeSingle();
 
-      if (error) throw error;
-      if (!data) throw new Error("Link não encontrado");
+      console.log("[ServicesCatalog] Share link query result:", { data, error });
+
+      if (error) {
+        console.error("[ServicesCatalog] Database error:", error);
+        throw error;
+      }
+      if (!data) {
+        console.error("[ServicesCatalog] No data found for token");
+        throw new Error("Link não encontrado");
+      }
       
       // Check if expired
       if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        console.error("[ServicesCatalog] Link expired:", data.expires_at);
         throw new Error("Link expirado");
       }
       
-      return data;
+      console.log("[ServicesCatalog] Share link loaded successfully:", data);
+      return data as ShareLink;
     },
     retry: false,
   });
 
-  const { data: services = [] } = useQuery({
+  useEffect(() => {
+    if (shareLinkError) {
+      console.error("[ServicesCatalog] Query error:", shareLinkError);
+      toast.error("Erro ao carregar link de compartilhamento");
+    }
+  }, [shareLinkError]);
+
+  const { data: services = [], error: servicesError } = useQuery<Service[]>({
     queryKey: ["catalog-services", shareLink?.id],
     queryFn: async () => {
-      if (!shareLink?.id) return [];
+      console.log("[ServicesCatalog] Fetching services for link:", shareLink?.id);
+      if (!shareLink?.id) {
+        console.log("[ServicesCatalog] No share link ID, returning empty array");
+        return [];
+      }
 
       const { data: items, error: itemsError } = await supabase
         .from("service_link_items")
         .select("service_id")
         .eq("link_id", shareLink.id);
 
-      if (itemsError) throw itemsError;
+      console.log("[ServicesCatalog] Service items query result:", { items, itemsError });
+
+      if (itemsError) {
+        console.error("[ServicesCatalog] Error fetching service items:", itemsError);
+        throw itemsError;
+      }
 
       const serviceIds = items.map((item) => item.service_id);
+      console.log("[ServicesCatalog] Service IDs:", serviceIds);
 
       const { data, error } = await supabase
         .from("services")
@@ -74,30 +119,71 @@ const ServicesCatalog = () => {
         .eq("is_active", true)
         .order("display_order", { ascending: true });
 
-      if (error) throw error;
+      console.log("[ServicesCatalog] Services query result:", { data, error });
+
+      if (error) {
+        console.error("[ServicesCatalog] Error fetching services:", error);
+        throw error;
+      }
+      
+      console.log("[ServicesCatalog] Services loaded successfully:", data?.length);
       return data as Service[];
     },
     enabled: !!shareLink?.id,
   });
 
+  useEffect(() => {
+    if (servicesError) {
+      console.error("[ServicesCatalog] Services query error:", servicesError);
+      toast.error("Erro ao carregar serviços");
+    }
+  }, [servicesError]);
+
+  console.log("[ServicesCatalog] Render state:", { isLoading, isError, shareLink, servicesCount: services.length });
+
   if (isLoading) {
+    console.log("[ServicesCatalog] Rendering loading state");
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <p className="text-lg text-muted-foreground">Carregando...</p>
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-lg text-muted-foreground">Carregando orçamento...</p>
         </div>
       </div>
     );
   }
 
-  if (!shareLink || isError) {
+  if (isError || !shareLink) {
+    console.log("[ServicesCatalog] Rendering error state:", shareLinkError);
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Link não encontrado</h1>
-          <p className="text-muted-foreground">
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="text-center max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-destructive">Link não encontrado</h1>
+          <p className="text-muted-foreground mb-4">
             Este link de orçamento não existe, foi desativado ou expirou.
           </p>
+          {shareLinkError && (
+            <p className="text-sm text-muted-foreground mt-2 p-3 bg-muted rounded-lg">
+              Erro: {shareLinkError instanceof Error ? shareLinkError.message : "Erro desconhecido"}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (servicesError) {
+    console.log("[ServicesCatalog] Rendering services error state:", servicesError);
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="text-center max-w-md">
+          <h1 className="text-2xl font-bold mb-4 text-destructive">Erro ao carregar serviços</h1>
+          <p className="text-muted-foreground mb-4">
+            Não foi possível carregar os serviços deste orçamento.
+          </p>
+          <Button onClick={() => window.location.reload()} variant="outline">
+            Tentar novamente
+          </Button>
         </div>
       </div>
     );
@@ -127,6 +213,7 @@ const ServicesCatalog = () => {
   }, [filteredServices]);
 
   const categories = Object.keys(servicesByCategory).sort();
+  console.log("[ServicesCatalog] Rendering catalog with categories:", categories);
 
   const handleExportPDF = async () => {
     setIsExporting(true);
