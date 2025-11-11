@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Link2, Trash2, Copy } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { generateShortToken } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -59,10 +60,6 @@ const ClientShareLinkManager = ({ clientId }: ClientShareLinkManagerProps) => {
     }
   };
 
-  const generateToken = () => {
-    return crypto.randomUUID();
-  };
-
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -72,7 +69,35 @@ const ClientShareLinkManager = ({ clientId }: ClientShareLinkManagerProps) => {
     }
 
     setLoading(true);
-    const token = generateToken();
+    
+    // Generate short token based on recipient name or link name
+    const baseName = recipientName || name;
+    let token = generateShortToken(baseName);
+    
+    // Check uniqueness and retry up to 5 times if needed
+    let attempts = 0;
+    let isUnique = false;
+    
+    while (!isUnique && attempts < 5) {
+      const { data: existing } = await supabase
+        .from("client_share_links")
+        .select("id")
+        .eq("share_token", token)
+        .single();
+      
+      if (!existing) {
+        isUnique = true;
+      } else {
+        token = generateShortToken(baseName);
+        attempts++;
+      }
+    }
+    
+    if (!isUnique) {
+      toast({ title: 'Erro ao gerar token único', variant: 'destructive' });
+      setLoading(false);
+      return;
+    }
 
     const { error } = await supabase
       .from('client_share_links')

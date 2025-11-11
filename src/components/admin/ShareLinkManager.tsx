@@ -13,6 +13,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import logo from "@/assets/logo.png";
 import * as Icons from "lucide-react";
+import { generateShortToken } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -90,7 +91,33 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const token = crypto.randomUUID();
+      // Generate short token based on recipient name or link name
+      const baseName = formData.recipient_name || formData.name;
+      let token = generateShortToken(baseName);
+      
+      // Check uniqueness and retry up to 5 times if needed
+      let attempts = 0;
+      let isUnique = false;
+      
+      while (!isUnique && attempts < 5) {
+        const { data: existing } = await supabase
+          .from("service_share_links")
+          .select("id")
+          .eq("share_token", token)
+          .single();
+        
+        if (!existing) {
+          isUnique = true;
+        } else {
+          token = generateShortToken(baseName);
+          attempts++;
+        }
+      }
+      
+      if (!isUnique) {
+        throw new Error("Não foi possível gerar um token único");
+      }
+      
       const { data: link, error: linkError } = await supabase
         .from("service_share_links")
         .insert({
