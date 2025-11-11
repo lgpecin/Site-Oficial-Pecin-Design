@@ -38,43 +38,35 @@ const UserCreationForm = ({ onSuccess, onCancel }: UserCreationFormProps) => {
 
     setLoading(true);
     try {
-      // Criar usuário usando admin API
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            email: email,
-          },
+      // Calcular data de expiração se temporário
+      let expiresAt = null;
+      if (expirationType === 'temporary') {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + parseInt(expirationDays));
+        expiresAt = expirationDate.toISOString();
+      }
+
+      // Chamar edge function para criar usuário
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-user`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          email,
+          password,
+          role,
+          expiresAt,
+        }),
       });
 
-      if (authError) throw authError;
-      
-      if (!authData.user) {
-        throw new Error('Usuário não foi criado');
-      }
+      const result = await response.json();
 
-      // Adicionar role se não for visitor
-      if (role !== 'visitor') {
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert([{ user_id: authData.user.id, role: role }]);
-
-        if (roleError) throw roleError;
-      }
-
-      // Adicionar data de expiração se temporário
-      if (expirationType === 'temporary') {
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + parseInt(expirationDays));
-
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ expires_at: expiresAt.toISOString() })
-          .eq('id', authData.user.id);
-
-        if (profileError) throw profileError;
+      if (!response.ok) {
+        throw new Error(result.error || 'Erro ao criar usuário');
       }
 
       toast({ title: 'Usuário criado com sucesso!' });

@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Plus } from 'lucide-react';
 import MaterialForm from './MaterialForm';
 import MaterialCard from './MaterialCard';
 import ClientUserManagement from './ClientUserManagement';
+import ClientShareLinkManager from './ClientShareLinkManager';
 
 interface Material {
   id: string;
@@ -95,11 +96,6 @@ const ClientDetail = ({ clientId, onBack }: ClientDetailProps) => {
     setEditingId(null);
   };
 
-  const copyClientLink = () => {
-    const link = `${window.location.origin}/#/client-portal/${clientId}`;
-    navigator.clipboard.writeText(link);
-    toast({ title: 'Link copiado para a área de transferência!' });
-  };
 
   if (loading) {
     return <div>Carregando...</div>;
@@ -122,16 +118,10 @@ const ClientDetail = ({ clientId, onBack }: ClientDetailProps) => {
             {client.email && <p className="text-sm text-muted-foreground">{client.email}</p>}
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={copyClientLink}>
-            <ExternalLink className="h-4 w-4 mr-2" />
-            Copiar Link do Cliente
-          </Button>
-          <Button onClick={() => setShowForm(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Material
-          </Button>
-        </div>
+        <Button onClick={() => setShowForm(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Novo Material
+        </Button>
       </div>
 
       {showForm && (
@@ -142,6 +132,8 @@ const ClientDetail = ({ clientId, onBack }: ClientDetailProps) => {
           onCancel={handleCancel}
         />
       )}
+
+      <ClientShareLinkManager clientId={clientId} />
 
       <ClientUserManagement clientId={clientId} />
 
