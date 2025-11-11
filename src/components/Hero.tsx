@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { ArrowDown, MessageCircle } from "lucide-react";
-import heroBg from "@/assets/hero-halftone-bg.jpg";
+import heroBg from "@/assets/hero-halftone.jpg";
 import { useEffect, useRef } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
@@ -33,7 +33,7 @@ const Hero = () => {
           backgroundImage: `url(${heroBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.15,
+          opacity: 0.08,
         }}
       />
       

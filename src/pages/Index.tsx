@@ -51,7 +51,8 @@ const Index = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string; projectIndex: number; mediaIndex: number } | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
 
   useEffect(() => {
     loadProjects();
@@ -103,6 +104,61 @@ const Index = () => {
   };
 
   const project = selectedProject !== null ? projects[selectedProject] : null;
+  
+  // Extrair categorias únicas
+  const categories = ["Todos", ...Array.from(new Set(projects.map(p => p.category)))];
+  
+  // Filtrar projetos por categoria
+  const filteredProjects = selectedCategory === "Todos" 
+    ? projects 
+    : projects.filter(p => p.category === selectedCategory);
+  
+  // Funções de navegação do lightbox
+  const handleLightboxPrevious = () => {
+    if (!lightboxImage) return;
+    const currentProject = projects[lightboxImage.projectIndex];
+    const images = currentProject.detailMedia.filter(m => m.type === 'image');
+    const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
+    
+    if (currentImageIndex > 0) {
+      const prevImage = images[currentImageIndex - 1];
+      setLightboxImage({
+        src: prevImage.url,
+        alt: `${currentProject.title} - Detalhe ${currentImageIndex}`,
+        projectIndex: lightboxImage.projectIndex,
+        mediaIndex: currentImageIndex - 1
+      });
+    }
+  };
+  
+  const handleLightboxNext = () => {
+    if (!lightboxImage) return;
+    const currentProject = projects[lightboxImage.projectIndex];
+    const images = currentProject.detailMedia.filter(m => m.type === 'image');
+    const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
+    
+    if (currentImageIndex < images.length - 1) {
+      const nextImage = images[currentImageIndex + 1];
+      setLightboxImage({
+        src: nextImage.url,
+        alt: `${currentProject.title} - Detalhe ${currentImageIndex + 2}`,
+        projectIndex: lightboxImage.projectIndex,
+        mediaIndex: currentImageIndex + 1
+      });
+    }
+  };
+  
+  const getLightboxNavigationInfo = () => {
+    if (!lightboxImage) return { hasPrevious: false, hasNext: false };
+    const currentProject = projects[lightboxImage.projectIndex];
+    const images = currentProject.detailMedia.filter(m => m.type === 'image');
+    const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
+    
+    return {
+      hasPrevious: currentImageIndex > 0,
+      hasNext: currentImageIndex < images.length - 1
+    };
+  };
 
   return (
     <div className="min-h-screen">
@@ -115,29 +171,49 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
               <TypewriterText text="Resultados. Sem Enrolação." isInView={projectsInView} speed={50} />
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
               Estes são alguns projetos com resultados únicos.
             </p>
+            
+            {/* Filtros de categoria */}
+            <div className="flex flex-wrap justify-center gap-3 mb-12">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-6 py-2 rounded-full font-medium transition-all ${
+                    selectedCategory === category
+                      ? 'bg-primary text-primary-foreground shadow-lg scale-105'
+                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
           
           {loading ? (
             <div className="text-center py-12 text-muted-foreground">
               Carregando projetos...
             </div>
-          ) : projects.length === 0 ? (
+          ) : filteredProjects.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              Nenhum projeto disponível no momento.
+              Nenhum projeto disponível nesta categoria.
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
-              {projects.map((project, index) => (
-                <AnimatedSection key={project.id}>
-                  <ProjectCard 
-                    {...project} 
-                    onClick={() => setSelectedProject(index)}
-                  />
-                </AnimatedSection>
-              ))}
+              {filteredProjects.map((project, index) => {
+                const originalIndex = projects.findIndex(p => p.id === project.id);
+                return (
+                  <AnimatedSection key={project.id}>
+                    <ProjectCard 
+                      {...project} 
+                      onClick={() => setSelectedProject(originalIndex)}
+                    />
+                  </AnimatedSection>
+                );
+              })}
             </div>
           )}
         </div>
@@ -220,7 +296,12 @@ const Index = () => {
                         alt={`${project.title} - Detalhe ${index + 1}`}
                         className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity"
                         style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
-                        onClick={() => setLightboxImage({ src: media.url, alt: `${project.title} - Detalhe ${index + 1}` })}
+                        onClick={() => setLightboxImage({ 
+                          src: media.url, 
+                          alt: `${project.title} - Detalhe ${index + 1}`,
+                          projectIndex: selectedProject!,
+                          mediaIndex: index
+                        })}
                       />
                     )}
                   </div>
@@ -252,7 +333,11 @@ const Index = () => {
         <Lightbox 
           src={lightboxImage.src} 
           alt={lightboxImage.alt} 
-          onClose={() => setLightboxImage(null)} 
+          onClose={() => setLightboxImage(null)}
+          onPrevious={handleLightboxPrevious}
+          onNext={handleLightboxNext}
+          hasPrevious={getLightboxNavigationInfo().hasPrevious}
+          hasNext={getLightboxNavigationInfo().hasNext}
         />
       )}
 
@@ -268,7 +353,7 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img src={logo} alt="Pecin Design" className="h-8" />
+              <img src={logo} alt="Pecin Design" className="h-8 hover:scale-110 transition-transform duration-300" />
               <p className="text-muted-foreground text-center md:text-left">
                 © 2025 Portfolio. Todos os direitos reservados.
               </p>
