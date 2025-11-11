@@ -45,30 +45,38 @@ const ServicesCatalog = () => {
   const { data: shareLink, isError, isLoading, error: shareLinkError } = useQuery<ShareLink>({
     queryKey: ["share-link", token],
     queryFn: async () => {
-      console.log("[ServicesCatalog] Validating share link via edge function...");
+      console.log("[ServicesCatalog] Fetching share link...");
       if (!token) {
         console.error("[ServicesCatalog] No token provided");
         throw new Error("Token não fornecido");
       }
       
-      const { data, error } = await supabase.functions.invoke('validate-service-share-link', {
-        body: { token }
-      });
+      const { data, error } = await supabase
+        .from("service_share_links")
+        .select("*")
+        .eq("share_token", token)
+        .eq("is_active", true)
+        .maybeSingle();
 
-      console.log("[ServicesCatalog] Edge function result:", { data, error });
+      console.log("[ServicesCatalog] Share link query result:", { data, error });
 
       if (error) {
-        console.error("[ServicesCatalog] Edge function error:", error);
-        throw new Error(error.message || "Erro ao validar link");
+        console.error("[ServicesCatalog] Database error:", error);
+        throw error;
+      }
+      if (!data) {
+        console.error("[ServicesCatalog] No data found for token");
+        throw new Error("Link não encontrado");
       }
       
-      if (!data || data.error) {
-        console.error("[ServicesCatalog] No data or error in response:", data?.error);
-        throw new Error(data?.error || "Link não encontrado");
+      // Check if expired
+      if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        console.error("[ServicesCatalog] Link expired:", data.expires_at);
+        throw new Error("Link expirado");
       }
       
-      console.log("[ServicesCatalog] Share link validated successfully");
-      return data.shareLink as ShareLink;
+      console.log("[ServicesCatalog] Share link loaded successfully:", data);
+      return data as ShareLink;
     },
     retry: false,
   });
@@ -81,29 +89,47 @@ const ServicesCatalog = () => {
   }, [shareLinkError]);
 
   const { data: services = [], error: servicesError } = useQuery<Service[]>({
-    queryKey: ["catalog-services", token],
+    queryKey: ["catalog-services", shareLink?.id],
     queryFn: async () => {
-      console.log("[ServicesCatalog] Fetching services from edge function...");
-      if (!token) {
-        console.log("[ServicesCatalog] No token, returning empty array");
+      console.log("[ServicesCatalog] Fetching services for link:", shareLink?.id);
+      if (!shareLink?.id) {
+        console.log("[ServicesCatalog] No share link ID, returning empty array");
         return [];
       }
 
-      const { data, error } = await supabase.functions.invoke('validate-service-share-link', {
-        body: { token }
-      });
+      const { data: items, error: itemsError } = await supabase
+        .from("service_link_items")
+        .select("service_id")
+        .eq("link_id", shareLink.id);
 
-      console.log("[ServicesCatalog] Services from edge function:", { data, error });
+      console.log("[ServicesCatalog] Service items query result:", { items, itemsError });
 
-      if (error || !data || data.error) {
-        console.error("[ServicesCatalog] Error fetching services:", error || data?.error);
-        return [];
+      if (itemsError) {
+        console.error("[ServicesCatalog] Error fetching service items:", itemsError);
+        throw itemsError;
+      }
+
+      const serviceIds = items.map((item) => item.service_id);
+      console.log("[ServicesCatalog] Service IDs:", serviceIds);
+
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .in("id", serviceIds)
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+
+      console.log("[ServicesCatalog] Services query result:", { data, error });
+
+      if (error) {
+        console.error("[ServicesCatalog] Error fetching services:", error);
+        throw error;
       }
       
-      console.log("[ServicesCatalog] Services loaded successfully:", data.services?.length);
-      return data.services as Service[];
+      console.log("[ServicesCatalog] Services loaded successfully:", data?.length);
+      return data as Service[];
     },
-    enabled: !!token,
+    enabled: !!shareLink?.id,
   });
 
   useEffect(() => {

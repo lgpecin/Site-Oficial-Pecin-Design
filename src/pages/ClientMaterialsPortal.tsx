@@ -70,21 +70,33 @@ const ClientMaterialsPortal = () => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('validate-client-share-link', {
-        body: { token }
-      });
+      const { data: shareLink, error } = await supabase
+        .from('client_share_links')
+        .select('client_id, clients(name), is_active, expires_at')
+        .eq('share_token', token)
+        .maybeSingle();
 
-      if (error || !data || data.error) {
+      if (error || !shareLink || !shareLink.is_active) {
         toast({ 
-          title: data?.error || 'Link inválido ou expirado',
+          title: 'Link inválido ou expirado',
           variant: 'destructive'
         });
         navigate('/');
         return;
       }
 
-      setClientId(data.clientId);
-      setClientName(data.clientName || '');
+      // Verificar expiração
+      if (shareLink.expires_at && new Date(shareLink.expires_at) < new Date()) {
+        toast({ 
+          title: 'Link expirado',
+          variant: 'destructive'
+        });
+        navigate('/');
+        return;
+      }
+
+      setClientId(shareLink.client_id);
+      setClientName((shareLink.clients as any)?.name || '');
     };
 
     verifyShareLink();
