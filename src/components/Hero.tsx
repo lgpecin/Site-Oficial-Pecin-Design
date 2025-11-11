@@ -93,15 +93,15 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-up">
           <div className="mb-6">
-            <img 
-              src={logo} 
-              alt="Pecin Design - Logo" 
-              className="h-20 sm:h-24 md:h-28 lg:h-32 mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]"
-              loading="eager"
-              fetchPriority="high"
-              width="128"
-              height="128"
-            />
+            <img
+            src={logo}
+            alt="Pecin Design - Logo"
+            className="w-full h-auto max-w-[128px] mx-auto mb-6 [filter:drop-shadow(...)]"
+            loading="eager"
+            fetchPriority="high"
+            width="128"
+           height="59"  />
+          </div>
             <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-xs sm:text-sm font-medium mb-4">
               Design & Direção de Arte
             </span>
