@@ -58,6 +58,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
   const [formData, setFormData] = useState({
     name: "",
     recipient_name: "",
+    expires_at: "",
     selectedServices: [] as string[],
   });
   const queryClient = useQueryClient();
@@ -96,6 +97,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
           name: formData.name,
           recipient_name: formData.recipient_name || null,
           share_token: token,
+          expires_at: formData.expires_at || null,
         })
         .select()
         .single();
@@ -137,6 +139,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
         .update({
           name: formData.name,
           recipient_name: formData.recipient_name || null,
+          expires_at: formData.expires_at || null,
         })
         .eq("id", editingLink.id);
 
@@ -203,6 +206,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
       setFormData({
         name: link.name,
         recipient_name: link.recipient_name || "",
+        expires_at: link.expires_at ? new Date(link.expires_at).toISOString().split('T')[0] : "",
         selectedServices: linkServiceIds,
       });
     } else {
@@ -210,6 +214,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
       setFormData({
         name: "",
         recipient_name: "",
+        expires_at: "",
         selectedServices: [],
       });
     }
@@ -222,6 +227,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
     setFormData({
       name: "",
       recipient_name: "",
+      expires_at: "",
       selectedServices: [],
     });
   };
@@ -291,7 +297,8 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
       container.style.left = "-9999px";
       container.style.width = "800px";
       container.style.padding = "40px";
-      container.style.backgroundColor = "white";
+      container.style.backgroundColor = "hsl(162, 75%, 8%)";
+      container.style.color = "hsl(162, 30%, 90%)";
       container.style.fontFamily = "Arial, sans-serif";
 
       // Load logo as base64 to avoid CORS issues
@@ -317,31 +324,31 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
       let html = `
         <div style="text-align: center; margin-bottom: 30px;">
           ${logoBase64 ? `<img src="${logoBase64}" alt="Logo" style="height: 50px; margin-bottom: 20px;" />` : ''}
-          <h1 style="font-size: 28px; font-weight: bold; margin: 10px 0; color: #1a1a1a;">Orçamento de Serviços</h1>
-          ${link.recipient_name ? `<p style="font-size: 18px; color: #666; margin: 5px 0;">Para: ${link.recipient_name}</p>` : ''}
-          <p style="font-size: 14px; color: #888; margin: 5px 0;">${link.name}</p>
+          <h1 style="font-size: 28px; font-weight: bold; margin: 10px 0; color: hsl(162, 30%, 90%);">Orçamento de Serviços</h1>
+          ${link.recipient_name ? `<p style="font-size: 18px; color: hsl(162, 20%, 70%); margin: 5px 0;">Para: ${link.recipient_name}</p>` : ''}
+          <p style="font-size: 14px; color: hsl(162, 15%, 60%); margin: 5px 0;">${link.name}</p>
         </div>
       `;
 
       // Add services by category
       Object.keys(servicesByCategory).sort().forEach((category) => {
-        html += `<h2 style="font-size: 22px; font-weight: bold; margin: 25px 0 15px 0; color: #1a1a1a; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">${category}</h2>`;
+        html += `<h2 style="font-size: 22px; font-weight: bold; margin: 25px 0 15px 0; color: hsl(162, 30%, 85%); border-bottom: 2px solid hsl(162, 30%, 30%); padding-bottom: 8px;">${category}</h2>`;
         
         servicesByCategory[category].forEach((service) => {
           html += `
-            <div style="border: 2px solid ${service.color || '#6366f1'}; border-radius: 8px; padding: 20px; margin-bottom: 15px; page-break-inside: avoid;">
+            <div style="border: 2px solid ${service.color || '#6366f1'}; border-radius: 8px; padding: 20px; margin-bottom: 15px; page-break-inside: avoid; background-color: hsl(162, 60%, 12%);">
               <div style="margin-bottom: 15px;">
-                <h3 style="font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #1a1a1a;">${service.name}</h3>
-                ${service.description ? `<p style="font-size: 14px; color: #666; margin: 0;">${service.description}</p>` : ''}
+                <h3 style="font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: hsl(162, 30%, 90%);">${service.name}</h3>
+                ${service.description ? `<p style="font-size: 14px; color: hsl(162, 20%, 70%); margin: 0;">${service.description}</p>` : ''}
               </div>
               <div style="display: flex; gap: 10px;">
-                <div style="flex: 1; background-color: ${service.color || '#6366f1'}10; padding: 12px; border-radius: 6px;">
-                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Preço</div>
+                <div style="flex: 1; background-color: ${service.color || '#6366f1'}20; padding: 12px; border-radius: 6px;">
+                  <div style="font-size: 12px; color: hsl(162, 20%, 70%); margin-bottom: 4px;">Preço</div>
                   <div style="font-size: 20px; font-weight: bold; color: ${service.color || '#6366f1'};">R$ ${service.price.toFixed(2)}</div>
                 </div>
-                <div style="flex: 1; background-color: #f3f4f6; padding: 12px; border-radius: 6px;">
-                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Prazo</div>
-                  <div style="font-size: 16px; font-weight: 600; color: #1a1a1a;">${service.delivery_days} dias úteis</div>
+                <div style="flex: 1; background-color: hsl(162, 40%, 18%); padding: 12px; border-radius: 6px;">
+                  <div style="font-size: 12px; color: hsl(162, 20%, 70%); margin-bottom: 4px;">Prazo</div>
+                  <div style="font-size: 16px; font-weight: 600; color: hsl(162, 30%, 85%);">${service.delivery_days} dias úteis</div>
                 </div>
               </div>
             </div>
@@ -360,7 +367,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
         useCORS: true,
         allowTaint: false,
         logging: false,
-        backgroundColor: "#ffffff",
+        backgroundColor: "hsl(162, 75%, 8%)",
       });
 
       console.log("Canvas gerado, criando PDF...");
@@ -522,6 +529,19 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
                   setFormData((prev) => ({ ...prev, recipient_name: e.target.value }))
                 }
                 placeholder="Nome do destinatário"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="expires_at">Data de Expiração</Label>
+              <Input
+                id="expires_at"
+                type="date"
+                value={formData.expires_at}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, expires_at: e.target.value }))
+                }
+                min={new Date().toISOString().split('T')[0]}
               />
             </div>
 
