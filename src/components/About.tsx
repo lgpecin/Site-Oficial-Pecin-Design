@@ -2,6 +2,7 @@ import { Palette, Sparkles, Target, Zap } from "lucide-react";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
+import profilePhoto from "@/assets/profile-photo.png";
 
 const About = () => {
   const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
@@ -41,17 +42,12 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Espaço para foto */}
           <AnimatedSection>
-            <div className="relative aspect-square rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-24 h-24 bg-primary/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <p className="text-muted-foreground text-sm">Sua foto aqui</p>
-                </div>
-              </div>
+            <div className="relative aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+              <img 
+                src={profilePhoto} 
+                alt="Léo - Designer" 
+                className="w-full h-full object-cover"
+              />
             </div>
           </AnimatedSection>
 
