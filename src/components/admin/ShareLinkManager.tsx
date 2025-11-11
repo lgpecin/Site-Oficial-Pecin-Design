@@ -7,8 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Copy, Trash2, ExternalLink } from "lucide-react";
+import { Plus, Copy, Trash2, ExternalLink, Download } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import logo from "@/assets/logo.png";
+import * as Icons from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -50,6 +54,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<ShareLink | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [exportingId, setExportingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     recipient_name: "",
@@ -249,6 +254,133 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
     return linkItems.filter((item) => item.link_id === linkId).length;
   };
 
+  const handleExportPDF = async (link: ShareLink) => {
+    setExportingId(link.id);
+    try {
+      // Get services for this link
+      const linkServiceIds = linkItems
+        .filter((item) => item.link_id === link.id)
+        .map((item) => item.service_id);
+
+      const linkServices = services.filter((s) => 
+        linkServiceIds.includes(s.id)
+      ).sort((a, b) => a.display_order - b.display_order);
+
+      if (linkServices.length === 0) {
+        toast.error("Este orçamento não possui serviços");
+        return;
+      }
+
+      // Group services by category
+      const servicesByCategory = linkServices.reduce((acc, service) => {
+        if (!acc[service.category]) {
+          acc[service.category] = [];
+        }
+        acc[service.category].push(service);
+        return acc;
+      }, {} as Record<string, Service[]>);
+
+      // Create temporary container for PDF generation
+      const container = document.createElement("div");
+      container.style.position = "absolute";
+      container.style.left = "-9999px";
+      container.style.width = "800px";
+      container.style.padding = "40px";
+      container.style.backgroundColor = "white";
+      container.style.fontFamily = "Arial, sans-serif";
+
+      // Build HTML content
+      let html = `
+        <div style="text-align: center; margin-bottom: 30px;">
+          <img src="${logo}" alt="Logo" style="height: 50px; margin-bottom: 20px;" />
+          <h1 style="font-size: 28px; font-weight: bold; margin: 10px 0; color: #1a1a1a;">Orçamento de Serviços</h1>
+          ${link.recipient_name ? `<p style="font-size: 18px; color: #666; margin: 5px 0;">Para: ${link.recipient_name}</p>` : ''}
+          <p style="font-size: 14px; color: #888; margin: 5px 0;">${link.name}</p>
+        </div>
+      `;
+
+      // Add services by category
+      Object.keys(servicesByCategory).sort().forEach((category) => {
+        html += `<h2 style="font-size: 22px; font-weight: bold; margin: 25px 0 15px 0; color: #1a1a1a; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">${category}</h2>`;
+        
+        servicesByCategory[category].forEach((service) => {
+          const IconComponent = service.icon ? (Icons as any)[service.icon] : null;
+          
+          html += `
+            <div style="border: 2px solid ${service.color || '#6366f1'}; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
+              <div style="display: flex; align-items: start; gap: 15px; margin-bottom: 15px;">
+                <div style="background-color: ${service.color || '#6366f1'}20; padding: 12px; border-radius: 8px; flex-shrink: 0; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                  ${IconComponent ? '📋' : '📋'}
+                </div>
+                <div style="flex: 1;">
+                  <h3 style="font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #1a1a1a;">${service.name}</h3>
+                  ${service.description ? `<p style="font-size: 14px; color: #666; margin: 0;">${service.description}</p>` : ''}
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <div style="flex: 1; background-color: ${service.color || '#6366f1'}10; padding: 12px; border-radius: 6px;">
+                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">💰 Preço</div>
+                  <div style="font-size: 20px; font-weight: bold; color: ${service.color || '#6366f1'};">R$ ${service.price.toFixed(2)}</div>
+                </div>
+                <div style="flex: 1; background-color: #f3f4f6; padding: 12px; border-radius: 6px;">
+                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">⏱️ Prazo</div>
+                  <div style="font-size: 16px; font-weight: 600; color: #1a1a1a;">${service.delivery_days} dias úteis</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      });
+
+      container.innerHTML = html;
+      document.body.appendChild(container);
+
+      // Generate PDF
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const fileName = link.recipient_name
+        ? `Orçamento_${link.recipient_name.replace(/\s+/g, "_")}.pdf`
+        : `Orçamento_${link.name.replace(/\s+/g, "_")}.pdf`;
+
+      pdf.save(fileName);
+      document.body.removeChild(container);
+      toast.success("PDF exportado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao exportar PDF:", error);
+      toast.error("Erro ao exportar PDF. Tente novamente.");
+    } finally {
+      setExportingId(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -287,7 +419,17 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
                     <Button
                       variant="outline"
                       size="sm"
+                      onClick={() => handleExportPDF(link)}
+                      disabled={exportingId === link.id}
+                      title="Exportar PDF"
+                    >
+                      <Download className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => handleCopyLink(link.share_token)}
+                      title="Copiar link"
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
@@ -295,6 +437,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
                       variant="outline"
                       size="sm"
                       onClick={() => window.open(`/#/services/${link.share_token}`, "_blank")}
+                      title="Visualizar"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </Button>
