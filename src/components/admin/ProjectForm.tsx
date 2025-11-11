@@ -31,6 +31,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
   const [bannerMedia, setBannerMedia] = useState<MediaFile>({ url: '', type: 'image' });
   const [detailMedia, setDetailMedia] = useState<MediaFile[]>([]);
   const [technologies, setTechnologies] = useState<string[]>(['']);
+  const [imageSpacing, setImageSpacing] = useState(16);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -60,6 +61,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
       setDescription(project.description);
       setFullDescription(project.full_description);
       setYear(project.year);
+      setImageSpacing(project.image_spacing ?? 16);
       setBannerMedia({ 
         url: project.banner_image || '', 
         type: 'image' 
@@ -97,6 +99,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
         full_description: fullDescription,
         year,
         banner_image: bannerMedia.url,
+        image_spacing: imageSpacing,
       };
 
       let finalProjectId = projectId;
@@ -253,6 +256,22 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
               onChange={(e) => setYear(parseInt(e.target.value))}
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="imageSpacing">Espaçamento entre Imagens (px)</Label>
+            <Input
+              id="imageSpacing"
+              type="number"
+              min="0"
+              value={imageSpacing}
+              onChange={(e) => setImageSpacing(parseInt(e.target.value) || 0)}
+            />
+            <p className="text-sm text-muted-foreground">
+              {imageSpacing === 0 
+                ? "Imagens serão exibidas juntas sem espaçamento e sem bordas arredondadas" 
+                : `Imagens terão ${imageSpacing}px de espaçamento entre elas`}
+            </p>
           </div>
 
           <MediaUpload

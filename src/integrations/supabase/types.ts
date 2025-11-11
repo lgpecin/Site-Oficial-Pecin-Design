@@ -333,6 +333,7 @@ export type Database = {
           description: string
           full_description: string
           id: string
+          image_spacing: number | null
           title: string
           updated_at: string | null
           year: number
@@ -344,6 +345,7 @@ export type Database = {
           description: string
           full_description: string
           id?: string
+          image_spacing?: number | null
           title: string
           updated_at?: string | null
           year: number
@@ -355,6 +357,7 @@ export type Database = {
           description?: string
           full_description?: string
           id?: string
+          image_spacing?: number | null
           title?: string
           updated_at?: string | null
           year?: number

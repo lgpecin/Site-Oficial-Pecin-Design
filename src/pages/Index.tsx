@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import Lightbox from "@/components/Lightbox";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "@/components/TypewriterText";
 import { AnimatedSection } from "@/components/AnimatedSection";
@@ -41,6 +42,7 @@ interface Project {
   fullDescription: string;
   technologies: string[];
   year: string;
+  imageSpacing: number;
 }
 
 const Index = () => {
@@ -48,6 +50,7 @@ const Index = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
     loadProjects();
@@ -86,6 +89,7 @@ const Index = () => {
           fullDescription: project.full_description,
           technologies: project.project_technologies?.map((t: any) => t.technology) || [],
           year: project.year.toString(),
+          imageSpacing: project.image_spacing ?? 16,
         };
       });
 
@@ -189,9 +193,19 @@ const Index = () => {
               </div>
 
               {/* Mídias de detalhes */}
-              <div className="space-y-8">
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: `${project.imageSpacing}px`
+              }}>
                 {project.detailMedia.map((media, index) => (
-                  <div key={index} className="relative w-full overflow-hidden rounded-2xl shadow-xl">
+                  <div 
+                    key={index} 
+                    className="relative w-full overflow-hidden shadow-xl"
+                    style={{ 
+                      borderRadius: project.imageSpacing === 0 ? '0' : '1rem'
+                    }}
+                  >
                     {media.type === 'video' ? (
                       <video
                         src={media.url}
@@ -203,8 +217,9 @@ const Index = () => {
                       <img
                         src={media.url}
                         alt={`${project.title} - Detalhe ${index + 1}`}
-                        className="w-full h-auto"
+                        className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity"
                         style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                        onClick={() => setLightboxImage({ src: media.url, alt: `${project.title} - Detalhe ${index + 1}` })}
                       />
                     )}
                   </div>
@@ -231,6 +246,14 @@ const Index = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {lightboxImage && (
+        <Lightbox 
+          src={lightboxImage.src} 
+          alt={lightboxImage.alt} 
+          onClose={() => setLightboxImage(null)} 
+        />
+      )}
 
       <Suspense fallback={<div className="py-16" />}>
         <About />
