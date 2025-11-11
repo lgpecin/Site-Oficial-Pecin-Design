@@ -1,17 +1,32 @@
 import { Button } from "./ui/button";
-import { ArrowDown, MessageCircle } from "lucide-react";
+import { ArrowDown, MessageCircle, Palette, Pen, Layers, Sparkles, Compass, Wand2 } from "lucide-react";
 import heroBg from "@/assets/hero-halftone.jpg";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
 const Hero = () => {
   const parallaxRef = useRef<HTMLDivElement>(null);
+  const iconsRef = useRef<HTMLDivElement>(null);
+  const [iconOffsets, setIconOffsets] = useState({ y1: 0, y2: 0, y3: 0, y4: 0, y5: 0, y6: 0 });
 
   useEffect(() => {
     const handleScroll = () => {
       if (parallaxRef.current) {
         const scrolled = window.scrollY;
         parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
+      }
+      
+      // Parallax effect for floating icons (slower movement)
+      if (iconsRef.current) {
+        const scrolled = window.scrollY;
+        setIconOffsets({
+          y1: scrolled * 0.15,
+          y2: scrolled * 0.1,
+          y3: scrolled * 0.12,
+          y4: scrolled * 0.08,
+          y5: scrolled * 0.13,
+          y6: scrolled * 0.11,
+        });
       }
     };
 
@@ -36,6 +51,51 @@ const Hero = () => {
           opacity: 0.02,
         }}
       />
+      
+      {/* Floating Icons */}
+      <div ref={iconsRef} className="absolute inset-0 z-5 pointer-events-none overflow-hidden">
+        {/* Top Left */}
+        <Palette 
+          className="absolute top-24 left-12 text-primary/20 animate-float"
+          size={40}
+          style={{ transform: `translateY(${iconOffsets.y1}px)`, animationDelay: '0s' }}
+        />
+        
+        {/* Top Right */}
+        <Pen 
+          className="absolute top-32 right-16 text-accent/20 animate-float"
+          size={36}
+          style={{ transform: `translateY(${iconOffsets.y2}px)`, animationDelay: '1s' }}
+        />
+        
+        {/* Middle Left */}
+        <Layers 
+          className="absolute top-1/2 left-20 -translate-y-1/2 text-primary/15 animate-float"
+          size={44}
+          style={{ transform: `translateY(calc(-50% + ${iconOffsets.y3}px))`, animationDelay: '2s' }}
+        />
+        
+        {/* Middle Right */}
+        <Sparkles 
+          className="absolute top-1/2 right-24 -translate-y-1/2 text-accent/15 animate-float"
+          size={38}
+          style={{ transform: `translateY(calc(-50% + ${iconOffsets.y4}px))`, animationDelay: '1.5s' }}
+        />
+        
+        {/* Bottom Left */}
+        <Compass 
+          className="absolute bottom-32 left-16 text-primary/20 animate-float"
+          size={42}
+          style={{ transform: `translateY(${iconOffsets.y5}px)`, animationDelay: '0.5s' }}
+        />
+        
+        {/* Bottom Right */}
+        <Wand2 
+          className="absolute bottom-28 right-20 text-accent/20 animate-float"
+          size={36}
+          style={{ transform: `translateY(${iconOffsets.y6}px)`, animationDelay: '2.5s' }}
+        />
+      </div>
       
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-up">
