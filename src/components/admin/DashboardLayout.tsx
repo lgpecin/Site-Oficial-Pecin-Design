@@ -33,7 +33,7 @@ const DashboardLayout = ({ children, currentSection, onSectionChange, onSignOut 
           <h1 className="text-2xl font-bold">Painel Administrativo</h1>
           <div className="flex gap-2">
             <Link to="/">
-              <Button variant="outline" size="sm">
+              <Button variant="outline">
                 <Globe className="h-4 w-4 mr-2" />
                 Ver Site
               </Button>
