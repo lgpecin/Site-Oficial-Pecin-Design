@@ -90,6 +90,17 @@ const KanbanCardItem = ({
           </div>
         </div>
 
+        {((card as any).client_name || (card as any).client_icon) && (
+          <div className="flex items-center gap-2 text-sm">
+            {(card as any).client_icon && (
+              <span className="text-lg">{(card as any).client_icon}</span>
+            )}
+            {(card as any).client_name && (
+              <span className="text-muted-foreground">{(card as any).client_name}</span>
+            )}
+          </div>
+        )}
+
         {card.description && (
           <p className="text-sm text-muted-foreground line-clamp-2">{card.description}</p>
         )}

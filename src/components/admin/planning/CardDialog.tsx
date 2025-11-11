@@ -44,6 +44,8 @@ const CardDialog = ({ open, card, onClose }: CardDialogProps) => {
     due_date: '',
     color: '#6366f1',
     status: 'todo',
+    client_name: '',
+    client_icon: '',
   });
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
@@ -60,6 +62,8 @@ const CardDialog = ({ open, card, onClose }: CardDialogProps) => {
         due_date: card.due_date || '',
         color: card.color,
         status: card.status,
+        client_name: (card as any).client_name || '',
+        client_icon: (card as any).client_icon || '',
       });
       setTags(card.tags || []);
       loadChecklistAndAttachments(card.id);
@@ -96,6 +100,8 @@ const CardDialog = ({ open, card, onClose }: CardDialogProps) => {
       due_date: '',
       color: '#6366f1',
       status: 'todo',
+      client_name: '',
+      client_icon: '',
     });
     setTags([]);
     setTagInput('');
@@ -301,6 +307,30 @@ const CardDialog = ({ open, card, onClose }: CardDialogProps) => {
               placeholder="Detalhes do card"
               rows={3}
             />
+          </div>
+
+          <div>
+            <Label>DESTINO (Cliente)</Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="client_name">Nome do Cliente</Label>
+                <Input
+                  id="client_name"
+                  value={formData.client_name}
+                  onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
+                  placeholder="Nome do cliente"
+                />
+              </div>
+              <div>
+                <Label htmlFor="client_icon">Ícone (emoji ou texto)</Label>
+                <Input
+                  id="client_icon"
+                  value={formData.client_icon}
+                  onChange={(e) => setFormData({ ...formData, client_icon: e.target.value })}
+                  placeholder="🎯"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

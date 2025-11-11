@@ -316,6 +316,8 @@ export type Database = {
       }
       kanban_cards: {
         Row: {
+          client_icon: string | null
+          client_name: string | null
           color: string | null
           created_at: string | null
           description: string | null
@@ -329,6 +331,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          client_icon?: string | null
+          client_name?: string | null
           color?: string | null
           created_at?: string | null
           description?: string | null
@@ -342,6 +346,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          client_icon?: string | null
+          client_name?: string | null
           color?: string | null
           created_at?: string | null
           description?: string | null
@@ -878,7 +884,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user" | "visitor" | "sheet_user" | "client"
       service_category:
-        | "arte_estatica"
+        | "estatico"
         | "carrossel"
         | "reels"
         | "branding"
@@ -1014,7 +1020,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user", "visitor", "sheet_user", "client"],
       service_category: [
-        "arte_estatica",
+        "estatico",
         "carrossel",
         "reels",
         "branding",

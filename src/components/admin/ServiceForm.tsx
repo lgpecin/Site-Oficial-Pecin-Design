@@ -23,7 +23,7 @@ type ServiceFormProps = {
 };
 
 const categories = [
-  { value: "arte_estatica", label: "Arte Estática" },
+  { value: "estatico", label: "Estático" },
   { value: "carrossel", label: "Carrossel" },
   { value: "reels", label: "Reels" },
   { value: "branding", label: "Branding" },
@@ -47,7 +47,7 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
   const [formData, setFormData] = useState<{
     name: string;
     description: string;
-    category: "arte_estatica" | "branding" | "carrossel" | "ebook" | "marca" | "outros" | "reels";
+    category: "estatico" | "branding" | "carrossel" | "ebook" | "marca" | "outros" | "reels";
     price: number;
     delivery_days: number;
     icon: string;
@@ -56,7 +56,7 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
   }>({
     name: service?.name || "",
     description: service?.description || "",
-    category: (service?.category as any) || "arte_estatica",
+    category: (service?.category as any) || "estatico",
     price: service?.price || 0,
     delivery_days: service?.delivery_days || 1,
     icon: service?.icon || "Folder",
