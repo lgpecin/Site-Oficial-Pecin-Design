@@ -115,25 +115,25 @@ const ServicesSection = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">Orçamentos e Serviços</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <DataExportImport 
             tableName="services" 
             buttonLabel="Serviços"
             onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["services"] })}
           />
-          <Button onClick={() => setIsShareManagerOpen(true)} variant="outline">
+          <Button onClick={() => setIsShareManagerOpen(true)} variant="outline" className="flex-1 sm:flex-none">
             Gerenciar Links
           </Button>
-          <Button onClick={() => setIsFormOpen(true)}>
+          <Button onClick={() => setIsFormOpen(true)} className="flex-1 sm:flex-none">
             <Plus className="w-4 h-4 mr-2" />
             Novo Serviço
           </Button>
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input

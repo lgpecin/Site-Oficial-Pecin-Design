@@ -170,14 +170,6 @@ const UsersSection = () => {
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditingUser({ id: user.id, email: user.email })}
-                    >
-                      <Edit className="h-4 w-4 sm:mr-2" />
-                      <span className="hidden sm:inline">Editar</span>
-                    </Button>
                     <Select
                       value={user.role || 'none'}
                       onValueChange={(value) => handleRoleChange(user.id, value)}
@@ -191,6 +183,14 @@ const UsersSection = () => {
                         <SelectItem value="admin">Admin</SelectItem>
                       </SelectContent>
                     </Select>
+                    <Button
+                      variant="outline"
+                      className="w-full sm:w-[180px]"
+                      onClick={() => setEditingUser({ id: user.id, email: user.email })}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Editar
+                    </Button>
                   </div>
                 </div>
               </CardContent>

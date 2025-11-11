@@ -87,18 +87,18 @@ const MoodboardSection = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold">Moodboard</h2>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h2 className="text-2xl sm:text-3xl font-bold">Moodboard</h2>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <input
             type="text"
             value={newPageName}
             onChange={(e) => setNewPageName(e.target.value)}
             placeholder="Nome da página"
-            className="px-4 py-2 border rounded-lg"
+            className="px-4 py-2 border rounded-lg w-full sm:w-auto"
             onKeyPress={(e) => e.key === 'Enter' && createPage()}
           />
-          <Button onClick={createPage} disabled={!newPageName.trim()}>
+          <Button onClick={createPage} disabled={!newPageName.trim()} className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
             Nova Página
           </Button>

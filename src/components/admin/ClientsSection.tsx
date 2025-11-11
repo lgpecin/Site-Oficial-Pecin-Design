@@ -160,15 +160,15 @@ const ClientsSection = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Clientes</h2>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className="text-2xl sm:text-3xl font-bold">Clientes</h2>
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <DataExportImport 
             tableName="clients" 
             buttonLabel="Clientes"
             onImportSuccess={loadClients}
           />
-          <Button onClick={() => setShowForm(true)}>
+          <Button onClick={() => setShowForm(true)} className="flex-1 sm:flex-none">
             <Plus className="h-4 w-4 mr-2" />
             Novo Cliente
           </Button>
@@ -304,10 +304,10 @@ const ClientsSection = () => {
                       {client.notes && <p className="text-sm mt-2 text-muted-foreground">{client.notes}</p>}
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                  <Button variant="default" size="sm" onClick={() => setSelectedClientId(client.id)}>
-                    <FolderOpen className="h-4 w-4 mr-1" />
-                    Abrir
+                  <div className="flex flex-wrap gap-2">
+                  <Button variant="default" size="sm" onClick={() => setSelectedClientId(client.id)} className="flex-1 sm:flex-none">
+                    <FolderOpen className="h-4 w-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Abrir</span>
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => handleEdit(client)}>
                     <Pencil className="h-4 w-4" />

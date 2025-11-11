@@ -1,216 +1,170 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2, Check } from 'lucide-react';
+import { Plus, Calendar, List, LayoutGrid } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import KanbanBoard from './planning/KanbanBoard';
+import CalendarView from './planning/CalendarView';
+import ListView from './planning/ListView';
+import CardDialog from './planning/CardDialog';
 
-interface PlanningItem {
+export interface KanbanCard {
   id: string;
   title: string;
   description: string | null;
   due_date: string | null;
+  color: string;
+  tags: string[];
   status: string;
+  display_order: number;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChecklistItem {
+  id: string;
+  card_id: string;
+  title: string;
+  completed: boolean;
+  display_order: number;
   created_at: string;
 }
 
+export interface Attachment {
+  id: string;
+  card_id: string;
+  file_url: string;
+  file_name: string;
+  file_type: string;
+  file_size: number | null;
+  created_at: string;
+}
+
+type ViewMode = 'kanban' | 'calendar' | 'list';
+
 const PlanningSection = () => {
-  const [items, setItems] = useState<PlanningItem[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    due_date: '',
-  });
+  const [cards, setCards] = useState<KanbanCard[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>('kanban');
+  const [showCardDialog, setShowCardDialog] = useState(false);
+  const [editingCard, setEditingCard] = useState<KanbanCard | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      loadItems();
+      loadCards();
     }
   }, [user]);
 
-  const loadItems = async () => {
+  const loadCards = async () => {
     try {
       const { data, error } = await supabase
-        .from('planning_items')
+        .from('kanban_cards')
         .select('*')
-        .order('due_date', { ascending: true });
+        .order('display_order', { ascending: true });
 
       if (error) throw error;
-      setItems(data || []);
+      setCards(data || []);
     } catch (error) {
-      console.error('Error loading items:', error);
-      toast.error('Erro ao carregar planejamento');
+      console.error('Error loading cards:', error);
+      toast.error('Erro ao carregar cards');
     }
   };
 
-  const createItem = async () => {
-    if (!formData.title.trim() || !user) return;
-
-    try {
-      const { error } = await supabase
-        .from('planning_items')
-        .insert({
-          title: formData.title,
-          description: formData.description || null,
-          due_date: formData.due_date || null,
-          user_id: user.id,
-        });
-
-      if (error) throw error;
-
-      toast.success('Item criado!');
-      setFormData({ title: '', description: '', due_date: '' });
-      setShowForm(false);
-      loadItems();
-    } catch (error) {
-      console.error('Error creating item:', error);
-      toast.error('Erro ao criar item');
-    }
+  const handleEditCard = (card: KanbanCard) => {
+    setEditingCard(card);
+    setShowCardDialog(true);
   };
 
-  const updateStatus = async (itemId: string, newStatus: string) => {
-    try {
-      const { error } = await supabase
-        .from('planning_items')
-        .update({ status: newStatus })
-        .eq('id', itemId);
-
-      if (error) throw error;
-
-      toast.success('Status atualizado!');
-      loadItems();
-    } catch (error) {
-      console.error('Error updating status:', error);
-      toast.error('Erro ao atualizar status');
-    }
+  const handleCloseDialog = () => {
+    setShowCardDialog(false);
+    setEditingCard(null);
+    loadCards();
   };
 
-  const deleteItem = async (itemId: string) => {
+  const handleDeleteCard = async (cardId: string) => {
     try {
       const { error } = await supabase
-        .from('planning_items')
+        .from('kanban_cards')
         .delete()
-        .eq('id', itemId);
+        .eq('id', cardId);
 
       if (error) throw error;
 
-      toast.success('Item excluído!');
-      loadItems();
+      toast.success('Card excluído!');
+      loadCards();
     } catch (error) {
-      console.error('Error deleting item:', error);
-      toast.error('Erro ao excluir item');
+      console.error('Error deleting card:', error);
+      toast.error('Erro ao excluir card');
     }
-  };
-
-  const getStatusBadge = (status: string) => {
-    const styles = {
-      pending: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-300',
-      in_progress: 'bg-blue-500/20 text-blue-700 dark:text-blue-300',
-      completed: 'bg-green-500/20 text-green-700 dark:text-green-300',
-    };
-    const labels = {
-      pending: 'Pendente',
-      in_progress: 'Em Andamento',
-      completed: 'Concluído',
-    };
-    return { style: styles[status as keyof typeof styles], label: labels[status as keyof typeof labels] };
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold">Planejamento</h2>
-        <Button onClick={() => setShowForm(!showForm)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Tarefa
-        </Button>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h2 className="text-2xl sm:text-3xl font-bold">Planejamento</h2>
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+          <div className="flex gap-1 border rounded-lg p-1">
+            <Button
+              variant={viewMode === 'kanban' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('kanban')}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'calendar' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('calendar')}
+            >
+              <Calendar className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+          <Button onClick={() => setShowCardDialog(true)} className="flex-1 sm:flex-none">
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Card
+          </Button>
+        </div>
       </div>
 
-      {showForm && (
-        <div className="p-6 border rounded-lg bg-card space-y-4">
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            placeholder="Título da tarefa"
-            className="w-full px-4 py-2 border rounded-lg"
-          />
-          <textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            placeholder="Descrição (opcional)"
-            className="w-full px-4 py-2 border rounded-lg min-h-[100px]"
-          />
-          <input
-            type="date"
-            value={formData.due_date}
-            onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-            className="px-4 py-2 border rounded-lg"
-          />
-          <div className="flex gap-2">
-            <Button onClick={createItem}>Criar</Button>
-            <Button variant="outline" onClick={() => setShowForm(false)}>Cancelar</Button>
-          </div>
-        </div>
+      {viewMode === 'kanban' && (
+        <KanbanBoard
+          cards={cards}
+          onEditCard={handleEditCard}
+          onDeleteCard={handleDeleteCard}
+          onReloadCards={loadCards}
+        />
       )}
 
-      <div className="space-y-3">
-        {items.length === 0 ? (
-          <div className="text-center py-12 border-2 border-dashed rounded-lg">
-            <p className="text-muted-foreground">Nenhuma tarefa criada</p>
-          </div>
-        ) : (
-          items.map((item) => {
-            const statusInfo = getStatusBadge(item.status);
-            return (
-              <div key={item.id} className="p-4 border rounded-lg bg-card hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg">{item.title}</h3>
-                    {item.description && (
-                      <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        const nextStatus = item.status === 'pending' ? 'in_progress' :
-                                         item.status === 'in_progress' ? 'completed' : 'pending';
-                        updateStatus(item.id, nextStatus);
-                      }}
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteItem(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <span className={`px-2 py-1 rounded-full font-medium ${statusInfo.style}`}>
-                    {statusInfo.label}
-                  </span>
-                  {item.due_date && (
-                    <span className="text-muted-foreground">
-                      Prazo: {format(new Date(item.due_date), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
+      {viewMode === 'calendar' && (
+        <CalendarView
+          cards={cards}
+          onEditCard={handleEditCard}
+          onDeleteCard={handleDeleteCard}
+        />
+      )}
+
+      {viewMode === 'list' && (
+        <ListView
+          cards={cards}
+          onEditCard={handleEditCard}
+          onDeleteCard={handleDeleteCard}
+        />
+      )}
+
+      <CardDialog
+        open={showCardDialog}
+        card={editingCard}
+        onClose={handleCloseDialog}
+      />
     </div>
   );
 };
