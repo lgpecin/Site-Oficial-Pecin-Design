@@ -241,18 +241,21 @@ export type Database = {
         Row: {
           created_at: string | null
           email: string | null
+          expires_at: string | null
           id: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           email?: string | null
+          expires_at?: string | null
           id: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           email?: string | null
+          expires_at?: string | null
           id?: string
           updated_at?: string | null
         }
@@ -361,90 +364,6 @@ export type Database = {
           title?: string
           updated_at?: string | null
           year?: number
-        }
-        Relationships: []
-      }
-      rpg_sheets: {
-        Row: {
-          alignment: string | null
-          armor_class: number | null
-          background: string | null
-          character_class: string | null
-          character_name: string
-          charisma: number | null
-          constitution: number | null
-          created_at: string | null
-          current_hp: number | null
-          dexterity: number | null
-          equipment: Json | null
-          id: string
-          initiative: number | null
-          intelligence: number | null
-          level: number | null
-          max_hp: number | null
-          notes: string | null
-          race: string | null
-          skills: Json | null
-          speed: number | null
-          spells: Json | null
-          strength: number | null
-          updated_at: string | null
-          user_id: string | null
-          wisdom: number | null
-        }
-        Insert: {
-          alignment?: string | null
-          armor_class?: number | null
-          background?: string | null
-          character_class?: string | null
-          character_name: string
-          charisma?: number | null
-          constitution?: number | null
-          created_at?: string | null
-          current_hp?: number | null
-          dexterity?: number | null
-          equipment?: Json | null
-          id?: string
-          initiative?: number | null
-          intelligence?: number | null
-          level?: number | null
-          max_hp?: number | null
-          notes?: string | null
-          race?: string | null
-          skills?: Json | null
-          speed?: number | null
-          spells?: Json | null
-          strength?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-          wisdom?: number | null
-        }
-        Update: {
-          alignment?: string | null
-          armor_class?: number | null
-          background?: string | null
-          character_class?: string | null
-          character_name?: string
-          charisma?: number | null
-          constitution?: number | null
-          created_at?: string | null
-          current_hp?: number | null
-          dexterity?: number | null
-          equipment?: Json | null
-          id?: string
-          initiative?: number | null
-          intelligence?: number | null
-          level?: number | null
-          max_hp?: number | null
-          notes?: string | null
-          race?: string | null
-          skills?: Json | null
-          speed?: number | null
-          spells?: Json | null
-          strength?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-          wisdom?: number | null
         }
         Relationships: []
       }

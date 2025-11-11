@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
+import { Plus } from 'lucide-react';
+import UserCreationForm from './UserCreationForm';
 import {
   Select,
   SelectContent,
@@ -15,12 +17,14 @@ import {
 interface UserWithRole {
   id: string;
   email: string;
-  role: 'admin' | 'client' | 'sheet_user' | 'visitor' | null;
+  role: 'admin' | 'client' | 'visitor' | null;
+  expires_at: string | null;
 }
 
 const UsersSection = () => {
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showCreationForm, setShowCreationForm] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,7 +37,7 @@ const UsersSection = () => {
       // Carregar perfis
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, email')
+        .select('id, email, expires_at')
         .order('created_at', { ascending: false });
 
       if (profilesError) throw profilesError;
@@ -52,6 +56,7 @@ const UsersSection = () => {
           id: profile.id,
           email: profile.email || '',
           role: userRole?.role as any || null,
+          expires_at: profile.expires_at,
         };
       }) || [];
 
@@ -94,18 +99,50 @@ const UsersSection = () => {
     const roleMap = {
       admin: <Badge variant="destructive">Admin</Badge>,
       client: <Badge>Cliente</Badge>,
-      sheet_user: <Badge variant="default">Usuário de Ficha</Badge>,
       visitor: <Badge variant="outline">Visitante</Badge>,
     };
 
     return roleMap[role as keyof typeof roleMap] || <Badge variant="outline">Visitante</Badge>;
   };
 
+  const getExpirationStatus = (expiresAt: string | null) => {
+    if (!expiresAt) return <Badge variant="secondary">Permanente</Badge>;
+    
+    const expirationDate = new Date(expiresAt);
+    const now = new Date();
+    
+    if (expirationDate < now) {
+      return <Badge variant="destructive">Expirado</Badge>;
+    }
+    
+    const daysUntilExpiration = Math.ceil((expirationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (daysUntilExpiration <= 7) {
+      return <Badge variant="outline">Expira em {daysUntilExpiration} dia{daysUntilExpiration !== 1 ? 's' : ''}</Badge>;
+    }
+    
+    return <Badge variant="secondary">Expira em {expirationDate.toLocaleDateString('pt-BR')}</Badge>;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold">Usuários</h2>
+        <Button onClick={() => setShowCreationForm(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Criar Novo Usuário
+        </Button>
       </div>
+
+      {showCreationForm && (
+        <UserCreationForm
+          onSuccess={() => {
+            setShowCreationForm(false);
+            loadUsers();
+          }}
+          onCancel={() => setShowCreationForm(false)}
+        />
+      )}
 
       {loading ? (
         <div>Carregando...</div>
@@ -117,7 +154,10 @@ const UsersSection = () => {
                 <div className="flex justify-between items-center">
                   <div className="space-y-1">
                     <p className="font-medium">{user.email}</p>
-                    <div>{getRoleBadge(user.role)}</div>
+                    <div className="flex gap-2">
+                      {getRoleBadge(user.role)}
+                      {getExpirationStatus(user.expires_at)}
+                    </div>
                   </div>
                   <Select
                     value={user.role || 'none'}
@@ -129,7 +169,6 @@ const UsersSection = () => {
                     <SelectContent>
                       <SelectItem value="none">Visitante</SelectItem>
                       <SelectItem value="client">Cliente</SelectItem>
-                      <SelectItem value="sheet_user">Usuário de Ficha</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                   </Select>
