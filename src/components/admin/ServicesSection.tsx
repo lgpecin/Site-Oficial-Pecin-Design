@@ -43,6 +43,7 @@ const ServicesSection = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isShareManagerOpen, setIsShareManagerOpen] = useState(false);
+  const [draggedService, setDraggedService] = useState<Service | null>(null);
   const queryClient = useQueryClient();
 
   const categoryNames: Record<string, string> = {
@@ -82,6 +83,19 @@ const ServicesSection = () => {
     },
   });
 
+  const updateOrderMutation = useMutation({
+    mutationFn: async ({ id, display_order }: { id: string; display_order: number }) => {
+      const { error } = await supabase
+        .from("services")
+        .update({ display_order })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+    },
+  });
+
   const filteredServices = services.filter((service) => {
     const matchesSearch = service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       service.description?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -111,6 +125,65 @@ const ServicesSection = () => {
   const handleFormClose = () => {
     setIsFormOpen(false);
     setEditingService(null);
+  };
+
+  const handleDragStart = (service: Service) => {
+    setDraggedService(service);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedService(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = async (targetService: Service) => {
+    if (!draggedService || draggedService.id === targetService.id) {
+      setDraggedService(null);
+      return;
+    }
+
+    // If moving within the same category, reorder
+    if (draggedService.category === targetService.category) {
+      const categoryServices = groupedServices[draggedService.category];
+      const draggedIndex = categoryServices.findIndex((s) => s.id === draggedService.id);
+      const targetIndex = categoryServices.findIndex((s) => s.id === targetService.id);
+
+      // Reorder and update display_order
+      const reordered = [...categoryServices];
+      reordered.splice(draggedIndex, 1);
+      reordered.splice(targetIndex, 0, draggedService);
+
+      // Update display_order for all affected services
+      await Promise.all(
+        reordered.map((service, index) =>
+          updateOrderMutation.mutateAsync({
+            id: service.id,
+            display_order: index,
+          })
+        )
+      );
+    } else {
+      // Moving to a different category
+      const { error } = await supabase
+        .from("services")
+        .update({
+          category: targetService.category as any,
+          display_order: targetService.display_order,
+        })
+        .eq("id", draggedService.id);
+
+      if (error) {
+        toast.error("Erro ao mover serviço");
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["services"] });
+        toast.success("Serviço movido com sucesso");
+      }
+    }
+
+    setDraggedService(null);
   };
 
   return (
@@ -175,12 +248,23 @@ const ServicesSection = () => {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categoryServices.map((service) => (
-                  <ServiceCard
+                  <div
                     key={service.id}
-                    service={service}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                  />
+                    draggable
+                    onDragStart={() => handleDragStart(service)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(service)}
+                    className={`cursor-move transition-opacity ${
+                      draggedService?.id === service.id ? "opacity-50" : ""
+                    }`}
+                  >
+                    <ServiceCard
+                      service={service}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
