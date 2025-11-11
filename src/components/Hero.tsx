@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { ArrowDown, MessageCircle } from "lucide-react";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroBg from "@/assets/hero-halftone-bg.jpg";
 import { useEffect, useRef } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
@@ -33,7 +33,7 @@ const Hero = () => {
           backgroundImage: `url(${heroBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.05,
+          opacity: 0.15,
         }}
       />
       
@@ -45,7 +45,7 @@ const Hero = () => {
             </span>
           </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)]">
             Design que impacta,
             <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState, useEffect } from "react";
 import { MessageCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import logo from "@/assets/logo.png";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -266,9 +267,12 @@ const Index = () => {
       <footer className="py-8 border-t border-border relative">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-muted-foreground text-center md:text-left">
-              © 2025 Portfolio. Todos os direitos reservados.
-            </p>
+            <div className="flex items-center gap-4">
+              <img src={logo} alt="Pecin Design" className="h-8" />
+              <p className="text-muted-foreground text-center md:text-left">
+                © 2025 Portfolio. Todos os direitos reservados.
+              </p>
+            </div>
             <a
               href="https://wa.me/5511999999999?text=Olá! Vim através do seu portfólio."
               target="_blank"
