@@ -67,23 +67,50 @@ const ClientPortal = () => {
   }, [user, clientId]);
 
   const checkAccess = async () => {
-    if (!user || !clientId) return;
-
-    // Verificar se usuário tem acesso a este cliente
-    const { data: access } = await supabase
-      .from('client_users')
-      .select('*')
-      .eq('client_id', clientId)
-      .eq('user_id', user.id)
-      .single();
-
-    if (!access) {
-      toast({ title: 'Acesso negado', variant: 'destructive' });
-      navigate('/');
+    if (!user || !clientId) {
+      console.log('Sem usuário ou clientId:', { user, clientId });
       return;
     }
 
-    loadData();
+    try {
+      // Verificar se usuário tem acesso a este cliente
+      const { data: access, error } = await supabase
+        .from('client_users')
+        .select('*')
+        .eq('client_id', clientId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      console.log('Acesso verificado:', { access, error });
+
+      if (error) {
+        console.error('Erro ao verificar acesso:', error);
+        toast({ 
+          title: 'Erro ao verificar acesso', 
+          description: error.message,
+          variant: 'destructive' 
+        });
+        return;
+      }
+
+      if (!access) {
+        toast({ 
+          title: 'Acesso negado', 
+          description: 'Você não tem permissão para acessar este cliente.',
+          variant: 'destructive' 
+        });
+        navigate('/');
+        return;
+      }
+
+      loadData();
+    } catch (err) {
+      console.error('Erro inesperado:', err);
+      toast({ 
+        title: 'Erro inesperado', 
+        variant: 'destructive' 
+      });
+    }
   };
 
   const loadData = async () => {

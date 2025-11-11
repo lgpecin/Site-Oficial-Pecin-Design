@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Image as ImageIcon, Video } from 'lucide-react';
+import { Pencil, Trash2, Image as ImageIcon, Video, Download } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import JSZip from 'jszip';
 
 interface MaterialCardProps {
   material: {
@@ -33,6 +34,8 @@ const MaterialCard = ({ material, onEdit, onDelete }: MaterialCardProps) => {
   const [showDelete, setShowDelete] = useState(false);
   const [fileCount, setFileCount] = useState({ images: 0, videos: 0 });
   const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [files, setFiles] = useState<any[]>([]);
+  const [downloading, setDownloading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,9 +46,11 @@ const MaterialCard = ({ material, onEdit, onDelete }: MaterialCardProps) => {
     const { data, error } = await supabase
       .from('material_files')
       .select('file_type, file_path')
-      .eq('material_id', material.id);
+      .eq('material_id', material.id)
+      .order('display_order');
 
     if (!error && data) {
+      setFiles(data);
       const images = data.filter((f) => f.file_type === 'image').length;
       const videos = data.filter((f) => f.file_type === 'video').length;
       setFileCount({ images, videos });
@@ -86,6 +91,54 @@ const MaterialCard = ({ material, onEdit, onDelete }: MaterialCardProps) => {
       onDelete();
     }
     setShowDelete(false);
+  };
+
+  const handleDownload = async () => {
+    if (files.length === 0) {
+      toast({ title: 'Nenhum arquivo para baixar', variant: 'destructive' });
+      return;
+    }
+
+    setDownloading(true);
+    try {
+      const zip = new JSZip();
+      
+      // Download de cada arquivo
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const { data, error } = await supabase.storage
+          .from('client-materials')
+          .download(file.file_path);
+
+        if (error) {
+          console.error('Erro ao baixar arquivo:', error);
+          continue;
+        }
+
+        if (data) {
+          const fileName = file.file_path.split('/').pop() || `file_${i}`;
+          zip.file(fileName, data);
+        }
+      }
+
+      // Gerar e baixar o ZIP
+      const content = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(content);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${material.title.replace(/[^a-z0-9]/gi, '_')}_arquivos.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({ title: 'Arquivos baixados com sucesso!' });
+    } catch (error) {
+      console.error('Erro ao criar ZIP:', error);
+      toast({ title: 'Erro ao baixar arquivos', variant: 'destructive' });
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -159,6 +212,14 @@ const MaterialCard = ({ material, onEdit, onDelete }: MaterialCardProps) => {
               >
                 <Pencil className="h-4 w-4 mr-1" />
                 Editar
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownload}
+                disabled={downloading || fileCount.images + fileCount.videos === 0}
+              >
+                <Download className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
