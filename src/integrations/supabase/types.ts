@@ -243,6 +243,98 @@ export type Database = {
           },
         ]
       }
+      moodboard_elements: {
+        Row: {
+          created_at: string | null
+          element_data: Json
+          element_type: string
+          id: string
+          page_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          element_data: Json
+          element_type: string
+          id?: string
+          page_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          element_data?: Json
+          element_type?: string
+          id?: string
+          page_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moodboard_elements_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "moodboard_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      moodboard_pages: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      planning_items: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -370,6 +462,30 @@ export type Database = {
           title?: string
           updated_at?: string | null
           year?: number
+        }
+        Relationships: []
+      }
+      saved_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          item_id?: string
+          item_type?: string
+          user_id?: string
         }
         Relationships: []
       }

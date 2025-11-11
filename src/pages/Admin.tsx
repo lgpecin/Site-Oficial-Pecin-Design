@@ -2,18 +2,22 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import DashboardLayout from '@/components/admin/DashboardLayout';
+import DashboardHome from '@/components/admin/DashboardHome';
 import ProjectList from '@/components/admin/ProjectList';
 import ProjectForm from '@/components/admin/ProjectForm';
 import ClientsSection from '@/components/admin/ClientsSection';
 import ServicesSection from '@/components/admin/ServicesSection';
 import UsersSection from '@/components/admin/UsersSection';
+import MoodboardSection from '@/components/admin/MoodboardSection';
+import SavedSection from '@/components/admin/SavedSection';
+import PlanningSection from '@/components/admin/PlanningSection';
 import NotificationPanel from '@/components/admin/NotificationPanel';
 import DataExportImport from '@/components/admin/DataExportImport';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
 const Admin = () => {
-  const [currentSection, setCurrentSection] = useState('projects');
+  const [currentSection, setCurrentSection] = useState('home');
   const [showForm, setShowForm] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | undefined>();
   const [refreshKey, setRefreshKey] = useState(0);
@@ -63,7 +67,9 @@ const Admin = () => {
 
   const renderSection = () => {
     switch (currentSection) {
-      case 'projects':
+      case 'home':
+        return <DashboardHome onNavigate={setCurrentSection} />;
+      case 'portfolio':
         return showForm ? (
           <ProjectForm
             projectId={editingProjectId}
@@ -74,7 +80,7 @@ const Admin = () => {
           <div className="space-y-6">
             <NotificationPanel />
             <div className="flex justify-between items-center">
-              <h2 className="text-3xl font-bold">Projetos</h2>
+              <h2 className="text-3xl font-bold">Portfólio</h2>
               <div className="flex gap-2">
                 <DataExportImport 
                   tableName="projects" 
@@ -96,6 +102,12 @@ const Admin = () => {
         return <ServicesSection />;
       case 'users':
         return <UsersSection />;
+      case 'moodboard':
+        return <MoodboardSection />;
+      case 'saved':
+        return <SavedSection />;
+      case 'planning':
+        return <PlanningSection />;
       default:
         return null;
     }

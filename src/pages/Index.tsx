@@ -1,5 +1,8 @@
 import { lazy, Suspense, useState, useEffect } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Settings } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import logo from "@/assets/logo.png";
 import Hero from "@/components/Hero";
@@ -53,6 +56,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string; projectIndex: number; mediaIndex: number } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     loadProjects();
@@ -163,6 +167,20 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
+      
+      {/* Admin button - fixed position */}
+      {isAdmin && (
+        <Link to="/admin">
+          <Button
+            className="fixed top-20 right-6 z-40 shadow-lg"
+            size="sm"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            ADMIN
+          </Button>
+        </Link>
+      )}
+      
       <Hero />
       
       <section id="projects" className="py-16">
