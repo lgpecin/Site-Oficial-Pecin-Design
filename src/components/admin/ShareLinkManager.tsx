@@ -257,6 +257,8 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
   const handleExportPDF = async (link: ShareLink) => {
     setExportingId(link.id);
     try {
+      console.log("Iniciando exportação de PDF...");
+      
       // Get services for this link
       const linkServiceIds = linkItems
         .filter((item) => item.link_id === link.id)
@@ -268,8 +270,11 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
 
       if (linkServices.length === 0) {
         toast.error("Este orçamento não possui serviços");
+        setExportingId(null);
         return;
       }
+
+      console.log(`Exportando ${linkServices.length} serviços`);
 
       // Group services by category
       const servicesByCategory = linkServices.reduce((acc, service) => {
@@ -289,10 +294,29 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
       container.style.backgroundColor = "white";
       container.style.fontFamily = "Arial, sans-serif";
 
+      // Load logo as base64 to avoid CORS issues
+      const logoBase64 = await new Promise<string>((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0);
+          resolve(canvas.toDataURL("image/png"));
+        };
+        img.onerror = () => {
+          console.error("Erro ao carregar logo");
+          resolve("");
+        };
+        img.src = logo;
+      });
+
       // Build HTML content
       let html = `
         <div style="text-align: center; margin-bottom: 30px;">
-          <img src="${logo}" alt="Logo" style="height: 50px; margin-bottom: 20px;" />
+          ${logoBase64 ? `<img src="${logoBase64}" alt="Logo" style="height: 50px; margin-bottom: 20px;" />` : ''}
           <h1 style="font-size: 28px; font-weight: bold; margin: 10px 0; color: #1a1a1a;">Orçamento de Serviços</h1>
           ${link.recipient_name ? `<p style="font-size: 18px; color: #666; margin: 5px 0;">Para: ${link.recipient_name}</p>` : ''}
           <p style="font-size: 14px; color: #888; margin: 5px 0;">${link.name}</p>
@@ -304,26 +328,19 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
         html += `<h2 style="font-size: 22px; font-weight: bold; margin: 25px 0 15px 0; color: #1a1a1a; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">${category}</h2>`;
         
         servicesByCategory[category].forEach((service) => {
-          const IconComponent = service.icon ? (Icons as any)[service.icon] : null;
-          
           html += `
-            <div style="border: 2px solid ${service.color || '#6366f1'}; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
-              <div style="display: flex; align-items: start; gap: 15px; margin-bottom: 15px;">
-                <div style="background-color: ${service.color || '#6366f1'}20; padding: 12px; border-radius: 8px; flex-shrink: 0; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                  ${IconComponent ? '📋' : '📋'}
-                </div>
-                <div style="flex: 1;">
-                  <h3 style="font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #1a1a1a;">${service.name}</h3>
-                  ${service.description ? `<p style="font-size: 14px; color: #666; margin: 0;">${service.description}</p>` : ''}
-                </div>
+            <div style="border: 2px solid ${service.color || '#6366f1'}; border-radius: 8px; padding: 20px; margin-bottom: 15px; page-break-inside: avoid;">
+              <div style="margin-bottom: 15px;">
+                <h3 style="font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #1a1a1a;">${service.name}</h3>
+                ${service.description ? `<p style="font-size: 14px; color: #666; margin: 0;">${service.description}</p>` : ''}
               </div>
               <div style="display: flex; gap: 10px;">
                 <div style="flex: 1; background-color: ${service.color || '#6366f1'}10; padding: 12px; border-radius: 6px;">
-                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">💰 Preço</div>
+                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Preço</div>
                   <div style="font-size: 20px; font-weight: bold; color: ${service.color || '#6366f1'};">R$ ${service.price.toFixed(2)}</div>
                 </div>
                 <div style="flex: 1; background-color: #f3f4f6; padding: 12px; border-radius: 6px;">
-                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">⏱️ Prazo</div>
+                  <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Prazo</div>
                   <div style="font-size: 16px; font-weight: 600; color: #1a1a1a;">${service.delivery_days} dias úteis</div>
                 </div>
               </div>
@@ -335,13 +352,18 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
       container.innerHTML = html;
       document.body.appendChild(container);
 
-      // Generate PDF
+      console.log("Gerando canvas...");
+
+      // Generate PDF with better settings
       const canvas = await html2canvas(container, {
         scale: 2,
         useCORS: true,
+        allowTaint: false,
         logging: false,
         backgroundColor: "#ffffff",
       });
+
+      console.log("Canvas gerado, criando PDF...");
 
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
@@ -370,12 +392,14 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
         ? `Orçamento_${link.recipient_name.replace(/\s+/g, "_")}.pdf`
         : `Orçamento_${link.name.replace(/\s+/g, "_")}.pdf`;
 
+      console.log("Salvando PDF:", fileName);
       pdf.save(fileName);
+      
       document.body.removeChild(container);
       toast.success("PDF exportado com sucesso!");
     } catch (error) {
-      console.error("Erro ao exportar PDF:", error);
-      toast.error("Erro ao exportar PDF. Tente novamente.");
+      console.error("Erro detalhado ao exportar PDF:", error);
+      toast.error(`Erro ao exportar PDF: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     } finally {
       setExportingId(null);
     }
