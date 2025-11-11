@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
-import { Plus } from 'lucide-react';
+import { Plus, Edit } from 'lucide-react';
 import UserCreationForm from './UserCreationForm';
+import UserEditDialog from './UserEditDialog';
 import DataExportImport from './DataExportImport';
 import {
   Select,
@@ -26,6 +27,7 @@ const UsersSection = () => {
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [loading, setLoading] = useState(false);
   const [showCreationForm, setShowCreationForm] = useState(false);
+  const [editingUser, setEditingUser] = useState<{ id: string; email: string } | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -159,32 +161,51 @@ const UsersSection = () => {
           {users.map((user) => (
             <Card key={user.id}>
               <CardContent className="pt-6">
-                <div className="flex justify-between items-center">
-                  <div className="space-y-1">
-                    <p className="font-medium">{user.email}</p>
-                    <div className="flex gap-2">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                  <div className="space-y-1 flex-1">
+                    <p className="font-medium break-all">{user.email}</p>
+                    <div className="flex flex-wrap gap-2">
                       {getRoleBadge(user.role)}
                       {getExpirationStatus(user.expires_at)}
                     </div>
                   </div>
-                  <Select
-                    value={user.role || 'none'}
-                    onValueChange={(value) => handleRoleChange(user.id, value)}
-                  >
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Selecione a permissão" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Visitante</SelectItem>
-                      <SelectItem value="client">Cliente</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditingUser({ id: user.id, email: user.email })}
+                    >
+                      <Edit className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Editar</span>
+                    </Button>
+                    <Select
+                      value={user.role || 'none'}
+                      onValueChange={(value) => handleRoleChange(user.id, value)}
+                    >
+                      <SelectTrigger className="w-full sm:w-[180px]">
+                        <SelectValue placeholder="Permissão" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Visitante</SelectItem>
+                        <SelectItem value="client">Cliente</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+      )}
+
+      {editingUser && (
+        <UserEditDialog
+          user={editingUser}
+          open={!!editingUser}
+          onOpenChange={(open) => !open && setEditingUser(null)}
+          onSuccess={loadUsers}
+        />
       )}
     </div>
   );

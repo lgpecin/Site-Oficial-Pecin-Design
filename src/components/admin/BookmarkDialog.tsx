@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
+import { X, Upload } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface BookmarkDialogProps {
   open: boolean;
@@ -39,6 +42,15 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
     tags: [],
   });
   const [tagInput, setTagInput] = useState('');
+  const [showCustomColor, setShowCustomColor] = useState(false);
+  const { toast } = useToast();
+
+  const presetColors = [
+    '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e',
+    '#ef4444', '#f97316', '#f59e0b', '#eab308',
+    '#84cc16', '#22c55e', '#10b981', '#14b8a6',
+    '#06b6d4', '#0ea5e9', '#3b82f6', '#64748b',
+  ];
 
   useEffect(() => {
     if (initialData) {
@@ -56,6 +68,43 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
       });
     }
   }, [initialData, open]);
+
+  const handleImportBookmarks = async () => {
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.html';
+      input.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+
+        const text = await file.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const links = doc.querySelectorAll('a');
+        
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('Usuário não autenticado');
+
+        const bookmarks = Array.from(links).map(link => ({
+          title: link.textContent || link.href,
+          url: link.href,
+          user_id: user.id,
+          icon: 'link',
+          color: presetColors[Math.floor(Math.random() * presetColors.length)],
+        }));
+
+        const { error } = await supabase.from('bookmarks').insert(bookmarks);
+        if (error) throw error;
+
+        toast({ title: `${bookmarks.length} bookmarks importados com sucesso!` });
+        onOpenChange(false);
+      };
+      input.click();
+    } catch (error: any) {
+      toast({ title: 'Erro ao importar bookmarks', description: error.message, variant: 'destructive' });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,8 +130,8 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
               <Label htmlFor="title">Título *</Label>
               <Input
                 id="title"
@@ -93,7 +142,7 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
               />
             </div>
 
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <Label htmlFor="url">URL *</Label>
               <Input
                 id="url"
@@ -105,7 +154,7 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
               />
             </div>
 
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <Label htmlFor="description">Descrição</Label>
               <Textarea
                 id="description"
@@ -116,7 +165,7 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
               />
             </div>
 
-            <div>
+            <div className="md:col-span-1">
               <Label htmlFor="folder">Pasta</Label>
               <Select
                 value={formData.folderId || 'none'}
@@ -142,26 +191,64 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="color">Cor</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="color"
-                  type="color"
-                  value={formData.color}
-                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                  className="w-20"
-                />
-                <Input
-                  value={formData.color}
-                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                  placeholder="#6366f1"
-                  className="flex-1"
-                />
-              </div>
+            <div className="md:col-span-1">
+              <Label>Cor</Label>
+              {!showCustomColor ? (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-8 gap-2">
+                    {presetColors.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        className={cn(
+                          "w-8 h-8 rounded-md border-2 transition-all",
+                          formData.color === color ? "border-foreground scale-110" : "border-transparent hover:scale-105"
+                        )}
+                        style={{ backgroundColor: color }}
+                        onClick={() => setFormData({ ...formData, color })}
+                      />
+                    ))}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowCustomColor(true)}
+                    className="w-full"
+                  >
+                    Personalizar
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      type="color"
+                      value={formData.color}
+                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                      className="w-20"
+                    />
+                    <Input
+                      value={formData.color}
+                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                      placeholder="#6366f1"
+                      className="flex-1"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowCustomColor(false)}
+                    className="w-full"
+                  >
+                    Voltar para Paleta
+                  </Button>
+                </div>
+              )}
             </div>
 
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <Label htmlFor="previewImage">URL da Imagem de Preview</Label>
               <Input
                 id="previewImage"
@@ -171,7 +258,7 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
               />
             </div>
 
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <Label htmlFor="tags">Tags</Label>
               <div className="flex gap-2 mb-2">
                 <Input
@@ -204,12 +291,27 @@ const BookmarkDialog = ({ open, onOpenChange, onSave, folders, initialData }: Bo
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
-            </Button>
-            <Button type="submit">Salvar</Button>
-          </div>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {!initialData && (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleImportBookmarks}
+                className="w-full sm:w-auto"
+              >
+                <Upload className="mr-2 h-4 w-4" />
+                Importar Bookmarks
+              </Button>
+            )}
+            <div className="flex gap-2 w-full sm:w-auto sm:ml-auto">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1 sm:flex-none">
+                Cancelar
+              </Button>
+              <Button type="submit" className="flex-1 sm:flex-none">
+                Salvar
+              </Button>
+            </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
