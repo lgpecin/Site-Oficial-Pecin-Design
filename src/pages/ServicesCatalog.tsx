@@ -20,7 +20,7 @@ type Service = {
 const ServicesCatalog = () => {
   const { token } = useParams();
 
-  const { data: shareLink } = useQuery({
+  const { data: shareLink, isError } = useQuery({
     queryKey: ["share-link", token],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -31,6 +31,12 @@ const ServicesCatalog = () => {
         .single();
 
       if (error) throw error;
+      
+      // Check if expired
+      if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        throw new Error("Link expirado");
+      }
+      
       return data;
     },
   });
@@ -62,13 +68,13 @@ const ServicesCatalog = () => {
     enabled: !!shareLink?.id,
   });
 
-  if (!shareLink) {
+  if (!shareLink || isError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Link não encontrado</h1>
           <p className="text-muted-foreground">
-            Este link de orçamento não existe ou foi desativado.
+            Este link de orçamento não existe, foi desativado ou expirou.
           </p>
         </div>
       </div>

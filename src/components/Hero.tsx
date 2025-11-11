@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import { ArrowDown, MessageCircle, Palette, Pen, Layers, Sparkles, Compass, Wand2, Pencil, Brush, PenTool, Layout, Grid3x3, Square, Circle, Triangle, Hexagon, Eye, Lightbulb, Star, Zap } from "lucide-react";
 import heroBg from "@/assets/hero-halftone.jpg";
+import logo from "@/assets/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
@@ -76,7 +77,7 @@ const Hero = () => {
           return (
             <Icon
               key={index}
-              className="absolute text-primary/30 animate-float"
+              className="absolute text-primary/30 animate-float hidden md:block"
               size={size}
               style={{
                 ...position,
@@ -91,6 +92,11 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-up">
           <div className="mb-6">
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="h-20 sm:h-24 md:h-28 lg:h-32 mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]"
+            />
             <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-xs sm:text-sm font-medium mb-4">
               Design & Direção de Arte
             </span>
