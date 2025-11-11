@@ -2,11 +2,15 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Clock, DollarSign, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock, DollarSign, Search, Download } from "lucide-react";
 import * as Icons from "lucide-react";
 import logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo } from "react";
+import { toast } from "sonner";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 type Service = {
   id: string;
@@ -22,18 +26,22 @@ type Service = {
 const ServicesCatalog = () => {
   const { token } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
 
   const { data: shareLink, isError, isLoading } = useQuery({
     queryKey: ["share-link", token],
     queryFn: async () => {
+      if (!token) throw new Error("Token não fornecido");
+      
       const { data, error } = await supabase
         .from("service_share_links")
         .select("*")
         .eq("share_token", token)
         .eq("is_active", true)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
+      if (!data) throw new Error("Link não encontrado");
       
       // Check if expired
       if (data.expires_at && new Date(data.expires_at) < new Date()) {
@@ -42,6 +50,7 @@ const ServicesCatalog = () => {
       
       return data;
     },
+    retry: false,
   });
 
   const { data: services = [] } = useQuery({
@@ -119,9 +128,58 @@ const ServicesCatalog = () => {
 
   const categories = Object.keys(servicesByCategory).sort();
 
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const element = document.getElementById("services-catalog");
+      if (!element) throw new Error("Elemento não encontrado");
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const fileName = shareLink?.recipient_name
+        ? `Orçamento_${shareLink.recipient_name.replace(/\s+/g, "_")}.pdf`
+        : "Orçamento_Serviços.pdf";
+
+      pdf.save(fileName);
+      toast.success("PDF exportado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao exportar PDF:", error);
+      toast.error("Erro ao exportar PDF. Tente novamente.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+      <div id="services-catalog" className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
         <div className="text-center mb-6 md:mb-8">
           <img src={logo} alt="Logo" className="h-10 md:h-12 mx-auto mb-4" />
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Orçamento de Serviços</h1>
@@ -130,6 +188,15 @@ const ServicesCatalog = () => {
               Para: {shareLink.recipient_name}
             </p>
           )}
+          <Button
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            className="mt-4"
+            variant="outline"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            {isExporting ? "Gerando PDF..." : "Exportar PDF"}
+          </Button>
         </div>
 
         <div className="mb-6 max-w-md mx-auto">
