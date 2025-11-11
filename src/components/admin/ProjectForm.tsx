@@ -6,13 +6,19 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import ImageUpload from './ImageUpload';
+import MediaUpload from './MediaUpload';
 import { X } from 'lucide-react';
 
 interface ProjectFormProps {
   projectId?: string;
   onSuccess: () => void;
   onCancel: () => void;
+}
+
+interface MediaFile {
+  url: string;
+  type: 'image' | 'video';
+  metadata?: { width: number; height: number };
 }
 
 const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
@@ -22,8 +28,8 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
   const [description, setDescription] = useState('');
   const [fullDescription, setFullDescription] = useState('');
   const [year, setYear] = useState(new Date().getFullYear());
-  const [bannerImage, setBannerImage] = useState('');
-  const [detailImages, setDetailImages] = useState<string[]>([]);
+  const [bannerMedia, setBannerMedia] = useState<MediaFile>({ url: '', type: 'image' });
+  const [detailMedia, setDetailMedia] = useState<MediaFile[]>([]);
   const [technologies, setTechnologies] = useState<string[]>(['']);
   const { toast } = useToast();
 
@@ -41,7 +47,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
         .from('projects')
         .select(`
           *,
-          project_images (image_url, display_order),
+          project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
         `)
         .eq('id', projectId)
@@ -54,12 +60,19 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
       setDescription(project.description);
       setFullDescription(project.full_description);
       setYear(project.year);
-      setBannerImage(project.banner_image || '');
+      setBannerMedia({ 
+        url: project.banner_image || '', 
+        type: 'image' 
+      });
       
-      const images = project.project_images
-        ?.sort((a, b) => a.display_order - b.display_order)
-        .map(img => img.image_url) || [];
-      setDetailImages(images);
+      const media = project.project_images
+        ?.sort((a: any, b: any) => a.display_order - b.display_order)
+        .map((img: any) => ({
+          url: img.image_url,
+          type: (img.file_type || 'image') as 'image' | 'video',
+          metadata: img.metadata
+        })) || [];
+      setDetailMedia(media);
       
       const techs = project.project_technologies?.map(t => t.technology) || [''];
       setTechnologies(techs.length > 0 ? techs : ['']);
@@ -83,7 +96,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
         description,
         full_description: fullDescription,
         year,
-        banner_image: bannerImage,
+        banner_image: bannerMedia.url,
       };
 
       let finalProjectId = projectId;
@@ -112,19 +125,21 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
         finalProjectId = data.id;
       }
 
-      // Insert images
-      if (detailImages.length > 0) {
-        const imageInserts = detailImages.map((url, index) => ({
+      // Insert media files
+      if (detailMedia.length > 0) {
+        const mediaInserts = detailMedia.map((media, index) => ({
           project_id: finalProjectId,
-          image_url: url,
+          image_url: media.url,
+          file_type: media.type,
+          metadata: media.metadata,
           display_order: index,
         }));
 
-        const { error: imagesError } = await supabase
+        const { error: mediaError } = await supabase
           .from('project_images')
-          .insert(imageInserts);
+          .insert(mediaInserts);
 
-        if (imagesError) throw imagesError;
+        if (mediaError) throw mediaError;
       }
 
       // Insert technologies
@@ -173,12 +188,12 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
     setTechnologies(newTechs);
   };
 
-  const addDetailImage = (url: string) => {
-    setDetailImages([...detailImages, url]);
+  const addDetailMedia = () => {
+    setDetailMedia([...detailMedia, { url: '', type: 'image' }]);
   };
 
-  const removeDetailImage = (index: number) => {
-    setDetailImages(detailImages.filter((_, i) => i !== index));
+  const removeDetailMedia = (index: number) => {
+    setDetailMedia(detailMedia.filter((_, i) => i !== index));
   };
 
   return (
@@ -240,46 +255,57 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
             />
           </div>
 
-          <ImageUpload
-            label="Imagem Banner"
-            currentImage={bannerImage}
-            onImageUploaded={setBannerImage}
+          <MediaUpload
+            label="Mídia Banner"
+            currentMedia={bannerMedia.url}
+            currentType={bannerMedia.type}
+            acceptVideo={true}
+            onMediaUploaded={(url, type, metadata) => setBannerMedia({ url, type, metadata })}
           />
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label>Imagens de Detalhes</Label>
-              <Button type="button" size="sm" onClick={() => addDetailImage('')}>
-                Adicionar Imagem
+              <Label>Mídias de Detalhes</Label>
+              <Button type="button" size="sm" onClick={addDetailMedia}>
+                Adicionar Mídia
               </Button>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              {detailImages.map((url, index) => (
+              {detailMedia.map((media, index) => (
                 <div key={index} className="relative">
-                  {url ? (
+                  {media.url ? (
                     <>
-                      <img
-                        src={url}
-                        alt={`Detail ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-md"
-                      />
+                      {media.type === 'video' ? (
+                        <video
+                          src={media.url}
+                          className="w-full h-32 object-cover rounded-md"
+                          controls
+                        />
+                      ) : (
+                        <img
+                          src={media.url}
+                          alt={`Detail ${index + 1}`}
+                          className="w-full h-32 object-cover rounded-md"
+                        />
+                      )}
                       <Button
                         type="button"
                         variant="destructive"
                         size="icon"
                         className="absolute top-2 right-2"
-                        onClick={() => removeDetailImage(index)}
+                        onClick={() => removeDetailMedia(index)}
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </>
                   ) : (
-                    <ImageUpload
+                    <MediaUpload
                       label={`Detalhe ${index + 1}`}
-                      onImageUploaded={(newUrl) => {
-                        const newImages = [...detailImages];
-                        newImages[index] = newUrl;
-                        setDetailImages(newImages);
+                      acceptVideo={true}
+                      onMediaUploaded={(url, type, metadata) => {
+                        const newMedia = [...detailMedia];
+                        newMedia[index] = { url, type, metadata };
+                        setDetailMedia(newMedia);
                       }}
                     />
                   )}

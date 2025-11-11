@@ -262,22 +262,28 @@ export type Database = {
         Row: {
           created_at: string | null
           display_order: number | null
+          file_type: string
           id: string
           image_url: string
+          metadata: Json | null
           project_id: string
         }
         Insert: {
           created_at?: string | null
           display_order?: number | null
+          file_type?: string
           id?: string
           image_url: string
+          metadata?: Json | null
           project_id: string
         }
         Update: {
           created_at?: string | null
           display_order?: number | null
+          file_type?: string
           id?: string
           image_url?: string
+          metadata?: Json | null
           project_id?: string
         }
         Relationships: [

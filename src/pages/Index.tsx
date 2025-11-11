@@ -23,13 +23,20 @@ const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
 const SocialMedia = lazy(() => import("@/components/SocialMedia"));
 
+interface ProjectMedia {
+  url: string;
+  type: 'image' | 'video';
+  metadata?: { width: number; height: number };
+}
+
 interface Project {
   id: string;
   title: string;
   category: string;
   image: string;
   bannerImage: string;
-  detailImages: string[];
+  bannerType: 'image' | 'video';
+  detailMedia: ProjectMedia[];
   description: string;
   fullDescription: string;
   technologies: string[];
@@ -52,27 +59,35 @@ const Index = () => {
         .from('projects')
         .select(`
           *,
-          project_images (image_url, display_order),
+          project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      const formattedProjects: Project[] = (data || []).map((project) => ({
-        id: project.id,
-        title: project.title,
-        category: project.category,
-        image: project.banner_image || placeholderProject,
-        bannerImage: project.banner_image || placeholderProject,
-        detailImages: project.project_images
-          ?.sort((a, b) => a.display_order - b.display_order)
-          .map((img) => img.image_url) || [placeholderProject],
-        description: project.description,
-        fullDescription: project.full_description,
-        technologies: project.project_technologies?.map((t) => t.technology) || [],
-        year: project.year.toString(),
-      }));
+      const formattedProjects: Project[] = (data || []).map((project: any) => {
+        const sortedMedia = project.project_images
+          ?.sort((a: any, b: any) => a.display_order - b.display_order) || [];
+        
+        return {
+          id: project.id,
+          title: project.title,
+          category: project.category,
+          image: project.banner_image || placeholderProject,
+          bannerImage: project.banner_image || placeholderProject,
+          bannerType: 'image' as 'image' | 'video',
+          detailMedia: sortedMedia.map((img: any) => ({
+            url: img.image_url,
+            type: (img.file_type || 'image') as 'image' | 'video',
+            metadata: img.metadata
+          })),
+          description: project.description,
+          fullDescription: project.full_description,
+          technologies: project.project_technologies?.map((t: any) => t.technology) || [],
+          year: project.year.toString(),
+        };
+      });
 
       setProjects(formattedProjects);
     } catch (error) {
@@ -144,14 +159,23 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Imagem principal */}
+              {/* Mídia principal */}
               <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
-                <img
-                  src={project.bannerImage}
-                  alt={project.title}
-                  className="w-full h-auto object-cover"
-                  style={{ aspectRatio: "16/9" }}
-                />
+                {project.bannerType === 'video' ? (
+                  <video
+                    src={project.bannerImage}
+                    controls
+                    className="w-full h-auto"
+                    style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                  />
+                ) : (
+                  <img
+                    src={project.bannerImage}
+                    alt={project.title}
+                    className="w-full h-auto"
+                    style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                  />
+                )}
               </div>
 
               {/* Sobre o projeto */}
@@ -164,16 +188,25 @@ const Index = () => {
                 </p>
               </div>
 
-              {/* Imagens de detalhes */}
+              {/* Mídias de detalhes */}
               <div className="space-y-8">
-                {project.detailImages.map((image, index) => (
+                {project.detailMedia.map((media, index) => (
                   <div key={index} className="relative w-full overflow-hidden rounded-2xl shadow-xl">
-                    <img
-                      src={image}
-                      alt={`${project.title} - Detalhe ${index + 1}`}
-                      className="w-full h-auto object-cover"
-                      style={{ aspectRatio: "16/9" }}
-                    />
+                    {media.type === 'video' ? (
+                      <video
+                        src={media.url}
+                        controls
+                        className="w-full h-auto"
+                        style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                      />
+                    ) : (
+                      <img
+                        src={media.url}
+                        alt={`${project.title} - Detalhe ${index + 1}`}
+                        className="w-full h-auto"
+                        style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
