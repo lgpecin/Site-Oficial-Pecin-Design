@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { ArrowDown, MessageCircle, Palette, Pen, Layers, Sparkles, Compass, Wand2 } from "lucide-react";
+import { ArrowDown, MessageCircle, Palette, Pen, Layers, Sparkles, Compass, Wand2, Pencil, Brush, PenTool, Layout, Grid3x3, Square, Circle, Triangle, Hexagon, Eye, Lightbulb, Star, Zap } from "lucide-react";
 import heroBg from "@/assets/hero-halftone.jpg";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
@@ -7,7 +7,31 @@ import { AlternatingTypewriter } from "./AlternatingTypewriter";
 const Hero = () => {
   const parallaxRef = useRef<HTMLDivElement>(null);
   const iconsRef = useRef<HTMLDivElement>(null);
-  const [iconOffsets, setIconOffsets] = useState({ y1: 0, y2: 0, y3: 0, y4: 0, y5: 0, y6: 0 });
+  const [scrollOffset, setScrollOffset] = useState(0);
+
+  // Array de 20 ícones com suas configurações
+  const floatingIcons = [
+    { Icon: Palette, top: '8%', left: '5%', size: 40, delay: '0s', speed: 0.15, rotation: 0.05 },
+    { Icon: Pen, top: '12%', right: '6%', size: 36, delay: '1s', speed: 0.1, rotation: -0.04 },
+    { Icon: Brush, top: '18%', left: '8%', size: 38, delay: '0.5s', speed: 0.12, rotation: 0.06 },
+    { Icon: PenTool, top: '22%', right: '10%', size: 34, delay: '1.5s', speed: 0.08, rotation: -0.05 },
+    { Icon: Pencil, top: '28%', left: '4%', size: 36, delay: '2s', speed: 0.14, rotation: 0.04 },
+    { Icon: Layers, top: '35%', left: '6%', size: 42, delay: '0.8s', speed: 0.11, rotation: -0.06 },
+    { Icon: Layout, top: '38%', right: '5%', size: 40, delay: '1.2s', speed: 0.09, rotation: 0.05 },
+    { Icon: Grid3x3, top: '45%', left: '7%', size: 38, delay: '1.8s', speed: 0.13, rotation: -0.04 },
+    { Icon: Sparkles, top: '48%', right: '8%', size: 36, delay: '0.3s', speed: 0.1, rotation: 0.06 },
+    { Icon: Compass, top: '55%', left: '5%', size: 40, delay: '1.4s', speed: 0.12, rotation: -0.05 },
+    { Icon: Square, top: '58%', right: '6%', size: 34, delay: '0.7s', speed: 0.08, rotation: 0.04 },
+    { Icon: Circle, top: '65%', left: '6%', size: 36, delay: '2.2s', speed: 0.14, rotation: -0.06 },
+    { Icon: Triangle, top: '68%', right: '7%', size: 38, delay: '0.9s', speed: 0.11, rotation: 0.05 },
+    { Icon: Hexagon, top: '75%', left: '8%', size: 40, delay: '1.6s', speed: 0.09, rotation: -0.04 },
+    { Icon: Eye, top: '78%', right: '5%', size: 36, delay: '0.4s', speed: 0.13, rotation: 0.06 },
+    { Icon: Lightbulb, top: '82%', left: '7%', size: 38, delay: '2.4s', speed: 0.1, rotation: -0.05 },
+    { Icon: Star, top: '85%', right: '9%', size: 34, delay: '1.1s', speed: 0.12, rotation: 0.04 },
+    { Icon: Zap, top: '88%', left: '6%', size: 36, delay: '1.9s', speed: 0.08, rotation: -0.06 },
+    { Icon: Wand2, top: '92%', right: '7%', size: 40, delay: '0.6s', speed: 0.14, rotation: 0.05 },
+    { Icon: Palette, top: '95%', left: '9%', size: 38, delay: '2.6s', speed: 0.11, rotation: -0.04 },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,18 +40,8 @@ const Hero = () => {
         parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
       }
       
-      // Parallax effect for floating icons (slower movement)
-      if (iconsRef.current) {
-        const scrolled = window.scrollY;
-        setIconOffsets({
-          y1: scrolled * 0.15,
-          y2: scrolled * 0.1,
-          y3: scrolled * 0.12,
-          y4: scrolled * 0.08,
-          y5: scrolled * 0.13,
-          y6: scrolled * 0.11,
-        });
-      }
+      // Update scroll offset for icons
+      setScrollOffset(window.scrollY);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -54,47 +68,24 @@ const Hero = () => {
       
       {/* Floating Icons */}
       <div ref={iconsRef} className="absolute inset-0 z-5 pointer-events-none overflow-hidden">
-        {/* Top Left */}
-        <Palette 
-          className="absolute top-24 left-12 text-primary/20 animate-float"
-          size={40}
-          style={{ transform: `translateY(${iconOffsets.y1}px)`, animationDelay: '0s' }}
-        />
-        
-        {/* Top Right */}
-        <Pen 
-          className="absolute top-32 right-16 text-accent/20 animate-float"
-          size={36}
-          style={{ transform: `translateY(${iconOffsets.y2}px)`, animationDelay: '1s' }}
-        />
-        
-        {/* Middle Left */}
-        <Layers 
-          className="absolute top-1/2 left-20 -translate-y-1/2 text-primary/15 animate-float"
-          size={44}
-          style={{ transform: `translateY(calc(-50% + ${iconOffsets.y3}px))`, animationDelay: '2s' }}
-        />
-        
-        {/* Middle Right */}
-        <Sparkles 
-          className="absolute top-1/2 right-24 -translate-y-1/2 text-accent/15 animate-float"
-          size={38}
-          style={{ transform: `translateY(calc(-50% + ${iconOffsets.y4}px))`, animationDelay: '1.5s' }}
-        />
-        
-        {/* Bottom Left */}
-        <Compass 
-          className="absolute bottom-32 left-16 text-primary/20 animate-float"
-          size={42}
-          style={{ transform: `translateY(${iconOffsets.y5}px)`, animationDelay: '0.5s' }}
-        />
-        
-        {/* Bottom Right */}
-        <Wand2 
-          className="absolute bottom-28 right-20 text-accent/20 animate-float"
-          size={36}
-          style={{ transform: `translateY(${iconOffsets.y6}px)`, animationDelay: '2.5s' }}
-        />
+        {floatingIcons.map((config, index) => {
+          const { Icon, size, delay, speed, rotation, ...position } = config;
+          const yOffset = scrollOffset * speed;
+          const rotationDeg = scrollOffset * rotation;
+          
+          return (
+            <Icon
+              key={index}
+              className="absolute text-primary/30 animate-float"
+              size={size}
+              style={{
+                ...position,
+                transform: `translateY(${yOffset}px) rotate(${rotationDeg}deg)`,
+                animationDelay: delay,
+              }}
+            />
+          );
+        })}
       </div>
       
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
