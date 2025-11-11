@@ -20,7 +20,7 @@ type Service = {
 const ServicesCatalog = () => {
   const { token } = useParams();
 
-  const { data: shareLink, isError } = useQuery({
+  const { data: shareLink, isError, isLoading } = useQuery({
     queryKey: ["share-link", token],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -67,6 +67,16 @@ const ServicesCatalog = () => {
     },
     enabled: !!shareLink?.id,
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <p className="text-lg text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!shareLink || isError) {
     return (

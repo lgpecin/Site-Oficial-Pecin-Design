@@ -9,6 +9,7 @@ import Admin from "./pages/Admin";
 import ClientPortal from "./pages/ClientPortal";
 import NotFound from "./pages/NotFound";
 import ServicesCatalog from "./pages/ServicesCatalog";
+import Exit from "./pages/Exit";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/client-portal/:clientId" element={<ClientPortal />} />
           <Route path="/services/:token" element={<ServicesCatalog />} />
+          <Route path="/exit" element={<Exit />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
