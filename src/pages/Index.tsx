@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect, memo } from "react";
 import { MessageCircle, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -71,7 +71,8 @@ const Index = () => {
           project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(20); // Limit initial load
 
       if (error) throw error;
 
@@ -166,25 +167,28 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <Navigation />
+      <header>
+        <Navigation />
+        
+        {/* Admin button - fixed position */}
+        {isAdmin && (
+          <Link to="/admin" aria-label="Painel Administrativo">
+            <Button
+              className="fixed top-20 right-6 z-40 shadow-lg"
+              size="sm"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              ADMIN
+            </Button>
+          </Link>
+        )}
+      </header>
       
-      {/* Admin button - fixed position */}
-      {isAdmin && (
-        <Link to="/admin">
-          <Button
-            className="fixed top-20 right-6 z-40 shadow-lg"
-            size="sm"
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            ADMIN
-          </Button>
-        </Link>
-      )}
+      <main>
+        <Hero />
       
-      <Hero />
-      
-      <section id="projects" className="py-16">
-        <div className="container mx-auto px-6">
+        <section id="projects" className="py-16" aria-label="Projetos">
+          <div className="container mx-auto px-6">
           <div ref={projectsRef} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
               <TypewriterText text="Resultados. Sem Enrolação." isInView={projectsInView} speed={50} />
@@ -234,8 +238,17 @@ const Index = () => {
               })}
             </div>
           )}
-        </div>
-      </section>
+          </div>
+        </section>
+
+        <Suspense fallback={<div className="py-16" />}>
+          <About />
+          <ServiceSteps />
+          <FAQ />
+          <Contact />
+          <SocialMedia />
+        </Suspense>
+      </main>
 
       <FloatingWhatsApp />
 
@@ -262,17 +275,20 @@ const Index = () => {
               <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
                 {project.bannerType === 'video' ? (
                   <video
-                    src={project.bannerImage}
+                     src={project.bannerImage}
                     controls
                     className="w-full h-auto"
                     style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                    preload="metadata"
                   />
                 ) : (
                   <img
                     src={project.bannerImage}
-                    alt={project.title}
+                    alt={`${project.title} - Banner do projeto`}
                     className="w-full h-auto"
                     style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                    loading="lazy"
+                    decoding="async"
                   />
                 )}
               </div>
@@ -307,6 +323,7 @@ const Index = () => {
                         controls
                         className="w-full h-auto"
                         style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
+                        preload="metadata"
                       />
                     ) : (
                       <img
@@ -320,6 +337,8 @@ const Index = () => {
                           projectIndex: selectedProject!,
                           mediaIndex: index
                         })}
+                        loading="lazy"
+                        decoding="async"
                       />
                     )}
                   </div>
@@ -358,22 +377,21 @@ const Index = () => {
           hasNext={getLightboxNavigationInfo().hasNext}
         />
       )}
-
-      <Suspense fallback={<div className="py-16" />}>
-        <About />
-        <ServiceSteps />
-        <FAQ />
-        <Contact />
-        <SocialMedia />
-      </Suspense>
       
       <footer className="py-8 border-t border-border relative">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img src={logo} alt="Pecin Design" className="h-8 hover:scale-110 transition-transform duration-300" />
+              <img 
+                src={logo} 
+                alt="Pecin Design - Logo" 
+                className="h-8 hover:scale-110 transition-transform duration-300"
+                loading="lazy"
+                width="32"
+                height="32"
+              />
               <p className="text-muted-foreground text-center md:text-left">
-                © 2025 Portfolio. Todos os direitos reservados.
+                © 2025 Pecin Design. Todos os direitos reservados.
               </p>
             </div>
             <a
@@ -381,8 +399,9 @@ const Index = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+              aria-label="Fale no WhatsApp"
             >
-              <MessageCircle className="h-5 w-5" />
+              <MessageCircle className="h-5 w-5" aria-hidden="true" />
               Fale no WhatsApp
             </a>
           </div>
