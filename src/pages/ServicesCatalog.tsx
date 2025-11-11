@@ -2,9 +2,11 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Clock, DollarSign } from "lucide-react";
+import { Clock, DollarSign, Search } from "lucide-react";
 import * as Icons from "lucide-react";
 import logo from "@/assets/logo.png";
+import { Input } from "@/components/ui/input";
+import { useState, useMemo } from "react";
 
 type Service = {
   id: string;
@@ -19,6 +21,7 @@ type Service = {
 
 const ServicesCatalog = () => {
   const { token } = useParams();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: shareLink, isError, isLoading } = useQuery({
     queryKey: ["share-link", token],
@@ -91,81 +94,126 @@ const ServicesCatalog = () => {
     );
   }
 
+  const filteredServices = useMemo(() => {
+    if (!searchQuery.trim()) return services;
+    
+    const query = searchQuery.toLowerCase();
+    return services.filter(
+      (service) =>
+        service.name.toLowerCase().includes(query) ||
+        service.description?.toLowerCase().includes(query) ||
+        service.category.toLowerCase().includes(query)
+    );
+  }, [services, searchQuery]);
+
+  const servicesByCategory = useMemo(() => {
+    const grouped = filteredServices.reduce((acc, service) => {
+      if (!acc[service.category]) {
+        acc[service.category] = [];
+      }
+      acc[service.category].push(service);
+      return acc;
+    }, {} as Record<string, Service[]>);
+    return grouped;
+  }, [filteredServices]);
+
+  const categories = Object.keys(servicesByCategory).sort();
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <img src={logo} alt="Logo" className="h-12 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold mb-2">Orçamento de Serviços</h1>
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+        <div className="text-center mb-6 md:mb-8">
+          <img src={logo} alt="Logo" className="h-10 md:h-12 mx-auto mb-4" />
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Orçamento de Serviços</h1>
           {shareLink.recipient_name && (
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base md:text-lg text-muted-foreground">
               Para: {shareLink.recipient_name}
             </p>
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {services.map((service) => {
-            const IconComponent = service.icon
-              ? (Icons as any)[service.icon] || Icons.Folder
-              : Icons.Folder;
-
-            return (
-              <Card
-                key={service.id}
-                className="p-6 hover:shadow-xl transition-all duration-200 border-2"
-                style={{ borderColor: service.color || "#6366f1" }}
-              >
-                <div className="flex items-start gap-4 mb-4">
-                  <div
-                    className="p-4 rounded-lg flex-shrink-0"
-                    style={{ backgroundColor: `${service.color}20` }}
-                  >
-                    <IconComponent
-                      className="w-8 h-8"
-                      style={{ color: service.color || "#6366f1" }}
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-xl mb-2">{service.name}</h3>
-                    {service.description && (
-                      <p className="text-sm text-muted-foreground">
-                        {service.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-primary" />
-                      <span className="text-sm text-muted-foreground">Preço</span>
-                    </div>
-                    <span className="font-bold text-xl text-primary">
-                      R$ {service.price.toFixed(2)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Prazo</span>
-                    </div>
-                    <span className="font-semibold">
-                      {service.delivery_days} dias úteis
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
+        <div className="mb-6 max-w-md mx-auto">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Buscar serviços..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
         </div>
 
-        {services.length === 0 && (
+        {categories.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            Nenhum serviço disponível neste orçamento.
+            {searchQuery ? "Nenhum serviço encontrado." : "Nenhum serviço disponível neste orçamento."}
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {categories.map((category) => (
+              <div key={category}>
+                <h2 className="text-xl md:text-2xl font-bold mb-4 px-2">{category}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                  {servicesByCategory[category].map((service) => {
+                    const IconComponent = service.icon
+                      ? (Icons as any)[service.icon] || Icons.Folder
+                      : Icons.Folder;
+
+                    return (
+                      <Card
+                        key={service.id}
+                        className="p-4 md:p-6 hover:shadow-xl transition-all duration-200 border-2"
+                        style={{ borderColor: service.color || "#6366f1" }}
+                      >
+                        <div className="flex items-start gap-3 md:gap-4 mb-4">
+                          <div
+                            className="p-3 md:p-4 rounded-lg flex-shrink-0"
+                            style={{ backgroundColor: `${service.color}20` }}
+                          >
+                            <IconComponent
+                              className="w-6 h-6 md:w-8 md:h-8"
+                              style={{ color: service.color || "#6366f1" }}
+                            />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-lg md:text-xl mb-2">{service.name}</h3>
+                            {service.description && (
+                              <p className="text-sm text-muted-foreground">
+                                {service.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="w-5 h-5 text-primary" />
+                              <span className="text-sm text-muted-foreground">Preço</span>
+                            </div>
+                            <span className="font-bold text-lg md:text-xl text-primary">
+                              R$ {service.price.toFixed(2)}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-5 h-5 text-muted-foreground" />
+                              <span className="text-sm text-muted-foreground">Prazo</span>
+                            </div>
+                            <span className="font-semibold text-sm md:text-base">
+                              {service.delivery_days} dias úteis
+                            </span>
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
