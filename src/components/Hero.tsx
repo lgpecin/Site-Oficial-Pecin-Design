@@ -100,7 +100,7 @@ const Hero = () => {
               loading="eager"
               fetchPriority="high"
               width="128"
-              height="128"
+              height="59"
             />
             <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-xs sm:text-sm font-medium mb-4">
               Design & Direção de Arte
