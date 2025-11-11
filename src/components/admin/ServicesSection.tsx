@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import ServiceCard from "./ServiceCard";
 import ServiceForm from "./ServiceForm";
 import ShareLinkManager from "./ShareLinkManager";
+import DataExportImport from "./DataExportImport";
 import {
   Dialog,
   DialogContent,
@@ -117,6 +118,11 @@ const ServicesSection = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Orçamentos e Serviços</h2>
         <div className="flex gap-2">
+          <DataExportImport 
+            tableName="services" 
+            buttonLabel="Serviços"
+            onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["services"] })}
+          />
           <Button onClick={() => setIsShareManagerOpen(true)} variant="outline">
             Gerenciar Links
           </Button>

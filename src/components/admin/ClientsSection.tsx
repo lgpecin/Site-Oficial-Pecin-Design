@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Pencil, Trash2, FolderOpen } from 'lucide-react';
+import { Plus, Pencil, Trash2, FolderOpen, Folder } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import ClientDetail from './ClientDetail';
+import DataExportImport from './DataExportImport';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +20,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Client {
   id: string;
@@ -26,6 +35,8 @@ interface Client {
   phone: string | null;
   company: string | null;
   notes: string | null;
+  icon: string | null;
+  color: string | null;
 }
 
 const ClientsSection = () => {
@@ -43,7 +54,14 @@ const ClientsSection = () => {
     phone: '',
     company: '',
     notes: '',
+    icon: 'Folder',
+    color: '#6366f1',
   });
+
+  const iconOptions = [
+    'Folder', 'Briefcase', 'Building', 'Users', 'User', 'Store',
+    'ShoppingBag', 'Package', 'Truck', 'Heart', 'Star', 'Zap'
+  ];
 
   useEffect(() => {
     loadClients();
@@ -97,6 +115,8 @@ const ClientsSection = () => {
       phone: client.phone || '',
       company: client.company || '',
       notes: client.notes || '',
+      icon: client.icon || 'Folder',
+      color: client.color || '#6366f1',
     });
     setShowForm(true);
   };
@@ -116,7 +136,15 @@ const ClientsSection = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', email: '', phone: '', company: '', notes: '' });
+    setFormData({ 
+      name: '', 
+      email: '', 
+      phone: '', 
+      company: '', 
+      notes: '',
+      icon: 'Folder',
+      color: '#6366f1'
+    });
     setEditingId(null);
     setShowForm(false);
   };
@@ -134,10 +162,17 @@ const ClientsSection = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold">Clientes</h2>
-        <Button onClick={() => setShowForm(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Cliente
-        </Button>
+        <div className="flex gap-2">
+          <DataExportImport 
+            tableName="clients" 
+            buttonLabel="Clientes"
+            onImportSuccess={loadClients}
+          />
+          <Button onClick={() => setShowForm(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Cliente
+          </Button>
+        </div>
       </div>
 
       {showForm && (
@@ -187,6 +222,51 @@ const ClientsSection = () => {
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="icon">Ícone</Label>
+                <Select
+                  value={formData.icon}
+                  onValueChange={(value) => setFormData({ ...formData, icon: value })}
+                >
+                  <SelectTrigger id="icon">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {iconOptions.map((iconName) => {
+                      const IconComponent = (Icons as any)[iconName];
+                      return (
+                        <SelectItem key={iconName} value={iconName}>
+                          <div className="flex items-center gap-2">
+                            <IconComponent className="w-4 h-4" />
+                            {iconName}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="color">Cor</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="color"
+                    type="color"
+                    value={formData.color}
+                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                    className="w-20 h-10"
+                  />
+                  <Input
+                    type="text"
+                    value={formData.color}
+                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                    placeholder="#6366f1"
+                    className="flex-1"
+                  />
+                </div>
+              </div>
+            </div>
             <div className="flex gap-2">
               <Button onClick={handleSubmit} disabled={loading || !formData.name}>
                 Salvar
@@ -200,18 +280,31 @@ const ClientsSection = () => {
       )}
 
       <div className="grid gap-4">
-        {clients.map((client) => (
-          <Card key={client.id}>
-            <CardContent className="pt-6">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <h3 className="text-xl font-semibold">{client.name}</h3>
-                  {client.company && <p className="text-sm text-muted-foreground">{client.company}</p>}
-                  {client.email && <p className="text-sm">{client.email}</p>}
-                  {client.phone && <p className="text-sm">{client.phone}</p>}
-                  {client.notes && <p className="text-sm mt-2 text-muted-foreground">{client.notes}</p>}
-                </div>
-                <div className="flex gap-2">
+        {clients.map((client) => {
+          const ClientIcon = client.icon ? (Icons as any)[client.icon] || Folder : Folder;
+          return (
+            <Card key={client.id} className="border-l-4" style={{ borderLeftColor: client.color || '#6366f1' }}>
+              <CardContent className="pt-6">
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-3 flex-1">
+                    <div 
+                      className="p-3 rounded-lg flex-shrink-0"
+                      style={{ backgroundColor: `${client.color || '#6366f1'}20` }}
+                    >
+                      <ClientIcon 
+                        className="w-6 h-6" 
+                        style={{ color: client.color || '#6366f1' }}
+                      />
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <h3 className="text-xl font-semibold">{client.name}</h3>
+                      {client.company && <p className="text-sm text-muted-foreground">{client.company}</p>}
+                      {client.email && <p className="text-sm">{client.email}</p>}
+                      {client.phone && <p className="text-sm">{client.phone}</p>}
+                      {client.notes && <p className="text-sm mt-2 text-muted-foreground">{client.notes}</p>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
                   <Button variant="default" size="sm" onClick={() => setSelectedClientId(client.id)}>
                     <FolderOpen className="h-4 w-4 mr-1" />
                     Abrir
@@ -222,11 +315,12 @@ const ClientsSection = () => {
                   <Button variant="outline" size="sm" onClick={() => setDeleteId(client.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>

@@ -7,6 +7,8 @@ import ProjectForm from '@/components/admin/ProjectForm';
 import ClientsSection from '@/components/admin/ClientsSection';
 import ServicesSection from '@/components/admin/ServicesSection';
 import UsersSection from '@/components/admin/UsersSection';
+import NotificationPanel from '@/components/admin/NotificationPanel';
+import DataExportImport from '@/components/admin/DataExportImport';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
@@ -70,12 +72,20 @@ const Admin = () => {
           />
         ) : (
           <div className="space-y-6">
+            <NotificationPanel />
             <div className="flex justify-between items-center">
               <h2 className="text-3xl font-bold">Projetos</h2>
-              <Button onClick={() => setShowForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Novo Projeto
-              </Button>
+              <div className="flex gap-2">
+                <DataExportImport 
+                  tableName="projects" 
+                  buttonLabel="Projetos"
+                  onImportSuccess={() => setRefreshKey(prev => prev + 1)}
+                />
+                <Button onClick={() => setShowForm(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Projeto
+                </Button>
+              </div>
             </div>
             <ProjectList onEdit={handleEdit} refresh={refreshKey} />
           </div>

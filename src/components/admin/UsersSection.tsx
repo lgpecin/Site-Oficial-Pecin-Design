@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Plus } from 'lucide-react';
 import UserCreationForm from './UserCreationForm';
+import DataExportImport from './DataExportImport';
 import {
   Select,
   SelectContent,
@@ -128,10 +129,17 @@ const UsersSection = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold">Usuários</h2>
-        <Button onClick={() => setShowCreationForm(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Criar Novo Usuário
-        </Button>
+        <div className="flex gap-2">
+          <DataExportImport 
+            tableName="profiles" 
+            buttonLabel="Usuários"
+            onImportSuccess={loadUsers}
+          />
+          <Button onClick={() => setShowCreationForm(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Criar Novo Usuário
+          </Button>
+        </div>
       </div>
 
       {showCreationForm && (
