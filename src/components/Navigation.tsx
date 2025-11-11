@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
+import logo from "@/assets/logo.png";
 
 const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -27,9 +28,9 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
           <button
             onClick={() => scrollToSection("hero")}
-            className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            className="hover:opacity-80 transition-opacity"
           >
-            Pecin Design
+            <img src={logo} alt="Pecin Design" className="h-8" />
           </button>
 
           <div className="hidden md:flex items-center gap-8">
