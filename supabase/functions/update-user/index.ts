@@ -1,10 +1,17 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const updateUserSchema = z.object({
+  userId: z.string().uuid(),
+  password: z.string().min(8).max(72).optional(),
+  email: z.string().email().max(255).optional()
+})
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -37,7 +44,8 @@ serve(async (req) => {
       throw new Error('Sem permissão')
     }
 
-    const { userId, password, email } = await req.json()
+    const body = await req.json()
+    const { userId, password, email } = updateUserSchema.parse(body)
 
     if (!userId) {
       throw new Error('ID do usuário é obrigatório')

@@ -1,10 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const createUserSchema = z.object({
+  email: z.string().email().max(255),
+  password: z.string().min(8).max(72),
+  role: z.enum(['admin', 'client', 'visitor']),
+  expiresAt: z.string().datetime().optional().nullable()
+})
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -44,7 +52,8 @@ serve(async (req) => {
       throw new Error('Sem permissão de admin')
     }
 
-    const { email, password, role, expiresAt } = await req.json()
+    const body = await req.json()
+    const { email, password, role, expiresAt } = createUserSchema.parse(body)
 
     // Criar usuário usando admin API
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
