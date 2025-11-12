@@ -1,7 +1,6 @@
 import { lazy, Suspense, useState, useEffect, memo } from "react";
-// FASE 1: Importações específicas do Lucide para reduzir bundle
-import { MessageCircle } from "lucide-react/dist/esm/icons/message-circle";
-import { Settings } from "lucide-react/dist/esm/icons/settings";
+// FASE 1: Imports do Lucide (tree-shaken automaticamente pelo Vite)
+import { MessageCircle, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";

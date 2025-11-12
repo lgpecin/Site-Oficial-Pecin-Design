@@ -1,26 +1,28 @@
 import { Button } from "./ui/button";
-// FASE 1: Importações específicas do Lucide para reduzir bundle
-import { ArrowDown } from "lucide-react/dist/esm/icons/arrow-down";
-import { MessageCircle } from "lucide-react/dist/esm/icons/message-circle";
-import { Palette } from "lucide-react/dist/esm/icons/palette";
-import { Pen } from "lucide-react/dist/esm/icons/pen";
-import { Layers } from "lucide-react/dist/esm/icons/layers";
-import { Sparkles } from "lucide-react/dist/esm/icons/sparkles";
-import { Compass } from "lucide-react/dist/esm/icons/compass";
-import { Wand2 } from "lucide-react/dist/esm/icons/wand-2";
-import { Pencil } from "lucide-react/dist/esm/icons/pencil";
-import { Brush } from "lucide-react/dist/esm/icons/brush";
-import { PenTool } from "lucide-react/dist/esm/icons/pen-tool";
-import { Layout } from "lucide-react/dist/esm/icons/layout";
-import { Grid3x3 } from "lucide-react/dist/esm/icons/grid-3x3";
-import { Square } from "lucide-react/dist/esm/icons/square";
-import { Circle } from "lucide-react/dist/esm/icons/circle";
-import { Triangle } from "lucide-react/dist/esm/icons/triangle";
-import { Hexagon } from "lucide-react/dist/esm/icons/hexagon";
-import { Eye } from "lucide-react/dist/esm/icons/eye";
-import { Lightbulb } from "lucide-react/dist/esm/icons/lightbulb";
-import { Star } from "lucide-react/dist/esm/icons/star";
-import { Zap } from "lucide-react/dist/esm/icons/zap";
+// FASE 1: Imports do Lucide (tree-shaken automaticamente pelo Vite)
+import { 
+  ArrowDown, 
+  MessageCircle, 
+  Palette, 
+  Pen, 
+  Layers, 
+  Sparkles, 
+  Compass, 
+  Wand2, 
+  Pencil, 
+  Brush, 
+  PenTool, 
+  Layout, 
+  Grid3x3, 
+  Square, 
+  Circle, 
+  Triangle, 
+  Hexagon, 
+  Eye, 
+  Lightbulb, 
+  Star, 
+  Zap 
+} from "lucide-react";
 // FASE 2: WebP otimizado
 import heroBg from "@/assets/hero-halftone.webp";
 import heroBgFallback from "@/assets/hero-halftone.jpg";
