@@ -868,6 +868,48 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_schedule_cards: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          day_of_week: number
+          description: string | null
+          display_order: number | null
+          id: string
+          tags: string[] | null
+          time: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          day_of_week: number
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          tags?: string[] | null
+          time?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          day_of_week?: number
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          tags?: string[] | null
+          time?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
