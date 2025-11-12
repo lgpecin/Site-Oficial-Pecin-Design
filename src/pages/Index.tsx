@@ -1,10 +1,14 @@
 import { lazy, Suspense, useState, useEffect, memo } from "react";
-import { MessageCircle, Settings } from "lucide-react";
+// FASE 1: Importações específicas do Lucide para reduzir bundle
+import { MessageCircle } from "lucide-react/dist/esm/icons/message-circle";
+import { Settings } from "lucide-react/dist/esm/icons/settings";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
-import logo from "@/assets/logo.png";
+// FASE 2: WebP otimizado
+import logo from "@/assets/logo.webp";
+import logoFallback from "@/assets/logo.png";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -58,9 +62,12 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const { isAdmin } = useAuth();
 
+  // FASE 4: Defer Supabase query - só carrega quando seção está visível
   useEffect(() => {
-    loadProjects();
-  }, []);
+    if (projectsInView) {
+      loadProjects();
+    }
+  }, [projectsInView]);
 
   const loadProjects = async () => {
     try {
@@ -216,8 +223,14 @@ const Index = () => {
           </div>
           
           {loading ? (
-            <div className="text-center py-12 text-muted-foreground">
-              Carregando projetos...
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-muted rounded-lg aspect-square mb-4" />
+                  <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-muted rounded w-1/2" />
+                </div>
+              ))}
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
@@ -382,14 +395,18 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img 
-                src={logo} 
-                alt="Pecin Design - Logo" 
-                className="h-8 hover:scale-110 transition-transform duration-300"
-                loading="lazy"
-                width="32"
-                height="32"
-              />
+              <picture>
+                <source srcSet={logo} type="image/webp" />
+                <img 
+                  src={logoFallback} 
+                  alt="Pecin Design - Logo" 
+                  className="h-8 hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  width="32"
+                  height="32"
+                  decoding="async"
+                />
+              </picture>
               <p className="text-muted-foreground text-center md:text-left">
                 © 2025 Pecin Design. Todos os direitos reservados.
               </p>

@@ -1,7 +1,10 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { Mail, MessageSquare, MessageCircle } from "lucide-react";
+// FASE 1: Importações específicas do Lucide
+import { Mail } from "lucide-react/dist/esm/icons/mail";
+import { MessageSquare } from "lucide-react/dist/esm/icons/message-square";
+import { MessageCircle } from "lucide-react/dist/esm/icons/message-circle";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useInView } from "@/hooks/use-in-view";

@@ -1,7 +1,31 @@
 import { Button } from "./ui/button";
-import { ArrowDown, MessageCircle, Palette, Pen, Layers, Sparkles, Compass, Wand2, Pencil, Brush, PenTool, Layout, Grid3x3, Square, Circle, Triangle, Hexagon, Eye, Lightbulb, Star, Zap } from "lucide-react";
-import heroBg from "@/assets/hero-halftone.jpg";
-import logo from "@/assets/logo.png";
+// FASE 1: Importações específicas do Lucide para reduzir bundle
+import { ArrowDown } from "lucide-react/dist/esm/icons/arrow-down";
+import { MessageCircle } from "lucide-react/dist/esm/icons/message-circle";
+import { Palette } from "lucide-react/dist/esm/icons/palette";
+import { Pen } from "lucide-react/dist/esm/icons/pen";
+import { Layers } from "lucide-react/dist/esm/icons/layers";
+import { Sparkles } from "lucide-react/dist/esm/icons/sparkles";
+import { Compass } from "lucide-react/dist/esm/icons/compass";
+import { Wand2 } from "lucide-react/dist/esm/icons/wand-2";
+import { Pencil } from "lucide-react/dist/esm/icons/pencil";
+import { Brush } from "lucide-react/dist/esm/icons/brush";
+import { PenTool } from "lucide-react/dist/esm/icons/pen-tool";
+import { Layout } from "lucide-react/dist/esm/icons/layout";
+import { Grid3x3 } from "lucide-react/dist/esm/icons/grid-3x3";
+import { Square } from "lucide-react/dist/esm/icons/square";
+import { Circle } from "lucide-react/dist/esm/icons/circle";
+import { Triangle } from "lucide-react/dist/esm/icons/triangle";
+import { Hexagon } from "lucide-react/dist/esm/icons/hexagon";
+import { Eye } from "lucide-react/dist/esm/icons/eye";
+import { Lightbulb } from "lucide-react/dist/esm/icons/lightbulb";
+import { Star } from "lucide-react/dist/esm/icons/star";
+import { Zap } from "lucide-react/dist/esm/icons/zap";
+// FASE 2: WebP otimizado
+import heroBg from "@/assets/hero-halftone.webp";
+import heroBgFallback from "@/assets/hero-halftone.jpg";
+import logo from "@/assets/logo.webp";
+import logoFallback from "@/assets/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
@@ -65,6 +89,7 @@ const Hero = () => {
           backgroundPosition: "center",
           opacity: 0.02,
         }}
+        role="presentation"
         aria-hidden="true"
       />
       
@@ -93,18 +118,22 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-up">
           <div className="mb-6">
-  <img
-    src={logo}
-    alt="Pecin Design - Logo"
-    className="w-auto h-auto max-w-[200px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" 
-    loading="eager"
-    fetchPriority="high"
-    width="200"
-    height="92"
-  />
-</div>
+            <picture>
+              <source srcSet={logo} type="image/webp" />
+              <img
+                src={logoFallback}
+                alt="Pecin Design - Logo"
+                className="w-auto h-auto max-w-[200px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" 
+                loading="eager"
+                fetchPriority="high"
+                width="200"
+                height="92"
+                decoding="sync"
+              />
+            </picture>
+          </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)]">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)] will-change-transform">
             Design que impacta,
             <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
