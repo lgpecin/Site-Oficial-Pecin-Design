@@ -1,15 +1,8 @@
-// FASE 1: Importações específicas do Lucide
-import { Palette } from "lucide-react/dist/esm/icons/palette";
-import { Sparkles } from "lucide-react/dist/esm/icons/sparkles";
-import { Target } from "lucide-react/dist/esm/icons/target";
-import { Zap } from "lucide-react/dist/esm/icons/zap";
+import { Palette, Sparkles, Target, Zap } from "lucide-react";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
-import { OptimizedImage } from "./OptimizedImage";
-// FASE 2: WebP otimizado
-import profilePhoto from "@/assets/profile-photo.webp";
-import profilePhotoFallback from "@/assets/profile-photo.png";
+import profilePhoto from "@/assets/profile-photo.png";
 
 const About = () => {
   const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
@@ -50,18 +43,11 @@ const About = () => {
           {/* Espaço para foto */}
           <AnimatedSection>
             <div className="relative aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-              <picture>
-                <source srcSet={profilePhoto} type="image/webp" />
-                <img 
-                  src={profilePhotoFallback} 
-                  alt="Léo - Designer" 
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                  width="600"
-                  height="600"
-                />
-              </picture>
+              <img 
+                src={profilePhoto} 
+                alt="Léo - Designer" 
+                className="w-full h-full object-cover"
+              />
             </div>
           </AnimatedSection>
 

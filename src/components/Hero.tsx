@@ -1,33 +1,7 @@
 import { Button } from "./ui/button";
-// FASE 1: Imports do Lucide (tree-shaken automaticamente pelo Vite)
-import { 
-  ArrowDown, 
-  MessageCircle, 
-  Palette, 
-  Pen, 
-  Layers, 
-  Sparkles, 
-  Compass, 
-  Wand2, 
-  Pencil, 
-  Brush, 
-  PenTool, 
-  Layout, 
-  Grid3x3, 
-  Square, 
-  Circle, 
-  Triangle, 
-  Hexagon, 
-  Eye, 
-  Lightbulb, 
-  Star, 
-  Zap 
-} from "lucide-react";
-// FASE 2: WebP otimizado
-import heroBg from "@/assets/hero-halftone.webp";
-import heroBgFallback from "@/assets/hero-halftone.jpg";
-import logo from "@/assets/logo.webp";
-import logoFallback from "@/assets/logo.png";
+import { ArrowDown, MessageCircle, Palette, Pen, Layers, Sparkles, Compass, Wand2, Pencil, Brush, PenTool, Layout, Grid3x3, Square, Circle, Triangle, Hexagon, Eye, Lightbulb, Star, Zap } from "lucide-react";
+import heroBg from "@/assets/hero-halftone.jpg";
+import logo from "@/assets/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
@@ -91,7 +65,6 @@ const Hero = () => {
           backgroundPosition: "center",
           opacity: 0.02,
         }}
-        role="presentation"
         aria-hidden="true"
       />
       
@@ -120,22 +93,18 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-up">
           <div className="mb-6">
-            <picture>
-              <source srcSet={logo} type="image/webp" />
-              <img
-                src={logoFallback}
-                alt="Pecin Design - Logo"
-                className="w-auto h-auto max-w-[200px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" 
-                loading="eager"
-                fetchPriority="high"
-                width="200"
-                height="92"
-                decoding="sync"
-              />
-            </picture>
-          </div>
+  <img
+    src={logo}
+    alt="Pecin Design - Logo"
+    className="w-auto h-auto max-w-[200px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" 
+    loading="eager"
+    fetchPriority="high"
+    width="200"
+    height="92"
+  />
+</div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)] will-change-transform">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)]">
             Design que impacta,
             <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

@@ -25,24 +25,19 @@
     <meta name="twitter:description" content="Designer freelancer especializado em branding, redes sociais e identidade visual. Cases de sucesso e design que gera resultados." />
     <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/v8VKzNgrRJM5o589QM8SpAMbG5y2/social-images/social-1762786005226-Ícones.png" />
     
-    <!-- FASE 5: Self-hosted fonts + Critical preloads -->
-    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+    <!-- DNS Prefetch e Preconnect -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link rel="dns-prefetch" href="https://storage.googleapis.com" />
-    <link rel="preconnect" href="https://snocogcaznxlkaxluwnt.supabase.co" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://storage.googleapis.com" />
     
-    <!-- FASE 5: Self-host Inter font for performance -->
-    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZJhiI2B.woff2" as="font" type="font/woff2" crossorigin />
-    <style>
-      /* FASE 3: Critical CSS inline */
-      @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZJhiI2B.woff2) format('woff2');}
-      @font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZJhiI2B.woff2) format('woff2');}
-      *{box-sizing:border-box;border:0 solid hsl(0 0% 20%)}body{margin:0;font-family:'Inter',sans-serif;background:hsl(0 0% 8%);color:hsl(0 0% 98%);-webkit-font-smoothing:antialiased}#root{min-height:100vh}
-    </style>
-    
-    <!-- FASE 3: Load full CSS async -->
-    <link rel="preload" as="style" href="/src/index.css" />
+    <!-- Font Loading Otimizado -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     </noscript>
     
     <!-- Structured Data -->
