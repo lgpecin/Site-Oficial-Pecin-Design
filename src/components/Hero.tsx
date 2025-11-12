@@ -96,11 +96,11 @@ const Hero = () => {
   <img
     src={logo}
     alt="Pecin Design - Logo"
-    className="w-auto h-auto max-w-[150px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" 
+    className="w-auto h-auto max-w-[350px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" 
     loading="eager"
     fetchPriority="high"
-    width="150"
-    height="69"
+    width="350"
+    height="161"
   />
 </div>
           
