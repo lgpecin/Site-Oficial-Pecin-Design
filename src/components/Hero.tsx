@@ -55,7 +55,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
       <div
         ref={parallaxRef}
         className="absolute inset-0 z-0 will-change-transform"
