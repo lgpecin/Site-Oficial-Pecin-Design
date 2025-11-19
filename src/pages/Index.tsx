@@ -402,7 +402,7 @@ const Index = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
               aria-label="Fale no WhatsApp"
             >
-              <img src={whatsappLogo} alt="WhatsApp" className="h-5 w-5" aria-hidden="true" />
+              <img src={whatsappLogo} alt="WhatsApp" className="w-5 h-5 object-contain" aria-hidden="true" />
               Fale no WhatsApp
             </a>
           </div>

@@ -25,12 +25,12 @@ const FloatingWhatsApp = () => {
       href="https://wa.me/5511999999999?text=Olá! Vim através do seu portfólio."
       target="_blank"
       rel="noopener noreferrer"
-      className={`fixed bottom-6 right-6 z-50 bg-primary text-primary-foreground p-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse-slow will-change-[transform] motion-reduce:animate-none ${
+      className={`fixed bottom-6 right-6 z-50 transition-all duration-300 hover:scale-110 animate-pulse-slow will-change-[transform] motion-reduce:animate-none ${
         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
       aria-label="Fale no WhatsApp"
     >
-      <img src={whatsappLogo} alt="WhatsApp" className="h-10 w-10" />
+      <img src={whatsappLogo} alt="WhatsApp" className="w-16 h-16 drop-shadow-lg" />
     </a>
   );
 };
