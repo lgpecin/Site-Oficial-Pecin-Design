@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState, useEffect, memo } from "react";
-import { MessageCircle, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
+import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -401,7 +402,7 @@ const Index = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
               aria-label="Fale no WhatsApp"
             >
-              <MessageCircle className="h-5 w-5" aria-hidden="true" />
+              <img src={whatsappLogo} alt="WhatsApp" className="h-5 w-5" aria-hidden="true" />
               Fale no WhatsApp
             </a>
           </div>

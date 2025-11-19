@@ -1,7 +1,8 @@
 import { Button } from "./ui/button";
-import { ArrowDown, MessageCircle, Palette, Pen, Layers, Sparkles, Compass, Wand2, Pencil, Brush, PenTool, Layout, Grid3x3, Square, Circle, Triangle, Hexagon, Eye, Lightbulb, Star, Zap } from "lucide-react";
+import { ArrowDown, Palette, Pen, Layers, Sparkles, Compass, Wand2, Pencil, Brush, PenTool, Layout, Grid3x3, Square, Circle, Triangle, Hexagon, Eye, Lightbulb, Star, Zap } from "lucide-react";
 import heroBg from "@/assets/hero-halftone.jpg";
 import logo from "@/assets/logo.png";
+import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 
@@ -134,7 +135,7 @@ const Hero = () => {
               size="lg"
               className="w-full sm:w-auto"
             >
-              <MessageCircle className="mr-2 h-4 w-4" />
+              <img src={whatsappLogo} alt="WhatsApp" className="mr-2 h-4 w-4" />
               Fale Comigo
             </Button>
           </div>
