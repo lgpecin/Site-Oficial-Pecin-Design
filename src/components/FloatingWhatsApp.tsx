@@ -1,5 +1,5 @@
-import { MessageCircle } from "lucide-react";
 import { useState, useEffect } from "react";
+import whatsappLogo from "@/assets/whatsapp-logo.png";
 
 const FloatingWhatsApp = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -30,7 +30,7 @@ const FloatingWhatsApp = () => {
       }`}
       aria-label="Fale no WhatsApp"
     >
-      <MessageCircle className="h-10 w-10" />
+      <img src={whatsappLogo} alt="WhatsApp" className="h-10 w-10" />
     </a>
   );
 };
