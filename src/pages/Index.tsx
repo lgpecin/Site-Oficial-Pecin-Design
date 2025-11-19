@@ -71,7 +71,7 @@ const Index = () => {
           project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
         `)
-        .order('created_at', { ascending: false })
+        .order('display_order', { ascending: true })
         .limit(20); // Limit initial load
 
       if (error) throw error;
@@ -224,7 +224,7 @@ const Index = () => {
               Nenhum projeto disponível nesta categoria.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
               {filteredProjects.map((project, index) => {
                 const originalIndex = projects.findIndex(p => p.id === project.id);
                 return (
