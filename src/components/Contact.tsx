@@ -48,7 +48,7 @@ const Contact = () => {
               size="lg"
               onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Gostaria de conversar sobre um projeto.', '_blank')}
             >
-              <img src={whatsappLogo} alt="WhatsApp" className="mr-2 h-5 w-5" />
+              <img src={whatsappLogo} alt="WhatsApp" className="mr-2 w-5 h-5 object-contain" />
               Chamar no WhatsApp
             </Button>
             <div className="text-center text-muted-foreground py-4 md:py-0 md:flex md:items-center">
