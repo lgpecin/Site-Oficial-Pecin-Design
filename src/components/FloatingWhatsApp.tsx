@@ -30,7 +30,7 @@ const FloatingWhatsApp = () => {
       }`}
       aria-label="Fale no WhatsApp"
     >
-      <img src={whatsappLogo} alt="WhatsApp" className="w-16 h-16 drop-shadow-lg" />
+      <img src={whatsappLogo} alt="WhatsApp" className="w-32 h-32 object-contain drop-shadow-2xl" />
     </a>
   );
 };
