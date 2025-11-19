@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import MediaUpload from './MediaUpload';
+import BannerUploadWithCrop from './BannerUploadWithCrop';
+import ImageCropDialog from './ImageCropDialog';
 import { X } from 'lucide-react';
 
 interface ProjectFormProps {
@@ -32,6 +34,8 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
   const [detailMedia, setDetailMedia] = useState<MediaFile[]>([]);
   const [technologies, setTechnologies] = useState<string[]>(['']);
   const [imageSpacing, setImageSpacing] = useState(16);
+  const [cropDialogOpen, setCropDialogOpen] = useState(false);
+  const [tempBannerUrl, setTempBannerUrl] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -199,6 +203,43 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
     setDetailMedia(detailMedia.filter((_, i) => i !== index));
   };
 
+  const handleBannerSelected = (url: string) => {
+    setTempBannerUrl(url);
+    setCropDialogOpen(true);
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    try {
+      const fileName = `banner-${Date.now()}.jpg`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('project-images')
+        .upload(filePath, croppedBlob, {
+          contentType: 'image/jpeg',
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('project-images')
+        .getPublicUrl(filePath);
+
+      setBannerMedia({ url: publicUrl, type: 'image' });
+      
+      toast({
+        title: 'Imagem recortada com sucesso!',
+      });
+    } catch (error) {
+      console.error('Error uploading cropped image:', error);
+      toast({
+        title: 'Erro ao fazer upload da imagem',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -274,12 +315,19 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
             </p>
           </div>
 
-          <MediaUpload
-            label="Mídia Banner"
-            currentMedia={bannerMedia.url}
-            currentType={bannerMedia.type}
-            acceptVideo={true}
-            onMediaUploaded={(url, type, metadata) => setBannerMedia({ url, type, metadata })}
+          <div className="space-y-2">
+            <BannerUploadWithCrop
+              currentBanner={bannerMedia.url}
+              onBannerChange={(url) => setBannerMedia({ url, type: 'image' })}
+              onImageSelected={handleBannerSelected}
+            />
+          </div>
+
+          <ImageCropDialog
+            open={cropDialogOpen}
+            onOpenChange={setCropDialogOpen}
+            imageUrl={tempBannerUrl}
+            onCropComplete={handleCropComplete}
           />
 
           <div className="space-y-4">

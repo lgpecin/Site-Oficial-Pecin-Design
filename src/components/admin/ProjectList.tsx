@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, GripVertical } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +22,7 @@ interface Project {
   description: string;
   banner_image: string | null;
   year: number;
+  display_order: number;
 }
 
 interface ProjectListProps {
@@ -33,6 +34,7 @@ const ProjectList = ({ onEdit, refresh }: ProjectListProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const ProjectList = ({ onEdit, refresh }: ProjectListProps) => {
       const { data, error } = await supabase
         .from('projects')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('display_order', { ascending: true });
 
       if (error) throw error;
 
@@ -87,6 +89,55 @@ const ProjectList = ({ onEdit, refresh }: ProjectListProps) => {
     }
   };
 
+  const handleDragStart = (e: React.DragEvent, projectId: string) => {
+    setDraggedItem(projectId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!draggedItem || draggedItem === targetId) return;
+
+    const draggedIndex = projects.findIndex(p => p.id === draggedItem);
+    const targetIndex = projects.findIndex(p => p.id === targetId);
+
+    if (draggedIndex === -1 || targetIndex === -1) return;
+
+    const newProjects = [...projects];
+    const [removed] = newProjects.splice(draggedIndex, 1);
+    newProjects.splice(targetIndex, 0, removed);
+
+    setProjects(newProjects);
+    setDraggedItem(null);
+
+    try {
+      const updates = newProjects.map((project, index) => 
+        supabase
+          .from('projects')
+          .update({ display_order: index })
+          .eq('id', project.id)
+      );
+
+      await Promise.all(updates);
+
+      toast({
+        title: 'Ordem atualizada com sucesso!',
+      });
+    } catch (error) {
+      console.error('Error updating order:', error);
+      toast({
+        title: 'Erro ao atualizar ordem',
+        variant: 'destructive',
+      });
+      loadProjects();
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-8">Carregando projetos...</div>;
   }
@@ -103,14 +154,26 @@ const ProjectList = ({ onEdit, refresh }: ProjectListProps) => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
-          <Card key={project.id} className="overflow-hidden">
-            {project.banner_image && (
-              <img
-                src={project.banner_image}
-                alt={project.title}
-                className="w-full h-48 object-cover"
-              />
-            )}
+          <Card 
+            key={project.id} 
+            className="overflow-hidden cursor-move hover:shadow-lg transition-shadow"
+            draggable
+            onDragStart={(e) => handleDragStart(e, project.id)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, project.id)}
+          >
+            <div className="relative">
+              {project.banner_image && (
+                <img
+                  src={project.banner_image}
+                  alt={project.title}
+                  className="w-full h-48 object-cover"
+                />
+              )}
+              <div className="absolute top-2 left-2 bg-background/80 rounded p-1 cursor-grab active:cursor-grabbing">
+                <GripVertical className="h-5 w-5 text-muted-foreground" />
+              </div>
+            </div>
             <CardContent className="p-4">
               <div className="mb-2">
                 <span className="text-xs text-primary">{project.category}</span>

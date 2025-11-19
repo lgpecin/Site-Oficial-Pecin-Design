@@ -673,6 +673,7 @@ export type Database = {
           category: string
           created_at: string | null
           description: string
+          display_order: number | null
           full_description: string
           id: string
           image_spacing: number | null
@@ -685,6 +686,7 @@ export type Database = {
           category: string
           created_at?: string | null
           description: string
+          display_order?: number | null
           full_description: string
           id?: string
           image_spacing?: number | null
@@ -697,6 +699,7 @@ export type Database = {
           category?: string
           created_at?: string | null
           description?: string
+          display_order?: number | null
           full_description?: string
           id?: string
           image_spacing?: number | null
