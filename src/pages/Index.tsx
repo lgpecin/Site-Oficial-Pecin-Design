@@ -386,10 +386,8 @@ const Index = () => {
               <img 
                 src={logo} 
                 alt="Pecin Design - Logo" 
-                className="h-8 hover:scale-110 transition-transform duration-300"
+                className="h-8 w-auto hover:scale-110 transition-transform duration-300"
                 loading="lazy"
-                width="32"
-                height="32"
               />
               <p className="text-muted-foreground text-center md:text-left">
                 © 2025 Pecin Design. Todos os direitos reservados.
