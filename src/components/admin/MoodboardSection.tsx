@@ -17,7 +17,7 @@ const MoodboardSection = () => {
   const [pages, setPages] = useState<MoodboardPage[]>([]);
   const [selectedPage, setSelectedPage] = useState<string | null>(null);
   const [newPageName, setNewPageName] = useState('');
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -41,7 +41,15 @@ const MoodboardSection = () => {
   };
 
   const createPage = async () => {
-    if (!newPageName.trim() || !user) return;
+    if (!newPageName.trim()) {
+      toast.error('Digite um nome para a página');
+      return;
+    }
+    
+    if (!user) {
+      toast.error('Usuário não autenticado');
+      return;
+    }
 
     try {
       const { data, error } = await supabase
@@ -53,15 +61,18 @@ const MoodboardSection = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       toast.success('Página criada!');
       setPages([data, ...pages]);
       setNewPageName('');
       setSelectedPage(data.id);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating page:', error);
-      toast.error('Erro ao criar página');
+      toast.error(error.message || 'Erro ao criar página');
     }
   };
 
@@ -98,9 +109,9 @@ const MoodboardSection = () => {
             className="px-4 py-2 border rounded-lg w-full sm:w-auto"
             onKeyPress={(e) => e.key === 'Enter' && createPage()}
           />
-          <Button onClick={createPage} disabled={!newPageName.trim()} className="w-full sm:w-auto">
+          <Button onClick={createPage} disabled={!newPageName.trim() || loading || !user} className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
-            Nova Página
+            {loading ? 'Carregando...' : 'Nova Página'}
           </Button>
         </div>
       </div>
