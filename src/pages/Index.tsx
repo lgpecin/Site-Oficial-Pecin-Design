@@ -225,7 +225,7 @@ const Index = () => {
               Nenhum projeto disponível nesta categoria.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
               {filteredProjects.map((project, index) => {
                 const originalIndex = projects.findIndex(p => p.id === project.id);
                 return (
