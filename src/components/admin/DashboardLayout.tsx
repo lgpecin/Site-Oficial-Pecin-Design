@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LogOut, FolderOpen, Users, DollarSign, UserCog, Image, Star, Calendar, Home, Globe, Menu, CalendarDays } from 'lucide-react';
+import { LogOut, FolderOpen, Users, DollarSign, UserCog, Image, Star, Calendar, Home, Globe, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import {
@@ -28,7 +28,6 @@ const studioSections = [
   { id: 'moodboard', label: 'Moodboard', icon: Image },
   { id: 'saved', label: 'Salvos', icon: Star },
   { id: 'planning', label: 'Planejamento', icon: Calendar },
-  { id: 'weekly', label: 'Semana', icon: CalendarDays },
 ];
 
 const DashboardLayout = ({ children, currentSection, onSectionChange, onSignOut }: DashboardLayoutProps) => {
