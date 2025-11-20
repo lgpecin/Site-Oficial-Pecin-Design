@@ -20,10 +20,11 @@ const MoodboardSection = () => {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    console.log('MoodboardSection - user state changed:', { user: user?.id, loading });
+    if (user && !loading) {
       loadPages();
     }
-  }, [user]);
+  }, [user, loading]);
 
   const loadPages = async () => {
     try {
@@ -103,6 +104,14 @@ const MoodboardSection = () => {
     }
   };
 
+  console.log('MoodboardSection render:', { 
+    hasUser: !!user, 
+    userId: user?.id,
+    loading, 
+    newPageName,
+    buttonDisabled: !newPageName.trim() || loading || !user 
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -111,15 +120,31 @@ const MoodboardSection = () => {
           <input
             type="text"
             value={newPageName}
-            onChange={(e) => setNewPageName(e.target.value)}
+            onChange={(e) => {
+              console.log('Input changed:', e.target.value);
+              setNewPageName(e.target.value);
+            }}
             placeholder="Nome da página"
             className="px-4 py-2 border rounded-lg w-full sm:w-auto"
-            onKeyPress={(e) => e.key === 'Enter' && createPage()}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && newPageName.trim() && !loading && user) {
+                createPage();
+              }
+            }}
           />
-          <Button onClick={createPage} disabled={!newPageName.trim() || loading || !user} className="w-full sm:w-auto">
+          <Button 
+            onClick={() => {
+              console.log('Button clicked!');
+              createPage();
+            }} 
+            disabled={!newPageName.trim() || loading || !user} 
+            className="w-full sm:w-auto"
+          >
             <Plus className="h-4 w-4 mr-2" />
             {loading ? 'Carregando...' : 'Nova Página'}
           </Button>
+          {loading && <span className="text-sm text-muted-foreground">Aguardando autenticação...</span>}
+          {!user && !loading && <span className="text-sm text-destructive">Usuário não autenticado</span>}
         </div>
       </div>
 
