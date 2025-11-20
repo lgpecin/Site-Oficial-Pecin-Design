@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { FolderOpen, Users, DollarSign, UserCog, Image, Star, Calendar, CalendarDays } from 'lucide-react';
+import { FolderOpen, Users, DollarSign, UserCog, Image, Star, Calendar } from 'lucide-react';
 
 interface DashboardHomeProps {
   onNavigate: (section: string) => void;
@@ -17,7 +17,6 @@ const DashboardHome = ({ onNavigate }: DashboardHomeProps) => {
     { id: 'moodboard', label: 'Moodboard', icon: Image, description: 'Canvas criativo' },
     { id: 'saved', label: 'Salvos', icon: Star, description: 'Favoritos' },
     { id: 'planning', label: 'Planejamento', icon: Calendar, description: 'Organize tarefas' },
-    { id: 'weekly', label: 'Semana', icon: CalendarDays, description: 'Agenda semanal' },
   ];
 
   return (
@@ -58,7 +57,7 @@ const DashboardHome = ({ onNavigate }: DashboardHomeProps) => {
           <p className="text-muted-foreground">Ferramentas criativas e organizacionais</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {studioSections.map((section) => {
             const Icon = section.icon;
             return (

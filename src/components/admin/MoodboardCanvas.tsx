@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Canvas as FabricCanvas, Circle, Rect, Textbox, FabricImage, Path } from 'fabric';
+import { Canvas as FabricCanvas, Circle, Rect, Textbox, FabricImage, Line, Group, FabricText, Path, Point } from 'fabric';
 import { Button } from '@/components/ui/button';
-import { Square, Circle as CircleIcon, Type, Image as ImageIcon, Pencil, Trash2, Save } from 'lucide-react';
+import { Square, Circle as CircleIcon, Type, Image as ImageIcon, Pencil, Trash2, Save, ZoomIn, ZoomOut, Minus, LayoutGrid } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -11,20 +11,74 @@ interface MoodboardCanvasProps {
 
 const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
-  const [activeTool, setActiveTool] = useState<'select' | 'draw' | 'rectangle' | 'circle' | 'text' | 'image'>('select');
+  const [activeTool, setActiveTool] = useState<'select' | 'draw' | 'rectangle' | 'circle' | 'text' | 'image' | 'line' | 'kanban'>('select');
+  const [zoom, setZoom] = useState(1);
+  const [isDrawingLine, setIsDrawingLine] = useState(false);
+  const lineStartRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
 
     const canvas = new FabricCanvas(canvasRef.current, {
       width: window.innerWidth - 400,
-      height: 600,
+      height: 800,
       backgroundColor: '#ffffff',
     });
 
     canvas.freeDrawingBrush.color = '#000000';
     canvas.freeDrawingBrush.width = 2;
+
+    // Zoom with mouse wheel
+    canvas.on('mouse:wheel', (opt) => {
+      const delta = opt.e.deltaY;
+      let newZoom = canvas.getZoom();
+      newZoom *= 0.999 ** delta;
+      if (newZoom > 5) newZoom = 5;
+      if (newZoom < 0.1) newZoom = 0.1;
+      
+      const point = new Point(opt.e.offsetX, opt.e.offsetY);
+      canvas.zoomToPoint(point, newZoom);
+      setZoom(newZoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
+    });
+
+    // Pan with space + drag
+    let isDragging = false;
+    let lastPosX = 0;
+    let lastPosY = 0;
+
+    canvas.on('mouse:down', (opt) => {
+      const evt = opt.e as MouseEvent;
+      if (evt.shiftKey === true) {
+        isDragging = true;
+        canvas.selection = false;
+        lastPosX = evt.clientX;
+        lastPosY = evt.clientY;
+      }
+    });
+
+    canvas.on('mouse:move', (opt) => {
+      if (isDragging) {
+        const evt = opt.e as MouseEvent;
+        const vpt = canvas.viewportTransform;
+        if (vpt) {
+          vpt[4] += evt.clientX - lastPosX;
+          vpt[5] += evt.clientY - lastPosY;
+          canvas.requestRenderAll();
+          lastPosX = evt.clientX;
+          lastPosY = evt.clientY;
+        }
+      }
+    });
+
+    canvas.on('mouse:up', () => {
+      canvas.setViewportTransform(canvas.viewportTransform);
+      isDragging = false;
+      canvas.selection = true;
+    });
 
     setFabricCanvas(canvas);
     loadCanvasData(canvas);
@@ -37,6 +91,12 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
   useEffect(() => {
     if (!fabricCanvas) return;
     fabricCanvas.isDrawingMode = activeTool === 'draw';
+    
+    // Reset line drawing when tool changes
+    if (activeTool !== 'line') {
+      setIsDrawingLine(false);
+      lineStartRef.current = null;
+    }
   }, [activeTool, fabricCanvas]);
 
   const loadCanvasData = async (canvas: FabricCanvas) => {
@@ -48,11 +108,57 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
 
       if (error) throw error;
 
-      data?.forEach((element) => {
-        const objData = element.element_data as any;
-        canvas.add(objData);
-      });
-      canvas.renderAll();
+      if (data && data.length > 0) {
+        for (const element of data) {
+          const objData = element.element_data as any;
+          
+          // Handle different object types
+          if (objData.type === 'group' && objData.objects) {
+            // It's a kanban card - reconstruct it
+            const objects = await Promise.all(
+              objData.objects.map(async (obj: any) => {
+                if (obj.type === 'rect') {
+                  return new Rect(obj);
+                } else if (obj.type === 'text' || obj.type === 'textbox') {
+                  return new FabricText(obj.text, obj);
+                }
+                return null;
+              })
+            );
+            
+            const group = new Group(objects.filter(Boolean), {
+              left: objData.left,
+              top: objData.top,
+              selectable: true,
+            });
+            canvas.add(group);
+          } else {
+            // Regular object
+            let obj;
+            switch (objData.type) {
+              case 'rect':
+                obj = new Rect(objData);
+                break;
+              case 'circle':
+                obj = new Circle(objData);
+                break;
+              case 'line':
+                obj = new Line([objData.x1, objData.y1, objData.x2, objData.y2], objData);
+                break;
+              case 'textbox':
+                obj = new Textbox(objData.text, objData);
+                break;
+              case 'path':
+                obj = new Path(objData.path, objData);
+                break;
+              default:
+                continue;
+            }
+            if (obj) canvas.add(obj);
+          }
+        }
+        canvas.renderAll();
+      }
     } catch (error) {
       console.error('Error loading canvas:', error);
     }
@@ -62,13 +168,11 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
     if (!fabricCanvas) return;
 
     try {
-      // Delete existing elements
       await supabase
         .from('moodboard_elements')
         .delete()
         .eq('page_id', pageId);
 
-      // Save new elements
       const objects = fabricCanvas.getObjects();
       const elements = objects.map((obj) => ({
         page_id: pageId,
@@ -89,6 +193,65 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
       console.error('Error saving canvas:', error);
       toast.error('Erro ao salvar canvas');
     }
+  };
+
+  const createKanbanCard = () => {
+    if (!fabricCanvas) return;
+
+    const cardWidth = 200;
+    const cardHeight = 120;
+
+    const rect = new Rect({
+      width: cardWidth,
+      height: cardHeight,
+      fill: '#ffffff',
+      stroke: '#e5e7eb',
+      strokeWidth: 2,
+      rx: 8,
+      ry: 8,
+    });
+
+    const title = new FabricText('Card Kanban', {
+      fontSize: 16,
+      fontWeight: 'bold',
+      fill: '#1f2937',
+      top: 15,
+      left: 15,
+    });
+
+    const description = new FabricText('Descrição do card', {
+      fontSize: 12,
+      fill: '#6b7280',
+      top: 45,
+      left: 15,
+    });
+
+    const tag = new Rect({
+      width: 60,
+      height: 20,
+      fill: '#6366f1',
+      rx: 4,
+      ry: 4,
+      top: 85,
+      left: 15,
+    });
+
+    const tagText = new FabricText('Tag', {
+      fontSize: 10,
+      fill: '#ffffff',
+      top: 90,
+      left: 30,
+    });
+
+    const group = new Group([rect, title, description, tag, tagText], {
+      left: 100,
+      top: 100,
+      selectable: true,
+    });
+
+    fabricCanvas.add(group);
+    fabricCanvas.setActiveObject(group);
+    fabricCanvas.renderAll();
   };
 
   const handleToolClick = (tool: typeof activeTool) => {
@@ -121,8 +284,46 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
         fill: '#000000',
       });
       fabricCanvas.add(text);
+    } else if (tool === 'kanban') {
+      createKanbanCard();
+    } else if (tool === 'line') {
+      // Line tool will be handled by mouse events
+      setIsDrawingLine(true);
     }
   };
+
+  useEffect(() => {
+    if (!fabricCanvas || activeTool !== 'line') return;
+
+    const handleMouseDown = (opt: any) => {
+      const pointer = fabricCanvas.getPointer(opt.e);
+      lineStartRef.current = { x: pointer.x, y: pointer.y };
+    };
+
+    const handleMouseUp = (opt: any) => {
+      if (!lineStartRef.current) return;
+      
+      const pointer = fabricCanvas.getPointer(opt.e);
+      const line = new Line(
+        [lineStartRef.current.x, lineStartRef.current.y, pointer.x, pointer.y],
+        {
+          stroke: '#000000',
+          strokeWidth: 2,
+        }
+      );
+      
+      fabricCanvas.add(line);
+      lineStartRef.current = null;
+    };
+
+    fabricCanvas.on('mouse:down', handleMouseDown);
+    fabricCanvas.on('mouse:up', handleMouseUp);
+
+    return () => {
+      fabricCanvas.off('mouse:down', handleMouseDown);
+      fabricCanvas.off('mouse:up', handleMouseUp);
+    };
+  }, [fabricCanvas, activeTool]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -137,6 +338,30 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
       });
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleZoomIn = () => {
+    if (!fabricCanvas) return;
+    let newZoom = fabricCanvas.getZoom() * 1.1;
+    if (newZoom > 5) newZoom = 5;
+    fabricCanvas.setZoom(newZoom);
+    setZoom(newZoom);
+  };
+
+  const handleZoomOut = () => {
+    if (!fabricCanvas) return;
+    let newZoom = fabricCanvas.getZoom() / 1.1;
+    if (newZoom < 0.1) newZoom = 0.1;
+    fabricCanvas.setZoom(newZoom);
+    setZoom(newZoom);
+  };
+
+  const handleResetZoom = () => {
+    if (!fabricCanvas) return;
+    fabricCanvas.setZoom(1);
+    fabricCanvas.viewportTransform = [1, 0, 0, 1, 0, 0];
+    fabricCanvas.renderAll();
+    setZoom(1);
   };
 
   const handleClear = () => {
@@ -155,7 +380,7 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" ref={containerRef}>
       <div className="flex items-center gap-2 p-4 bg-card border rounded-lg flex-wrap">
         <Button
           variant={activeTool === 'select' ? 'default' : 'outline'}
@@ -171,6 +396,14 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
         >
           <Pencil className="h-4 w-4 mr-2" />
           Desenhar
+        </Button>
+        <Button
+          variant={activeTool === 'line' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => handleToolClick('line')}
+        >
+          <Minus className="h-4 w-4 mr-2" />
+          Linha
         </Button>
         <Button
           variant={activeTool === 'rectangle' ? 'default' : 'outline'}
@@ -196,6 +429,14 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
           <Type className="h-4 w-4 mr-2" />
           Texto
         </Button>
+        <Button
+          variant={activeTool === 'kanban' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => handleToolClick('kanban')}
+        >
+          <LayoutGrid className="h-4 w-4 mr-2" />
+          Card Kanban
+        </Button>
         <label>
           <Button variant="outline" size="sm" asChild>
             <span>
@@ -210,7 +451,23 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
             onChange={handleImageUpload}
           />
         </label>
+        
+        <div className="h-6 w-px bg-border mx-2" />
+        
+        <Button variant="outline" size="sm" onClick={handleZoomIn}>
+          <ZoomIn className="h-4 w-4 mr-2" />
+          Zoom +
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleZoomOut}>
+          <ZoomOut className="h-4 w-4 mr-2" />
+          Zoom -
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleResetZoom}>
+          {Math.round(zoom * 100)}%
+        </Button>
+        
         <div className="flex-1" />
+        
         <Button variant="destructive" size="sm" onClick={handleDelete}>
           <Trash2 className="h-4 w-4 mr-2" />
           Excluir
@@ -224,7 +481,10 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
         </Button>
       </div>
 
-      <div className="border rounded-lg overflow-hidden shadow-lg">
+      <div className="border rounded-lg overflow-hidden shadow-lg bg-muted/20">
+        <div className="text-xs text-muted-foreground p-2 bg-card border-b">
+          Dica: Use Shift + Arrastar para mover o canvas | Scroll para zoom
+        </div>
         <canvas ref={canvasRef} />
       </div>
     </div>
