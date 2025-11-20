@@ -11,7 +11,6 @@ import UsersSection from '@/components/admin/UsersSection';
 import MoodboardSection from '@/components/admin/MoodboardSection';
 import SavedSection from '@/components/admin/SavedSection';
 import PlanningSection from '@/components/admin/PlanningSection';
-import WeeklyScheduleSection from '@/components/admin/WeeklyScheduleSection';
 import NotificationPanel from '@/components/admin/NotificationPanel';
 import DataExportImport from '@/components/admin/DataExportImport';
 import { Button } from '@/components/ui/button';
@@ -109,8 +108,6 @@ const Admin = () => {
         return <SavedSection />;
       case 'planning':
         return <PlanningSection />;
-      case 'weekly':
-        return <WeeklyScheduleSection />;
       default:
         return null;
     }
