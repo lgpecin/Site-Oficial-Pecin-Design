@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Canvas as FabricCanvas, Circle, Rect, Textbox, FabricImage, Line, Group, FabricText, Path, Point } from 'fabric';
+import { Canvas as FabricCanvas, Circle, Rect, Textbox, FabricImage, Line, Group, FabricText, Path, Point, PencilBrush } from 'fabric';
 import { Button } from '@/components/ui/button';
 import { Square, Circle as CircleIcon, Type, Image as ImageIcon, Pencil, Trash2, Save, ZoomIn, ZoomOut, Minus, LayoutGrid } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,8 +28,11 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
       backgroundColor: '#ffffff',
     });
 
-    canvas.freeDrawingBrush.color = '#000000';
-    canvas.freeDrawingBrush.width = 2;
+    // Initialize the freehand drawing brush
+    const brush = new PencilBrush(canvas);
+    brush.color = '#000000';
+    brush.width = 2;
+    canvas.freeDrawingBrush = brush;
     
     // Force initial render
     canvas.renderAll();
