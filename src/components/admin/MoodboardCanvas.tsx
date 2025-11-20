@@ -19,16 +19,20 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
   const lineStartRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !containerRef.current) return;
 
+    const containerWidth = containerRef.current.offsetWidth || window.innerWidth - 400;
     const canvas = new FabricCanvas(canvasRef.current, {
-      width: window.innerWidth - 400,
+      width: Math.max(containerWidth - 40, 800),
       height: 800,
       backgroundColor: '#ffffff',
     });
 
     canvas.freeDrawingBrush.color = '#000000';
     canvas.freeDrawingBrush.width = 2;
+    
+    // Force initial render
+    canvas.renderAll();
 
     // Zoom with mouse wheel
     canvas.on('mouse:wheel', (opt) => {
@@ -82,8 +86,20 @@ const MoodboardCanvas = ({ pageId }: MoodboardCanvasProps) => {
 
     setFabricCanvas(canvas);
     loadCanvasData(canvas);
+    
+    // Handle window resize
+    const handleResize = () => {
+      if (containerRef.current) {
+        const newWidth = Math.max(containerRef.current.offsetWidth - 40, 800);
+        canvas.setWidth(newWidth);
+        canvas.renderAll();
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
 
     return () => {
+      window.removeEventListener('resize', handleResize);
       canvas.dispose();
     };
   }, [pageId]);
