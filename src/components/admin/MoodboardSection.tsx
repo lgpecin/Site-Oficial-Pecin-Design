@@ -41,6 +41,8 @@ const MoodboardSection = () => {
   };
 
   const createPage = async () => {
+    console.log('createPage called', { newPageName, user: user?.id, loading });
+    
     if (!newPageName.trim()) {
       toast.error('Digite um nome para a página');
       return;
@@ -48,8 +50,11 @@ const MoodboardSection = () => {
     
     if (!user) {
       toast.error('Usuário não autenticado');
+      console.error('No user found');
       return;
     }
+
+    console.log('Attempting to create page with:', { name: newPageName, user_id: user.id });
 
     try {
       const { data, error } = await supabase
@@ -60,6 +65,8 @@ const MoodboardSection = () => {
         })
         .select()
         .single();
+
+      console.log('Insert result:', { data, error });
 
       if (error) {
         console.error('Supabase error:', error);
