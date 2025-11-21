@@ -26,7 +26,7 @@ const About = () => {
   }, {
     icon: Zap,
     title: "Branding",
-    description: "Desenvolvimento completo de marcas com propósito e personalidade"
+    description: "Desenvolvimento completo\nde marcas com propósito\ne personalidade"
   }];
   return <section id="about" className="py-16 bg-secondary/30">
       <div className="container mx-auto px-6">
