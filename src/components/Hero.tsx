@@ -231,21 +231,11 @@ const Hero = () => {
         </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)]">
-            
-
-
-
-
-
-
-
-
-Bora tornar seu projeto
-                                      
+            Bora tornar seu projeto
             <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              visão que{" "}
-              <AlternatingTypewriter words={["transforma", "realiza", "resignifica", "humaniza", "inova", "vai além", "traz vida"]} className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" typingSpeed={100} deletingSpeed={50} pauseTime={2000} />
+              em algo{" "}
+              <AlternatingTypewriter words={["Maneiro?", "Único?", "Transformador?", "Poderoso?", "Animal?"]} className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" typingSpeed={100} deletingSpeed={50} pauseTime={2000} />
             </span>
           </h1>
           
