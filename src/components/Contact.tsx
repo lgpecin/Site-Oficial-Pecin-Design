@@ -8,9 +8,11 @@ import { toast } from "@/hooks/use-toast";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const Contact = () => {
   const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  const { settings } = useSiteSettings();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -46,7 +48,7 @@ const Contact = () => {
           <div className="flex flex-col md:flex-row gap-4 mb-8 animate-fade-up items-center justify-center">
             <Button 
               size="lg"
-              onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Gostaria de conversar sobre um projeto.', '_blank')}
+              onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')}
             >
               <img src={whatsappLogo} alt="WhatsApp" className="mr-2 w-5 h-5 object-contain" />
               Chamar no WhatsApp

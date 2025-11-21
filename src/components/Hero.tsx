@@ -5,11 +5,13 @@ import logo from "@/assets/logo.png";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const Hero = () => {
   const parallaxRef = useRef<HTMLDivElement>(null);
   const iconsRef = useRef<HTMLDivElement>(null);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const { settings } = useSiteSettings();
 
   // Array de 20 ícones com suas configurações
   const floatingIcons = [
@@ -130,7 +132,7 @@ const Hero = () => {
               <ArrowDown className="ml-2 h-4 w-4 group-hover:translate-y-1 transition-transform" />
             </Button>
             <Button
-              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')}
               variant="outline"
               size="lg"
               className="w-full sm:w-auto"

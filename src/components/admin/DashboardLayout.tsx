@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LogOut, FolderOpen, Users, DollarSign, UserCog, Image, Star, Calendar, Home, Globe, Menu } from 'lucide-react';
+import { LogOut, FolderOpen, Users, DollarSign, UserCog, Image, Star, Calendar, Home, Globe, Menu, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import {
@@ -22,6 +22,7 @@ const mainSections = [
   { id: 'clients', label: 'Clientes', icon: Users },
   { id: 'services', label: 'Orçamentos', icon: DollarSign },
   { id: 'users', label: 'Usuários', icon: UserCog },
+  { id: 'settings', label: 'Configurações', icon: Settings },
 ];
 
 const studioSections = [
