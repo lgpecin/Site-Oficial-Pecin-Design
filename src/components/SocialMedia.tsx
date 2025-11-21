@@ -1,5 +1,6 @@
-import { Instagram, Linkedin, Palette } from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import BehanceIcon from "@/components/icons/BehanceIcon";
 
 const SocialMedia = () => {
   const { settings } = useSiteSettings();
@@ -19,7 +20,7 @@ const SocialMedia = () => {
     },
     {
       name: "Behance",
-      icon: Palette,
+      icon: BehanceIcon,
       url: settings.behance_url,
       color: "hover:text-blue-500",
     },
