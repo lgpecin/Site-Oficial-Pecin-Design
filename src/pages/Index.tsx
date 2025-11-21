@@ -13,12 +13,7 @@ import Lightbox from "@/components/Lightbox";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "@/components/TypewriterText";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import placeholderProject from "@/assets/placeholder-project.jpg";
 
@@ -28,13 +23,14 @@ const ServiceSteps = lazy(() => import("@/components/ServiceSteps"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
 const SocialMedia = lazy(() => import("@/components/SocialMedia"));
-
 interface ProjectMedia {
   url: string;
   type: 'image' | 'video';
-  metadata?: { width: number; height: number };
+  metadata?: {
+    width: number;
+    height: number;
+  };
 }
-
 interface Project {
   id: string;
   title: string;
@@ -49,38 +45,46 @@ interface Project {
   year: string;
   imageSpacing: number;
 }
-
 const Index = () => {
-  const { ref: projectsRef, isInView: projectsInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  const {
+    ref: projectsRef,
+    isInView: projectsInView
+  } = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string; projectIndex: number; mediaIndex: number } | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{
+    src: string;
+    alt: string;
+    projectIndex: number;
+    mediaIndex: number;
+  } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-  const { isAdmin } = useAuth();
-
+  const {
+    isAdmin
+  } = useAuth();
   useEffect(() => {
     loadProjects();
   }, []);
-
   const loadProjects = async () => {
     try {
-      const { data, error } = await supabase
-        .from('projects')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('projects').select(`
           *,
           project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
-        `)
-        .order('display_order', { ascending: true })
-        .limit(20); // Limit initial load
+        `).order('display_order', {
+        ascending: true
+      }).limit(20); // Limit initial load
 
       if (error) throw error;
-
       const formattedProjects: Project[] = (data || []).map((project: any) => {
-        const sortedMedia = project.project_images
-          ?.sort((a: any, b: any) => a.display_order - b.display_order) || [];
-        
+        const sortedMedia = project.project_images?.sort((a: any, b: any) => a.display_order - b.display_order) || [];
         return {
           id: project.id,
           title: project.title,
@@ -97,10 +101,9 @@ const Index = () => {
           fullDescription: project.full_description,
           technologies: project.project_technologies?.map((t: any) => t.technology) || [],
           year: project.year.toString(),
-          imageSpacing: project.image_spacing ?? 16,
+          imageSpacing: project.image_spacing ?? 16
         };
       });
-
       setProjects(formattedProjects);
     } catch (error) {
       console.error('Error loading projects:', error);
@@ -108,24 +111,20 @@ const Index = () => {
       setLoading(false);
     }
   };
-
   const project = selectedProject !== null ? projects[selectedProject] : null;
-  
+
   // Extrair categorias únicas
   const categories = ["Todos", ...Array.from(new Set(projects.map(p => p.category)))];
-  
+
   // Filtrar projetos por categoria
-  const filteredProjects = selectedCategory === "Todos" 
-    ? projects 
-    : projects.filter(p => p.category === selectedCategory);
-  
+  const filteredProjects = selectedCategory === "Todos" ? projects : projects.filter(p => p.category === selectedCategory);
+
   // Funções de navegação do lightbox
   const handleLightboxPrevious = () => {
     if (!lightboxImage) return;
     const currentProject = projects[lightboxImage.projectIndex];
     const images = currentProject.detailMedia.filter(m => m.type === 'image');
     const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
-    
     if (currentImageIndex > 0) {
       const prevImage = images[currentImageIndex - 1];
       setLightboxImage({
@@ -136,13 +135,11 @@ const Index = () => {
       });
     }
   };
-  
   const handleLightboxNext = () => {
     if (!lightboxImage) return;
     const currentProject = projects[lightboxImage.projectIndex];
     const images = currentProject.detailMedia.filter(m => m.type === 'image');
     const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
-    
     if (currentImageIndex < images.length - 1) {
       const nextImage = images[currentImageIndex + 1];
       setLightboxImage({
@@ -153,36 +150,30 @@ const Index = () => {
       });
     }
   };
-  
   const getLightboxNavigationInfo = () => {
-    if (!lightboxImage) return { hasPrevious: false, hasNext: false };
+    if (!lightboxImage) return {
+      hasPrevious: false,
+      hasNext: false
+    };
     const currentProject = projects[lightboxImage.projectIndex];
     const images = currentProject.detailMedia.filter(m => m.type === 'image');
     const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
-    
     return {
       hasPrevious: currentImageIndex > 0,
       hasNext: currentImageIndex < images.length - 1
     };
   };
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       <header>
         <Navigation />
         
         {/* Admin button - fixed position */}
-        {isAdmin && (
-          <Link to="/admin" aria-label="Painel Administrativo">
-            <Button
-              className="fixed top-20 right-6 z-40 shadow-lg"
-              size="sm"
-            >
+        {isAdmin && <Link to="/admin" aria-label="Painel Administrativo">
+            <Button className="fixed top-20 right-6 z-40 shadow-lg" size="sm">
               <Settings className="h-4 w-4 mr-2" />
               ADMIN
             </Button>
-          </Link>
-        )}
+          </Link>}
       </header>
       
       <main>
@@ -195,50 +186,43 @@ const Index = () => {
               <TypewriterText text="Resultados. Sem Enrolação." isInView={projectsInView} speed={50} />
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              Estes são alguns projetos com resultados únicos.
+              Cada projeto é especial, aqui você pode conhecer alguns deles.
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                       
             </p>
             
             {/* Filtros de categoria */}
             <div className="flex flex-wrap justify-center gap-3 mb-12">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-6 py-2 rounded-full font-medium transition-all ${
-                    selectedCategory === category
-                      ? 'bg-primary text-primary-foreground shadow-lg scale-105'
-                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                  }`}
-                >
+              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-6 py-2 rounded-full font-medium transition-all ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
                   {category}
-                </button>
-              ))}
+                </button>)}
             </div>
           </div>
           
-          {loading ? (
-            <div className="text-center py-12 text-muted-foreground">
+          {loading ? <div className="text-center py-12 text-muted-foreground">
               Carregando projetos...
-            </div>
-          ) : filteredProjects.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
+            </div> : filteredProjects.length === 0 ? <div className="text-center py-12 text-muted-foreground">
               Nenhum projeto disponível nesta categoria.
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
+            </div> : <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
               {filteredProjects.map((project, index) => {
-                const originalIndex = projects.findIndex(p => p.id === project.id);
-                return (
-                  <AnimatedSection key={project.id}>
-                    <ProjectCard 
-                      {...project} 
-                      onClick={() => setSelectedProject(originalIndex)}
-                    />
-                  </AnimatedSection>
-                );
-              })}
-            </div>
-          )}
+              const originalIndex = projects.findIndex(p => p.id === project.id);
+              return <AnimatedSection key={project.id}>
+                    <ProjectCard {...project} onClick={() => setSelectedProject(originalIndex)} />
+                  </AnimatedSection>;
+            })}
+            </div>}
           </div>
         </section>
 
@@ -255,8 +239,7 @@ const Index = () => {
 
       <Dialog open={selectedProject !== null} onOpenChange={() => setSelectedProject(null)}>
         <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
-          {project && (
-            <div className="space-y-12">
+          {project && <div className="space-y-12">
               {/* Título e metadados */}
               <div>
                 <DialogTitle className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -274,24 +257,15 @@ const Index = () => {
 
               {/* Mídia principal */}
               <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
-                {project.bannerType === 'video' ? (
-                  <video
-                     src={project.bannerImage}
-                    controls
-                    className="w-full h-auto"
-                    style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
-                    preload="metadata"
-                  />
-                ) : (
-                  <img
-                    src={project.bannerImage}
-                    alt={`${project.title} - Banner do projeto`}
-                    className="w-full h-auto"
-                    style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                )}
+                {project.bannerType === 'video' ? <video src={project.bannerImage} controls className="w-full h-auto" style={{
+              maxWidth: '1920px',
+              margin: '0 auto',
+              display: 'block'
+            }} preload="metadata" /> : <img src={project.bannerImage} alt={`${project.title} - Banner do projeto`} className="w-full h-auto" style={{
+              maxWidth: '1920px',
+              margin: '0 auto',
+              display: 'block'
+            }} loading="lazy" decoding="async" />}
               </div>
 
               {/* Sobre o projeto */}
@@ -305,45 +279,29 @@ const Index = () => {
               </div>
 
               {/* Mídias de detalhes */}
-              <div style={{ 
-                display: 'flex', 
-                flexDirection: 'column',
-                gap: `${project.imageSpacing}px`
-              }}>
-                {project.detailMedia.map((media, index) => (
-                  <div 
-                    key={index} 
-                    className="relative w-full overflow-hidden shadow-xl"
-                    style={{ 
-                      borderRadius: project.imageSpacing === 0 ? '0' : '1rem'
-                    }}
-                  >
-                    {media.type === 'video' ? (
-                      <video
-                        src={media.url}
-                        controls
-                        className="w-full h-auto"
-                        style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
-                        preload="metadata"
-                      />
-                    ) : (
-                      <img
-                        src={media.url}
-                        alt={`${project.title} - Detalhe ${index + 1}`}
-                        className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity"
-                        style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }}
-                        onClick={() => setLightboxImage({ 
-                          src: media.url, 
-                          alt: `${project.title} - Detalhe ${index + 1}`,
-                          projectIndex: selectedProject!,
-                          mediaIndex: index
-                        })}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    )}
-                  </div>
-                ))}
+              <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: `${project.imageSpacing}px`
+          }}>
+                {project.detailMedia.map((media, index) => <div key={index} className="relative w-full overflow-hidden shadow-xl" style={{
+              borderRadius: project.imageSpacing === 0 ? '0' : '1rem'
+            }}>
+                    {media.type === 'video' ? <video src={media.url} controls className="w-full h-auto" style={{
+                maxWidth: '1920px',
+                margin: '0 auto',
+                display: 'block'
+              }} preload="metadata" /> : <img src={media.url} alt={`${project.title} - Detalhe ${index + 1}`} className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity" style={{
+                maxWidth: '1920px',
+                margin: '0 auto',
+                display: 'block'
+              }} onClick={() => setLightboxImage({
+                src: media.url,
+                alt: `${project.title} - Detalhe ${index + 1}`,
+                projectIndex: selectedProject!,
+                mediaIndex: index
+              })} loading="lazy" decoding="async" />}
+                  </div>)}
               </div>
 
               {/* Softwares Utilizados */}
@@ -352,62 +310,33 @@ const Index = () => {
                   Softwares Utilizados
                 </h2>
                 <div className="flex flex-wrap gap-3">
-                  {project.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="inline-block px-6 py-3 bg-primary/10 text-primary rounded-full text-base font-medium hover:bg-primary/20 transition-colors"
-                    >
+                  {project.technologies.map(tech => <span key={tech} className="inline-block px-6 py-3 bg-primary/10 text-primary rounded-full text-base font-medium hover:bg-primary/20 transition-colors">
                       {tech}
-                    </span>
-                  ))}
+                    </span>)}
                 </div>
               </div>
-            </div>
-          )}
+            </div>}
         </DialogContent>
       </Dialog>
 
-      {lightboxImage && (
-        <Lightbox 
-          src={lightboxImage.src} 
-          alt={lightboxImage.alt} 
-          onClose={() => setLightboxImage(null)}
-          onPrevious={handleLightboxPrevious}
-          onNext={handleLightboxNext}
-          hasPrevious={getLightboxNavigationInfo().hasPrevious}
-          hasNext={getLightboxNavigationInfo().hasNext}
-        />
-      )}
+      {lightboxImage && <Lightbox src={lightboxImage.src} alt={lightboxImage.alt} onClose={() => setLightboxImage(null)} onPrevious={handleLightboxPrevious} onNext={handleLightboxNext} hasPrevious={getLightboxNavigationInfo().hasPrevious} hasNext={getLightboxNavigationInfo().hasNext} />}
       
       <footer className="py-8 border-t border-border relative">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img 
-                src={logo} 
-                alt="Pecin Design - Logo" 
-                className="h-8 w-auto hover:scale-110 transition-transform duration-300"
-                loading="lazy"
-              />
+              <img src={logo} alt="Pecin Design - Logo" className="h-8 w-auto hover:scale-110 transition-transform duration-300" loading="lazy" />
               <p className="text-muted-foreground text-center md:text-left">
                 © 2025 Pecin Design. Todos os direitos reservados.
               </p>
             </div>
-            <a
-              href="https://wa.me/5511999999999?text=Olá! Vim através do seu portfólio."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
-              aria-label="Fale no WhatsApp"
-            >
+            <a href="https://wa.me/5511999999999?text=Olá! Vim através do seu portfólio." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium" aria-label="Fale no WhatsApp">
               <img src={whatsappLogo} alt="WhatsApp" className="w-5 h-5 object-contain" aria-hidden="true" />
               Fale no WhatsApp
             </a>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
