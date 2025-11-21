@@ -32,7 +32,7 @@ const About = () => {
       <div className="container mx-auto px-6">
         <div ref={ref} className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-            <TypewriterText text="Sobre Mim" isInView={isInView} speed={80} />
+            <TypewriterText text="E quem sou eu?" isInView={isInView} speed={80} />
           </h2>
         </div>
 
