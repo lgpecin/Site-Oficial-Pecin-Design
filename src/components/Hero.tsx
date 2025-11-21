@@ -113,7 +113,7 @@ const Hero = () => {
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               visão que{" "}
               <AlternatingTypewriter
-                words={["transforma", "realiza", "resignifica", "humaniza"]}
+                words={["transforma", "realiza", "resignifica", "humaniza", "inova", "vai além", "traz vida"]}
                 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
                 typingSpeed={100}
                 deletingSpeed={50}
