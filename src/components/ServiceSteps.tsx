@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Users, FileText, FileSignature, Presentation, CheckCircle, Package, AlertCircle } from "lucide-react";
+import { useInView } from "@/hooks/use-in-view";
+import { TypewriterText } from "./TypewriterText";
 
 interface Step {
   icon: React.ReactNode;
@@ -13,6 +15,10 @@ const ServiceSteps = () => {
   const [visibleSteps, setVisibleSteps] = useState(0);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { ref: titleRef, isInView } = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
   
   const steps: Step[] = [{
     icon: <Users className="w-12 h-12" />,
@@ -76,12 +82,14 @@ const ServiceSteps = () => {
   return (
     <section ref={sectionRef} className="relative py-16 md:py-20 bg-background">
       <div className="container mx-auto px-4 md:px-6">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-6 text-foreground">
-          E como é contar com meus serviços?
-        </h2>
+        <div ref={titleRef} className="text-center mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground min-h-[3rem]">
+            <TypewriterText text="Como é trabalhar comigo?" isInView={isInView} speed={80} />
+          </h2>
+        </div>
         
         <p className="text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed">
-          É suuuuper importante que todas etapas sejam bem claras para sempre alinharmos as expectativas, quando você entra em contato comigo para desenrolarmos um projeto, é isso que acontece:
+          É suuuuper importante que todas etapas sejam bem claras. Quando você entra em contato comigo para desenrolarmos um projeto, é isso que acontece:
         </p>
 
         {/* Barra lateral de progresso */}
