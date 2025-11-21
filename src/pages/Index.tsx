@@ -185,7 +185,7 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
               <TypewriterText text="Resultados. Sem Enrolação." isInView={projectsInView} speed={50} />
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
               Cada projeto é especial, aqui você pode conhecer alguns deles.
 
 
