@@ -43,11 +43,8 @@ const FAQ = () => {
       <div className="container mx-auto px-6">
         <div ref={ref} className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-            <TypewriterText text="Perguntas Frequentes" isInView={isInView} speed={60} />
+            <TypewriterText text="Ficou com alguma dúvida?" isInView={isInView} speed={60} />
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Respostas para as dúvidas mais comuns sobre meus serviços e processo de trabalho.
-          </p>
         </div>
 
         <div className="max-w-3xl mx-auto">
@@ -68,6 +65,12 @@ const FAQ = () => {
               </AnimatedSection>
             ))}
           </Accordion>
+          
+          <div className="text-center mt-12">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Caso tenha ficado com alguma outra dúvida, pode sempre me dar um alô pra gente conversar sobre!
+            </p>
+          </div>
         </div>
       </div>
     </section>
