@@ -76,9 +76,13 @@ const ServiceSteps = () => {
   return (
     <section ref={sectionRef} className="relative py-16 md:py-20 bg-background">
       <div className="container mx-auto px-4 md:px-6">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-16 text-foreground">
-          Como Funcionam Meus Serviços
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-6 text-foreground">
+          E como é contar com meus serviços?
         </h2>
+        
+        <p className="text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed">
+          É suuuuper importante que todas etapas sejam bem claras para sempre alinharmos as expectativas, quando você entra em contato comigo para desenrolarmos um projeto, é isso que acontece:
+        </p>
 
         {/* Barra lateral de progresso */}
         <div className={`hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${isSectionVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
