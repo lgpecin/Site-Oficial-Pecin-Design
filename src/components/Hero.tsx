@@ -235,7 +235,7 @@ const Hero = () => {
             <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               em algo{" "}
-              <AlternatingTypewriter words={["Maneiro?", "Único?", "Transformador?", "Poderoso?", "Animal?"]} className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" typingSpeed={100} deletingSpeed={50} pauseTime={2000} />
+              <AlternatingTypewriter words={["maneiro?", "único?", "transformador?", "poderoso?", "animal?"]} className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" typingSpeed={100} deletingSpeed={50} pauseTime={2000} />
             </span>
           </h1>
           
