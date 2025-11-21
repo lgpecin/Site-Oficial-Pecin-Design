@@ -135,7 +135,7 @@ const Hero = () => {
               size="lg"
               className="w-full sm:w-auto"
             >
-              <img src={whatsappLogo} alt="WhatsApp" className="mr-2 w-4 h-4 object-contain" />
+              <img src={whatsappLogo} alt="WhatsApp" className="mr-2 w-5 h-5 object-contain" />
               Fale Comigo
             </Button>
           </div>
