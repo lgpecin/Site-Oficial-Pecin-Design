@@ -35,7 +35,7 @@ const About = () => {
       <div className="container mx-auto px-6">
         <div ref={ref} className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-            <TypewriterText text="Um pouquinho do que faço." isInView={isInView} speed={80} />
+            <TypewriterText text="Sobre Mim" isInView={isInView} speed={80} />
           </h2>
         </div>
 
@@ -69,7 +69,9 @@ const About = () => {
 
         <div className="max-w-3xl mx-auto text-center mt-16">
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Esqueça os templates prontos. Aqui só entra suor, neurónios queimados e estratégias visuais que funcionam pra valor! Se liga:
+            Sou um designer apaixonado por criar experiências visuais memoráveis. 
+            Com foco em minimalismo e funcionalidade, trabalho para transformar 
+            ideias complexas em designs simples e elegantes que comunicam de forma eficaz.
           </p>
         </div>
       </div>

@@ -183,10 +183,10 @@ const Index = () => {
           <div className="container mx-auto px-6">
           <div ref={projectsRef} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-              <TypewriterText text="Resultados. Sem Enrolação." isInView={projectsInView} speed={50} />
+              <TypewriterText text="Um pouquinho do que faço." isInView={projectsInView} speed={50} />
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-              Cada projeto é especial, aqui você pode conhecer alguns deles.
+              Esqueça os templates prontos. Aqui só entra suor, neurónios queimados e estratégias visuais que funcionam pra valor! Se liga:
 
 
 
