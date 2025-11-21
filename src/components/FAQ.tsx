@@ -7,22 +7,56 @@ import {
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
+import { 
+  Share2, 
+  TrendingUp, 
+  BookOpen, 
+  Globe, 
+  Sparkles, 
+  Megaphone, 
+  Film, 
+  Package 
+} from "lucide-react";
 
 const FAQ = () => {
   const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
   
+  const services = [
+    { icon: Share2, title: "Social Media" },
+    { icon: TrendingUp, title: "Planejamento Estratégico" },
+    { icon: BookOpen, title: "Criação de Ebooks" },
+    { icon: Globe, title: "Webdesign" },
+    { icon: Sparkles, title: "Branding" },
+    { icon: Megaphone, title: "Ativação de Marca" },
+    { icon: Film, title: "Motion Design" },
+    { icon: Package, title: "Design de Produtos e Embalagens" }
+  ];
+
   const faqs = [
     {
-      question: "Quais serviços de design você oferece?",
-      answer: "Ofereço uma ampla gama de serviços incluindo UI/UX Design para aplicativos mobile e web, criação de identidade visual completa (branding), design de websites e e-commerce, ilustrações 3D e motion design. Cada projeto é personalizado de acordo com as necessidades específicas do cliente."
+      question: "Quais serviços de design podemos desenvolver?",
+      answer: (
+        <div>
+          <p className="mb-6">
+            Trabalho com bastante coisa mesmo! A gente sempre pode conversar sobre projetos mais diferentes, mas geralmente, o que costumo desenvolver são:
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {services.map((service, index) => (
+              <div 
+                key={index}
+                className="flex flex-col items-center gap-3 p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+              >
+                <service.icon className="w-8 h-8 text-primary" />
+                <span className="text-sm font-medium text-center">{service.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
     },
     {
       question: "Qual é o prazo médio de entrega dos projetos?",
       answer: "O prazo varia de acordo com a complexidade e escopo do projeto. Em média, projetos de identidade visual levam de 2 a 4 semanas, enquanto designs de apps e websites podem levar de 4 a 8 semanas. Sempre discuto os prazos no início do projeto para garantir alinhamento com suas expectativas."
-    },
-    {
-      question: "Como funciona o processo de trabalho?",
-      answer: "Meu processo começa com uma reunião para entender suas necessidades e objetivos. Em seguida, faço pesquisa e apresento propostas conceituais. Após aprovação, desenvolvo o projeto completo com revisões incluídas. Mantenho comunicação constante durante todo o processo para garantir que o resultado final esteja alinhado com sua visão."
     },
     {
       question: "Você oferece revisões no projeto?",
@@ -35,6 +69,10 @@ const FAQ = () => {
     {
       question: "Você trabalha com clientes remotos?",
       answer: "Absolutamente! Trabalho com clientes de todo o Brasil e do mundo através de videochamadas e ferramentas de colaboração online. A comunicação remota permite flexibilidade e eficiência, mantendo a qualidade do trabalho em todos os projetos."
+    },
+    {
+      question: "Podemos marcar uma reunião para conversar sobre algum projeto?",
+      answer: "É claro! Só me mandar uma mensagem e a gente encaixa a melhor data para ambos, para conversamos sobre ideias e projetos e também para me conhecer melhor. Se for de Maringá, dá até pra gente ir tomar um café enquanto conversamos sobre!"
     }
   ];
 
@@ -55,11 +93,11 @@ const FAQ = () => {
                   value={`item-${index}`}
                   className="bg-card rounded-lg px-6 border-0 shadow-sm"
                 >
-                <AccordionTrigger className="text-left hover:no-underline py-6">
-                  <span className="font-semibold text-lg">{faq.question}</span>
-                </AccordionTrigger>
+                  <AccordionTrigger className="text-left hover:no-underline py-6">
+                    <span className="font-semibold text-lg">{faq.question}</span>
+                  </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
-                    {faq.answer}
+                    {typeof faq.answer === 'string' ? faq.answer : faq.answer}
                   </AccordionContent>
                 </AccordionItem>
               </AnimatedSection>
