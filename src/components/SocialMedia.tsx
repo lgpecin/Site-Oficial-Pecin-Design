@@ -1,36 +1,21 @@
-import { Instagram, Linkedin, Twitter, Github, Dribbble } from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const SocialMedia = () => {
+  const { settings } = useSiteSettings();
+
   const socialLinks = [
     {
       name: "Instagram",
       icon: Instagram,
-      url: "https://instagram.com/seu_usuario",
+      url: settings.instagram_url,
       color: "hover:text-pink-500",
     },
     {
       name: "LinkedIn",
       icon: Linkedin,
-      url: "https://linkedin.com/in/seu_perfil",
+      url: settings.linkedin_url,
       color: "hover:text-blue-600",
-    },
-    {
-      name: "Twitter",
-      icon: Twitter,
-      url: "https://twitter.com/seu_usuario",
-      color: "hover:text-blue-400",
-    },
-    {
-      name: "Dribbble",
-      icon: Dribbble,
-      url: "https://dribbble.com/seu_usuario",
-      color: "hover:text-pink-400",
-    },
-    {
-      name: "GitHub",
-      icon: Github,
-      url: "https://github.com/seu_usuario",
-      color: "hover:text-foreground",
     },
   ];
 
