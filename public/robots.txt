@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /private
 
-Sitemap: https://leonardopecin.com.br/sitemap.xml
+Sitemap: https://pecindesign.com.br/sitemap.xml
