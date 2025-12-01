@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LogOut, FolderOpen, Users, DollarSign, UserCog, Image, Star, Calendar, Home, Globe, Menu, Settings } from 'lucide-react';
+import { LogOut, FolderOpen, Users, DollarSign, UserCog, Home, Globe, Menu, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import {
@@ -25,63 +25,29 @@ const mainSections = [
   { id: 'settings', label: 'Configurações', icon: Settings },
 ];
 
-const studioSections = [
-  { id: 'moodboard', label: 'Moodboard', icon: Image },
-  { id: 'saved', label: 'Salvos', icon: Star },
-  { id: 'planning', label: 'Planejamento', icon: Calendar },
-];
-
 const DashboardLayout = ({ children, currentSection, onSectionChange, onSignOut }: DashboardLayoutProps) => {
   const isMobile = useIsMobile();
 
   const NavigationContent = () => (
-    <nav className="p-4 space-y-6">
-      {/* Main sections */}
-      <div className="space-y-2">
-        {mainSections.map((section) => {
-          const Icon = section.icon;
-          return (
-            <button
-              key={section.id}
-              onClick={() => onSectionChange(section.id)}
-              className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                currentSection === section.id
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted"
-              )}
-            >
-              <Icon className="h-5 w-5" />
-              <span className="font-medium">{section.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Studio sections */}
-      <div className="space-y-2 pt-6 border-t">
-        <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-          Studio
-        </p>
-        {studioSections.map((section) => {
-          const Icon = section.icon;
-          return (
-            <button
-              key={section.id}
-              onClick={() => onSectionChange(section.id)}
-              className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                currentSection === section.id
-                  ? "bg-accent text-accent-foreground"
-                  : "hover:bg-accent/50"
-              )}
-            >
-              <Icon className="h-5 w-5" />
-              <span className="font-medium">{section.label}</span>
-            </button>
-          );
-        })}
-      </div>
+    <nav className="p-4 space-y-2">
+      {mainSections.map((section) => {
+        const Icon = section.icon;
+        return (
+          <button
+            key={section.id}
+            onClick={() => onSectionChange(section.id)}
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+              currentSection === section.id
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-muted"
+            )}
+          >
+            <Icon className="h-5 w-5" />
+            <span className="font-medium">{section.label}</span>
+          </button>
+        );
+      })}
     </nav>
   );
 
