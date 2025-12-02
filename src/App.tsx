@@ -5,32 +5,43 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { useSEO } from "@/hooks/useSEO";
+import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
-import ServicesCatalog from "./pages/ServicesCatalog";
-import Exit from "./pages/Exit";
+
+// Lazy load admin and auth pages to reduce initial bundle
+const Auth = lazy(() => import("./pages/Auth"));
+const Admin = lazy(() => import("./pages/Admin"));
+const ServicesCatalog = lazy(() => import("./pages/ServicesCatalog"));
+const Exit = lazy(() => import("./pages/Exit"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   useSEO();
   
+  const LoadingFallback = () => (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+
   return (
     <>
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/services/:token" element={<ServicesCatalog />} />
-          <Route path="/exit" element={<Exit />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/services/:token" element={<ServicesCatalog />} />
+            <Route path="/exit" element={<Exit />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </>
   );

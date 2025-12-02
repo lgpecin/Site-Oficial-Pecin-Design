@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface SiteSettings {
@@ -26,15 +26,9 @@ const defaultSettings: SiteSettings = {
 };
 
 export const useSiteSettings = () => {
-  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
-  const fetchSettings = async () => {
-    try {
+  const { data: settings = defaultSettings, isLoading: loading } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("site_settings")
         .select("setting_key, setting_value");
@@ -47,14 +41,14 @@ export const useSiteSettings = () => {
           return acc;
         }, {} as SiteSettings);
 
-        setSettings({ ...defaultSettings, ...settingsObj });
+        return { ...defaultSettings, ...settingsObj };
       }
-    } catch (error) {
-      console.error("Error fetching site settings:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      return defaultSettings;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   return { settings, loading };
 };

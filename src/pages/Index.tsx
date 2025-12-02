@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useEffect, memo } from "react";
+import { lazy, Suspense, useState, memo } from "react";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/Navigation";
@@ -14,6 +14,7 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import placeholderProject from "@/assets/placeholder-project.jpg";
+import { useQuery } from "@tanstack/react-query";
 
 // Lazy loading de componentes menos críticos para otimizar carregamento inicial
 const About = lazy(() => import("@/components/About"));
@@ -53,8 +54,6 @@ const Index = () => {
     triggerOnce: true
   });
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
   const [lightboxImage, setLightboxImage] = useState<{
     src: string;
     alt: string;
@@ -62,26 +61,24 @@ const Index = () => {
     mediaIndex: number;
   } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-  const {
-    isAdmin
-  } = useAuth();
-  useEffect(() => {
-    loadProjects();
-  }, []);
-  const loadProjects = async () => {
-    try {
-      const {
-        data,
-        error
-      } = await supabase.from('projects').select(`
+  const { isAdmin } = useAuth();
+
+  // Use React Query for projects
+  const { data: projects = [], isLoading: loading } = useQuery({
+    queryKey: ["projects"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select(`
           *,
           project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
-        `).order('display_order', {
-        ascending: true
-      }).limit(20); // Limit initial load
+        `)
+        .order('display_order', { ascending: true })
+        .limit(20);
 
       if (error) throw error;
+
       const formattedProjects: Project[] = (data || []).map((project: any) => {
         const sortedMedia = project.project_images?.sort((a: any, b: any) => a.display_order - b.display_order) || [];
         return {
@@ -104,13 +101,14 @@ const Index = () => {
           hideBanner: project.hide_banner ?? false
         };
       });
-      setProjects(formattedProjects);
-    } catch (error) {
-      console.error('Error loading projects:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      return formattedProjects;
+    },
+    enabled: projectsInView, // Only load when projects section is visible
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   const project = selectedProject !== null ? projects[selectedProject] : null;
 
   // Extrair categorias únicas

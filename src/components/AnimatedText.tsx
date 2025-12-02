@@ -17,29 +17,30 @@ export const AnimatedText = ({ text, isInView, className = "", delay = 0 }: Anim
     if (!isInView || isAnimating) return;
 
     setIsAnimating(true);
-    const duration = 800; // duração total da animação em ms
-    const scrambleSpeed = 30; // velocidade do scramble em ms
+    const duration = 800;
+    const scrambleSpeed = 50; // Increased from 30ms to 50ms
     const startTime = Date.now();
+    let rafId: number;
 
-    const interval = setInterval(() => {
+    const animate = () => {
       const elapsed = Date.now() - startTime - delay;
       
-      if (elapsed < 0) return;
+      if (elapsed < 0) {
+        rafId = requestAnimationFrame(animate);
+        return;
+      }
       
       const progress = Math.min(elapsed / duration, 1);
 
       setDisplayText(
         text.split("").map((char, index) => {
-          // Espaços não são animados
           if (char === " ") return " ";
           
-          // Calcula quando este caractere deve estar completo
           const charProgress = (progress * text.length - index) / 2;
           
           if (charProgress >= 1) {
             return char;
           } else if (charProgress > 0) {
-            // Ainda embaralhando
             return characters[Math.floor(Math.random() * characters.length)];
           } else {
             return "";
@@ -47,14 +48,23 @@ export const AnimatedText = ({ text, isInView, className = "", delay = 0 }: Anim
         })
       );
 
-      if (progress >= 1) {
-        clearInterval(interval);
+      if (progress < 1) {
+        setTimeout(() => {
+          rafId = requestAnimationFrame(animate);
+        }, scrambleSpeed);
+      } else {
         setDisplayText(text.split(""));
         setIsAnimating(false);
       }
-    }, scrambleSpeed);
+    };
 
-    return () => clearInterval(interval);
+    rafId = requestAnimationFrame(animate);
+
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, [isInView, text, delay, isAnimating]);
 
   return (
