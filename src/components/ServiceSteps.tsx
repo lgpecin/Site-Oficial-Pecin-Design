@@ -53,30 +53,55 @@ const ServiceSteps = () => {
   }];
 
   useEffect(() => {
+    let rafId: number;
+    
     const handleScroll = () => {
       if (!sectionRef.current) return;
-      const section = sectionRef.current;
-      const rect = section.getBoundingClientRect();
-      const sectionHeight = section.offsetHeight;
-      const viewportHeight = window.innerHeight;
+      
+      // Use RAF para evitar reflow forçado
+      rafId = requestAnimationFrame(() => {
+        if (!sectionRef.current) return;
+        
+        const section = sectionRef.current;
+        const rect = section.getBoundingClientRect();
+        const sectionHeight = section.offsetHeight;
+        const viewportHeight = window.innerHeight;
 
-      // Verifica se a seção está visível na viewport
-      const isVisible = rect.top < viewportHeight && rect.bottom > 0;
-      setIsSectionVisible(isVisible);
+        // Verifica se a seção está visível na viewport
+        const isVisible = rect.top < viewportHeight && rect.bottom > 0;
+        setIsSectionVisible(isVisible);
 
-      // Calcula progresso do scroll (0 a 1) - ajustado para começar mais cedo
-      const rawProgress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (sectionHeight + viewportHeight * 0.3)));
-      setScrollProgress(rawProgress);
+        // Calcula progresso do scroll (0 a 1) - ajustado para começar mais cedo
+        const rawProgress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (sectionHeight + viewportHeight * 0.3)));
+        setScrollProgress(rawProgress);
 
-      // Determina quantos steps devem estar visíveis - aparecem mais cedo
-      const stepsToShow = Math.min(steps.length, Math.floor(rawProgress * (steps.length + 2)));
-      setVisibleSteps(stepsToShow);
+        // Determina quantos steps devem estar visíveis - aparecem mais cedo
+        const stepsToShow = Math.min(steps.length, Math.floor(rawProgress * (steps.length + 2)));
+        setVisibleSteps(stepsToShow);
+      });
     };
     
-    window.addEventListener("scroll", handleScroll);
+    // Throttle scroll events
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener("scroll", onScroll, { passive: true });
     handleScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, [steps.length]);
 
   return (

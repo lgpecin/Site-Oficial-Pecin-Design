@@ -107,6 +107,17 @@ All colors MUST be HSL.
     animation: fadeIn 0.6s ease-out;
   }
   
+  /* Performance optimizations */
+  .optimize-rendering {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
+  
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
   @keyframes fadeIn {
     from {
       opacity: 0;

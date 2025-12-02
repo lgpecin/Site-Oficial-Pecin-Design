@@ -37,9 +37,15 @@
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+    <link rel="dns-prefetch" href="https://snocogcaznxlkaxluwnt.supabase.co" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://storage.googleapis.com" />
+    <link rel="preconnect" href="https://snocogcaznxlkaxluwnt.supabase.co" crossorigin />
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" as="image" href="/src/assets/logo.png" fetchpriority="high" />
+    <link rel="preload" as="image" href="/src/assets/hero-halftone.jpg" fetchpriority="high" />
     
     <!-- Font Loading Otimizado -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
@@ -77,5 +83,20 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Performance optimization: Start downloading critical resources early -->
+    <script>
+      // Warm up network connections
+      if ('connection' in navigator && navigator.connection) {
+        // @ts-ignore
+        if (navigator.connection.saveData === false) {
+          // Only prefetch on fast connections
+          const prefetchLink = document.createElement('link');
+          prefetchLink.rel = 'prefetch';
+          prefetchLink.href = 'https://snocogcaznxlkaxluwnt.supabase.co';
+          document.head.appendChild(prefetchLink);
+        }
+      }
+    </script>
   </body>
 </html>

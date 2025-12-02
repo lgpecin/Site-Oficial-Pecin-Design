@@ -178,17 +178,40 @@ const Hero = () => {
     rotation: -0.04
   }];
   useEffect(() => {
+    let rafId: number;
+    
     const handleScroll = () => {
-      if (parallaxRef.current) {
-        const scrolled = window.scrollY;
-        parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
-      }
+      rafId = requestAnimationFrame(() => {
+        if (parallaxRef.current) {
+          const scrolled = window.scrollY;
+          parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
 
-      // Update scroll offset for icons
-      setScrollOffset(window.scrollY);
+        // Update scroll offset for icons
+        setScrollOffset(window.scrollY);
+      });
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    // Throttle scroll events for better performance
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener("scroll", onScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
   const scrollToProjects = () => {
     const element = document.getElementById("projects");
@@ -233,7 +256,16 @@ const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-up">
           <div className="mb-6">
-  <img src={logo} alt="Pecin Design - Logo" className="w-auto h-auto max-w-[350px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" loading="eager" fetchPriority="high" width="350" height="161" />
+  <img 
+    src={logo} 
+    alt="Pecin Design - Logo" 
+    className="w-auto h-auto max-w-[350px] mx-auto mb-6 [filter:drop-shadow(0_0_30px_hsl(var(--primary)/0.3))]" 
+    loading="eager" 
+    fetchPriority="high" 
+    width="350" 
+    height="161"
+    decoding="sync"
+  />
         </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)]">
