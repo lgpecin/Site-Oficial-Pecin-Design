@@ -204,8 +204,8 @@ const Index = () => {
             </p>
             
             {/* Filtros de categoria */}
-            <div className="flex flex-wrap justify-center gap-3 mb-12">
-              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-6 py-2 rounded-full font-medium transition-all ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12">
+              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-1.5 sm:px-6 sm:py-2 rounded-full text-xs sm:text-base font-medium transition-all ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
                   {category}
                 </button>)}
             </div>
@@ -215,7 +215,7 @@ const Index = () => {
               Carregando projetos...
             </div> : filteredProjects.length === 0 ? <div className="text-center py-12 text-muted-foreground">
               Nenhum projeto disponível nesta categoria.
-            </div> : <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4">
+            </div> : <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8 max-w-7xl mx-auto px-2 sm:px-4">
               {filteredProjects.map((project, index) => {
               const originalIndex = projects.findIndex(p => p.id === project.id);
               return <AnimatedSection key={project.id}>
