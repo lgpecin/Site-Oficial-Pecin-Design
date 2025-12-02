@@ -2,24 +2,24 @@ import { useEffect, useState, useRef } from "react";
 import { Users, FileText, FileSignature, Presentation, CheckCircle, Package, AlertCircle } from "lucide-react";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "./TypewriterText";
-
 interface Step {
   icon: React.ReactNode;
   title: string;
   description: string;
   duration: string;
 }
-
 const ServiceSteps = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [visibleSteps, setVisibleSteps] = useState(0);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { ref: titleRef, isInView } = useInView({
+  const {
+    ref: titleRef,
+    isInView
+  } = useInView({
     threshold: 0.1,
     triggerOnce: true
   });
-  
   const steps: Step[] = [{
     icon: <Users className="w-12 h-12" />,
     title: "Reunião",
@@ -51,17 +51,14 @@ const ServiceSteps = () => {
     description: "Você recebe todos os arquivos finais nos formatos adequados, prontos para uso. Inclui manual de aplicação quando necessário.",
     duration: "1-2 dias"
   }];
-
   useEffect(() => {
     let rafId: number;
-    
     const handleScroll = () => {
       if (!sectionRef.current) return;
-      
+
       // Use RAF para evitar reflow forçado
       rafId = requestAnimationFrame(() => {
         if (!sectionRef.current) return;
-        
         const section = sectionRef.current;
         const rect = section.getBoundingClientRect();
         const sectionHeight = section.offsetHeight;
@@ -80,7 +77,7 @@ const ServiceSteps = () => {
         setVisibleSteps(stepsToShow);
       });
     };
-    
+
     // Throttle scroll events
     let ticking = false;
     const onScroll = () => {
@@ -92,10 +89,10 @@ const ServiceSteps = () => {
         ticking = true;
       }
     };
-    
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, {
+      passive: true
+    });
     handleScroll();
-
     return () => {
       window.removeEventListener("scroll", onScroll);
       if (rafId) {
@@ -103,9 +100,7 @@ const ServiceSteps = () => {
       }
     };
   }, [steps.length]);
-
-  return (
-    <section ref={sectionRef} className="relative py-12 md:py-16 bg-background">
+  return <section ref={sectionRef} className="relative py-12 md:py-16 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <div ref={titleRef} className="text-center mb-6">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground min-h-[3rem]">
@@ -113,9 +108,7 @@ const ServiceSteps = () => {
           </h2>
         </div>
         
-        <p className="text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed">
-          É suuuuper importante que todas etapas sejam bem claras. Quando você entra em contato comigo para desenrolarmos um projeto, é isso que acontece:
-        </p>
+        <p className="text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed">É suuuuper importante que todas etapas sejam bem claras. Então, quando você entra em contato comigo para desenrolarmos um projeto, é isso que acontece:</p>
 
         {/* Barra lateral de progresso */}
         <div className={`hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${isSectionVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -125,10 +118,9 @@ const ServiceSteps = () => {
             </span>
             
             <div className="relative w-1 h-64 bg-border rounded-full overflow-hidden">
-              <div 
-                className="absolute top-0 left-0 w-full bg-primary transition-all duration-100 ease-out rounded-full" 
-                style={{ height: `${scrollProgress * 100}%` }} 
-              />
+              <div className="absolute top-0 left-0 w-full bg-primary transition-all duration-100 ease-out rounded-full" style={{
+              height: `${scrollProgress * 100}%`
+            }} />
             </div>
             
             <span className="text-xs text-muted-foreground mt-2">
@@ -139,15 +131,7 @@ const ServiceSteps = () => {
 
         {/* Cards em grid 2x2 no mobile, sequência vertical no desktop */}
         <div className="grid grid-cols-2 gap-4 md:max-w-3xl md:mx-auto md:space-y-8 md:grid-cols-1">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className={`transition-all duration-700 ${
-                index < visibleSteps 
-                  ? "opacity-100 translate-y-0" 
-                  : "opacity-0 translate-y-8"
-              }`}
-            >
+          {steps.map((step, index) => <div key={index} className={`transition-all duration-700 ${index < visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <div className="bg-card border border-border rounded-2xl p-4 md:p-8 lg:p-10 shadow-lg h-full">
                 <div className="flex flex-col items-center text-center gap-3 md:gap-6">
                   <div className="text-primary">
@@ -170,8 +154,7 @@ const ServiceSteps = () => {
                   </p>
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
         </div>
 
         {/* Disclaimer */}
@@ -188,7 +171,6 @@ const ServiceSteps = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
 export default ServiceSteps;
