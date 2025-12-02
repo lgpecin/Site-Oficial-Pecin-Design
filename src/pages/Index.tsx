@@ -102,7 +102,8 @@ const Index = () => {
           fullDescription: project.full_description,
           technologies: project.project_technologies?.map((t: any) => t.technology) || [],
           year: project.year.toString(),
-          imageSpacing: project.image_spacing ?? 16
+          imageSpacing: project.image_spacing ?? 16,
+          hideBanner: project.hide_banner ?? false
         };
       });
       setProjects(formattedProjects);
