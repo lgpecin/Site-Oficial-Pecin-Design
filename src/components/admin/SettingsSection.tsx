@@ -5,8 +5,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Save, Settings } from "lucide-react";
+import { 
+  Loader2, 
+  Save, 
+  Settings, 
+  MessageSquare, 
+  Share2, 
+  Mail, 
+  Globe, 
+  Search,
+  Palette,
+  Bell,
+  Shield,
+  Sparkles
+} from "lucide-react";
 
 interface Setting {
   id: string;
@@ -145,147 +161,290 @@ const SettingsSection = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold flex items-center gap-2">
-            <Settings className="h-8 w-8" />
-            Configurações do Site
+        <div className="space-y-1">
+          <h2 className="text-4xl font-bold flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Settings className="h-8 w-8 text-primary" />
+            </div>
+            Configurações
           </h2>
-          <p className="text-muted-foreground mt-2">
-            Gerencie links e informações do seu portfólio
+          <p className="text-muted-foreground text-lg">
+            Personalize e configure seu portfólio
           </p>
         </div>
-        <Button onClick={handleSave} disabled={saving} size="lg">
+        <Button onClick={handleSave} disabled={saving} size="lg" className="gap-2">
           {saving ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
               Salvando...
             </>
           ) : (
             <>
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="h-4 w-4" />
               Salvar Alterações
             </>
           )}
         </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Redes Sociais</CardTitle>
-            <CardDescription>
-              Configure os links das suas redes sociais
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {settings
-              .filter((s) =>
-                ["instagram_url", "linkedin_url", "behance_url"].includes(
-                  s.setting_key
+      <Separator />
+
+      {/* Tabs */}
+      <Tabs defaultValue="general" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsTrigger value="general" className="gap-2">
+            <Globe className="h-4 w-4" />
+            Geral
+          </TabsTrigger>
+          <TabsTrigger value="contact" className="gap-2">
+            <Mail className="h-4 w-4" />
+            Contato
+          </TabsTrigger>
+          <TabsTrigger value="social" className="gap-2">
+            <Share2 className="h-4 w-4" />
+            Redes Sociais
+          </TabsTrigger>
+          <TabsTrigger value="seo" className="gap-2">
+            <Search className="h-4 w-4" />
+            SEO
+          </TabsTrigger>
+        </TabsList>
+
+        {/* General Tab */}
+        <TabsContent value="general" className="space-y-6">
+          <Card className="border-2">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                    Informações do Site
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Defina o título e descrição do seu portfólio
+                  </CardDescription>
+                </div>
+                <Badge variant="secondary">Principal</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {settings
+                .filter((s) =>
+                  ["site_title", "site_description"].includes(s.setting_key)
                 )
-              )
-              .map((setting) => (
-                <div key={setting.id} className="space-y-2">
-                  <Label htmlFor={setting.setting_key}>
-                    {getSettingLabel(setting.setting_key)}
-                  </Label>
-                  {renderInput(setting)}
-                  {setting.description && (
-                    <p className="text-xs text-muted-foreground">
-                      {setting.description}
-                    </p>
-                  )}
-                </div>
-              ))}
-          </CardContent>
-        </Card>
+                .map((setting) => (
+                  <div key={setting.id} className="space-y-3">
+                    <Label htmlFor={setting.setting_key} className="text-base font-medium">
+                      {getSettingLabel(setting.setting_key)}
+                    </Label>
+                    {renderInput(setting)}
+                    {setting.description && (
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <span className="text-primary">•</span>
+                        {setting.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>WhatsApp</CardTitle>
-            <CardDescription>
-              Configure o botão de WhatsApp do site
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {settings
-              .filter((s) =>
-                ["whatsapp_number", "whatsapp_message"].includes(s.setting_key)
-              )
-              .map((setting) => (
-                <div key={setting.id} className="space-y-2">
-                  <Label htmlFor={setting.setting_key}>
-                    {getSettingLabel(setting.setting_key)}
-                  </Label>
-                  {renderInput(setting)}
-                  {setting.description && (
-                    <p className="text-xs text-muted-foreground">
-                      {setting.description}
-                    </p>
-                  )}
-                </div>
-              ))}
-          </CardContent>
-        </Card>
+        {/* Contact Tab */}
+        <TabsContent value="contact" className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-primary" />
+                  Informações de Contato
+                </CardTitle>
+                <CardDescription>
+                  Email e telefone para contato
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {settings
+                  .filter((s) =>
+                    ["site_email", "site_phone"].includes(s.setting_key)
+                  )
+                  .map((setting) => (
+                    <div key={setting.id} className="space-y-3">
+                      <Label htmlFor={setting.setting_key} className="text-base font-medium">
+                        {getSettingLabel(setting.setting_key)}
+                      </Label>
+                      {renderInput(setting)}
+                      {setting.description && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <span className="text-primary">•</span>
+                          {setting.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Contato</CardTitle>
-            <CardDescription>
-              Informações de contato do site
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {settings
-              .filter((s) =>
-                ["site_email", "site_phone"].includes(s.setting_key)
-              )
-              .map((setting) => (
-                <div key={setting.id} className="space-y-2">
-                  <Label htmlFor={setting.setting_key}>
-                    {getSettingLabel(setting.setting_key)}
-                  </Label>
-                  {renderInput(setting)}
-                  {setting.description && (
-                    <p className="text-xs text-muted-foreground">
-                      {setting.description}
-                    </p>
-                  )}
-                </div>
-              ))}
-          </CardContent>
-        </Card>
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  WhatsApp
+                </CardTitle>
+                <CardDescription>
+                  Configure o botão flutuante de WhatsApp
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {settings
+                  .filter((s) =>
+                    ["whatsapp_number", "whatsapp_message"].includes(s.setting_key)
+                  )
+                  .map((setting) => (
+                    <div key={setting.id} className="space-y-3">
+                      <Label htmlFor={setting.setting_key} className="text-base font-medium">
+                        {getSettingLabel(setting.setting_key)}
+                      </Label>
+                      {renderInput(setting)}
+                      {setting.description && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <span className="text-primary">•</span>
+                          {setting.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Informações Gerais</CardTitle>
-            <CardDescription>
-              Título e descrição do seu portfólio
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {settings
-              .filter((s) =>
-                ["site_title", "site_description"].includes(s.setting_key)
-              )
-              .map((setting) => (
-                <div key={setting.id} className="space-y-2">
-                  <Label htmlFor={setting.setting_key}>
-                    {getSettingLabel(setting.setting_key)}
-                  </Label>
-                  {renderInput(setting)}
-                  {setting.description && (
-                    <p className="text-xs text-muted-foreground">
-                      {setting.description}
-                    </p>
-                  )}
+        {/* Social Tab */}
+        <TabsContent value="social" className="space-y-6">
+          <Card className="border-2">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Share2 className="h-5 w-5 text-primary" />
+                    Redes Sociais
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Links para suas redes sociais e portfólios
+                  </CardDescription>
                 </div>
-              ))}
-          </CardContent>
-        </Card>
-      </div>
+                <Badge variant="outline" className="gap-1">
+                  <Globe className="h-3 w-3" />
+                  Públicas
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {settings
+                .filter((s) =>
+                  ["instagram_url", "linkedin_url", "behance_url"].includes(
+                    s.setting_key
+                  )
+                )
+                .map((setting) => (
+                  <div key={setting.id} className="space-y-3">
+                    <Label htmlFor={setting.setting_key} className="text-base font-medium">
+                      {getSettingLabel(setting.setting_key)}
+                    </Label>
+                    <div className="relative">
+                      {renderInput(setting)}
+                      {setting.setting_value && (
+                        <a
+                          href={setting.setting_value}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 text-sm"
+                        >
+                          Testar →
+                        </a>
+                      )}
+                    </div>
+                    {setting.description && (
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <span className="text-primary">•</span>
+                        {setting.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* SEO Tab */}
+        <TabsContent value="seo" className="space-y-6">
+          <Card className="border-2">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Search className="h-5 w-5 text-primary" />
+                    Otimização para Motores de Busca
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Configure meta tags e informações de SEO
+                  </CardDescription>
+                </div>
+                <Badge variant="secondary" className="gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  Avançado
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="p-4 bg-muted/50 rounded-lg border">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-primary/10 rounded-md">
+                    <Search className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <p className="text-sm font-medium">
+                      As configurações de SEO são gerenciadas automaticamente
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      O título e descrição do site (aba Geral) são usados como meta tags para otimização em buscadores. Suas páginas já estão configuradas com sitemap.xml e robots.txt.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-card border rounded-lg">
+                  <div className="space-y-1">
+                    <p className="font-medium">Sitemap</p>
+                    <p className="text-sm text-muted-foreground">Arquivo de mapeamento do site</p>
+                  </div>
+                  <Badge variant="secondary">Ativo</Badge>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-card border rounded-lg">
+                  <div className="space-y-1">
+                    <p className="font-medium">Robots.txt</p>
+                    <p className="text-sm text-muted-foreground">Controle de rastreamento</p>
+                  </div>
+                  <Badge variant="secondary">Ativo</Badge>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-card border rounded-lg">
+                  <div className="space-y-1">
+                    <p className="font-medium">Open Graph Tags</p>
+                    <p className="text-sm text-muted-foreground">Compartilhamento em redes sociais</p>
+                  </div>
+                  <Badge variant="secondary">Ativo</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
