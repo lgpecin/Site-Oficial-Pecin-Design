@@ -23,12 +23,12 @@ const FAQ = () => {
   
   const services = [
     { icon: Share2, title: "Social Media" },
-    { icon: TrendingUp, title: "Planejamento Estratégico" },
-    { icon: BookOpen, title: "Criação de Ebooks" },
-    { icon: Globe, title: "Webdesign" },
     { icon: Sparkles, title: "Branding" },
-    { icon: Megaphone, title: "Ativação de Marca" },
     { icon: Film, title: "Motion Design" },
+    { icon: Globe, title: "Webdesign" },
+    { icon: Megaphone, title: "Ativação de Marca" },
+    { icon: BookOpen, title: "Criação de Ebooks" },
+    { icon: TrendingUp, title: "Planejamento Estratégico" },
     { icon: Package, title: "Design de Produtos e Embalagens" }
   ];
 
