@@ -675,6 +675,7 @@ export type Database = {
           description: string
           display_order: number | null
           full_description: string
+          hide_banner: boolean | null
           id: string
           image_spacing: number | null
           title: string
@@ -688,6 +689,7 @@ export type Database = {
           description: string
           display_order?: number | null
           full_description: string
+          hide_banner?: boolean | null
           id?: string
           image_spacing?: number | null
           title: string
@@ -701,6 +703,7 @@ export type Database = {
           description?: string
           display_order?: number | null
           full_description?: string
+          hide_banner?: boolean | null
           id?: string
           image_spacing?: number | null
           title?: string

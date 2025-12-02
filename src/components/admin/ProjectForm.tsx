@@ -34,6 +34,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
   const [detailMedia, setDetailMedia] = useState<MediaFile[]>([]);
   const [technologies, setTechnologies] = useState<string[]>(['']);
   const [imageSpacing, setImageSpacing] = useState(16);
+  const [hideBanner, setHideBanner] = useState(false);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [tempBannerUrl, setTempBannerUrl] = useState('');
   const { toast } = useToast();
@@ -66,6 +67,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
       setFullDescription(project.full_description);
       setYear(project.year);
       setImageSpacing(project.image_spacing ?? 16);
+      setHideBanner(project.hide_banner ?? false);
       setBannerMedia({ 
         url: project.banner_image || '', 
         type: 'image' 
@@ -104,6 +106,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
         year,
         banner_image: bannerMedia.url,
         image_spacing: imageSpacing,
+        hide_banner: hideBanner,
       };
 
       let finalProjectId = projectId;
@@ -313,6 +316,19 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
                 ? "Imagens serão exibidas juntas sem espaçamento e sem bordas arredondadas" 
                 : `Imagens terão ${imageSpacing}px de espaçamento entre elas`}
             </p>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="hideBanner"
+              checked={hideBanner}
+              onChange={(e) => setHideBanner(e.target.checked)}
+              className="w-4 h-4 rounded border-input"
+            />
+            <Label htmlFor="hideBanner" className="cursor-pointer">
+              Ocultar capa no detalhe do projeto (mostrar apenas como ícone)
+            </Label>
           </div>
 
           <div className="space-y-2">

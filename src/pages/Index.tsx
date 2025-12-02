@@ -44,6 +44,7 @@ interface Project {
   technologies: string[];
   year: string;
   imageSpacing: number;
+  hideBanner?: boolean;
 }
 const Index = () => {
   const {
@@ -256,7 +257,7 @@ const Index = () => {
               </div>
 
               {/* Mídia principal */}
-              <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
+              {!project.hideBanner && <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
                 {project.bannerType === 'video' ? <video src={project.bannerImage} controls className="w-full h-auto" style={{
               maxWidth: '1920px',
               margin: '0 auto',
@@ -266,7 +267,7 @@ const Index = () => {
               margin: '0 auto',
               display: 'block'
             }} loading="lazy" decoding="async" />}
-              </div>
+              </div>}
 
               {/* Sobre o projeto */}
               <div>
