@@ -49,8 +49,9 @@ const Contact = () => {
             <Button 
               size="lg"
               onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')}
+              className="h-16 text-xl px-10"
             >
-              <img src={whatsappLogo} alt="WhatsApp" className="mr-2 w-5 h-5 object-contain" />
+              <img src={whatsappLogo} alt="WhatsApp" className="mr-3 w-10 h-10 object-contain" />
               Chamar no WhatsApp
             </Button>
             <div className="text-center text-muted-foreground py-4 md:py-0 md:flex md:items-center">

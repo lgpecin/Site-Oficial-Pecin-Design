@@ -263,8 +263,8 @@ em visuais lindos e estratégicos.
               Se liga no meu trampo    
               <ArrowDown className="ml-2 h-4 w-4 group-hover:translate-y-1 transition-transform" />
             </Button>
-            <Button onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')} variant="outline" size="lg" className="w-full sm:w-auto">
-              <img src={whatsappLogo} alt="WhatsApp" className="mr-2 w-5 h-5 object-contain" />
+            <Button onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')} variant="outline" size="lg" className="w-full sm:w-auto h-14 text-lg">
+              <img src={whatsappLogo} alt="WhatsApp" className="mr-3 w-8 h-8 object-contain" />
               Vamos conversar!      
             </Button>
           </div>
