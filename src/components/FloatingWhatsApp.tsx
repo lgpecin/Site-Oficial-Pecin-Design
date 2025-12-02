@@ -7,23 +7,63 @@ const FloatingWhatsApp = () => {
   const { settings } = useSiteSettings();
   
   useEffect(() => {
+    let rafId: number;
+    
+    const checkVisibility = () => {
+      rafId = requestAnimationFrame(() => {
+        const contactSection = document.getElementById("contact");
+        if (contactSection) {
+          const rect = contactSection.getBoundingClientRect();
+          const isInContactSection = rect.top <= window.innerHeight && rect.bottom >= 0;
+          setIsVisible(!isInContactSection);
+        }
+      });
+    };
+
+    // Throttle scroll events
+    let ticking = false;
     const handleScroll = () => {
-      const contactSection = document.getElementById("contact");
-      if (contactSection) {
-        const rect = contactSection.getBoundingClientRect();
-        const isInContactSection = rect.top <= window.innerHeight && rect.bottom >= 0;
-        setIsVisible(!isInContactSection);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          checkVisibility();
+          ticking = false;
+        });
+        ticking = true;
       }
     };
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Check initial position
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    checkVisibility(); // Check initial position
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
+  
   const whatsappLink = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`;
   
-  return <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className={`fixed bottom-6 right-6 z-50 transition-all duration-300 hover:scale-110 ${isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`} aria-label="Fale no WhatsApp">
-      <img src={whatsappLogo} alt="WhatsApp" className="w-20 h-20 object-contain drop-shadow-2xl" />
-    </a>;
+  return (
+    <a 
+      href={whatsappLink} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className={`fixed bottom-6 right-6 z-50 transition-all duration-300 hover:scale-110 will-change-transform ${
+        isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      }`}
+      aria-label="Fale no WhatsApp"
+    >
+      <img 
+        src={whatsappLogo} 
+        alt="WhatsApp" 
+        className="w-20 h-20 object-contain drop-shadow-2xl" 
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
+  );
 };
+
 export default FloatingWhatsApp;
