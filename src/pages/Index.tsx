@@ -61,24 +61,28 @@ const Index = () => {
     mediaIndex: number;
   } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-  const { isAdmin } = useAuth();
+  const {
+    isAdmin
+  } = useAuth();
 
   // Use React Query for projects
-  const { data: projects = [], isLoading: loading } = useQuery({
+  const {
+    data: projects = [],
+    isLoading: loading
+  } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('projects')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('projects').select(`
           *,
           project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
-        `)
-        .order('display_order', { ascending: true })
-        .limit(20);
-
+        `).order('display_order', {
+        ascending: true
+      }).limit(20);
       if (error) throw error;
-
       const formattedProjects: Project[] = (data || []).map((project: any) => {
         const sortedMedia = project.project_images?.sort((a: any, b: any) => a.display_order - b.display_order) || [];
         return {
@@ -101,14 +105,14 @@ const Index = () => {
           hideBanner: project.hide_banner ?? false
         };
       });
-
       return formattedProjects;
     },
-    enabled: projectsInView, // Only load when projects section is visible
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    gcTime: 5 * 60 * 1000, // 5 minutes
+    enabled: projectsInView,
+    // Only load when projects section is visible
+    staleTime: 2 * 60 * 1000,
+    // 2 minutes
+    gcTime: 5 * 60 * 1000 // 5 minutes
   });
-
   const project = selectedProject !== null ? projects[selectedProject] : null;
 
   // Extrair categorias únicas
@@ -179,7 +183,7 @@ const Index = () => {
               <TypewriterText text="Um pouquinho do que eu faço." isInView={projectsInView} speed={50} />
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-              Esqueça os templates prontos. Aqui só entra suor, neurónios queimados e estratégias visuais que funcionam pra valor! Se liga:
+              Esqueça os templates prontos. Aqui só entra suor, neurónios queimados e estratégias visuais que funcionam pra valer! Se liga:
 
 
 
