@@ -46,8 +46,19 @@ const ServicesSection = () => {
   const [draggedService, setDraggedService] = useState<Service | null>(null);
   const queryClient = useQueryClient();
 
+  // Fixed category order - categories will always appear in this sequence
+  const categoryOrder = [
+    'estatico',
+    'carrossel', 
+    'reels',
+    'branding',
+    'marca',
+    'ebook',
+    'outros'
+  ];
+
   const categoryNames: Record<string, string> = {
-    arte_estatica: 'Arte Estática',
+    estatico: 'Estático',
     carrossel: 'Carrossel',
     reels: 'Reels',
     branding: 'Branding',
@@ -281,7 +292,11 @@ const ServicesSection = () => {
         </div>
       ) : (
         <div className="space-y-8">
-          {Object.entries(groupedServices).map(([category, categoryServices]) => (
+          {categoryOrder
+            .filter(category => groupedServices[category] && groupedServices[category].length > 0)
+            .map((category) => {
+              const categoryServices = groupedServices[category];
+              return (
             <div key={category}>
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 {categoryNames[category] || category}
@@ -316,7 +331,7 @@ const ServicesSection = () => {
                 ))}
               </div>
             </div>
-          ))}
+          )})}
         </div>
       )}
 
