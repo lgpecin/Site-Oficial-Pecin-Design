@@ -55,13 +55,16 @@ const FloatingWhatsApp = () => {
       }`}
       aria-label="Fale no WhatsApp"
     >
-      <img 
-        src={whatsappLogo} 
-        alt="WhatsApp" 
-        className="w-20 h-20 object-contain drop-shadow-2xl" 
-        loading="lazy"
-        decoding="async"
-      />
+      <div className="relative">
+        <div className="absolute inset-0 rounded-full bg-green-500/30 animate-ping" />
+        <img 
+          src={whatsappLogo} 
+          alt="WhatsApp" 
+          className="relative w-20 h-20 object-contain drop-shadow-2xl" 
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </a>
   );
 };
