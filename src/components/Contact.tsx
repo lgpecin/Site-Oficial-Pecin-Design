@@ -30,8 +30,15 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-12 sm:py-16">
-      <div className="container mx-auto px-6">
+    <section id="contact" className="py-12 sm:py-16 relative overflow-hidden">
+      {/* Brilho verde animado de fundo */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px] animate-float" style={{ animationDelay: '1s', animationDuration: '8s' }}></div>
+        <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[110px] animate-float" style={{ animationDelay: '2s', animationDuration: '10s' }}></div>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-2xl mx-auto">
           <div ref={ref} className="text-center mb-12">
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
