@@ -40,7 +40,7 @@ const About = () => {
           {/* Espaço para foto */}
           <AnimatedSection>
             <div className="relative aspect-square rounded-2xl overflow-hidden">
-              <img src={profilePhoto} alt="Léo - Designer" className="w-full h-full object-cover" width="500" height="500" loading="lazy" decoding="async" />
+              <img alt="Léo - Designer" className="w-full h-full object-cover" width="500" height="500" loading="lazy" decoding="async" src="/lovable-uploads/4fe5d4dc-16c5-44e5-b939-02a046d020cc.png" />
             </div>
           </AnimatedSection>
 
