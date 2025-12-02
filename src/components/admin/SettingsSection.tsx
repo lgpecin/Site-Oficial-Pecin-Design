@@ -23,6 +23,7 @@ import {
   Shield,
   Sparkles
 } from "lucide-react";
+import ThemeSwitch from "./ThemeSwitch";
 
 interface Setting {
   id: string;
@@ -194,10 +195,14 @@ const SettingsSection = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+        <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
           <TabsTrigger value="general" className="gap-2">
             <Globe className="h-4 w-4" />
             Geral
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="gap-2">
+            <Palette className="h-4 w-4" />
+            Aparência
           </TabsTrigger>
           <TabsTrigger value="contact" className="gap-2">
             <Mail className="h-4 w-4" />
@@ -251,6 +256,48 @@ const SettingsSection = () => {
                 ))}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Appearance Tab */}
+        <TabsContent value="appearance" className="space-y-6">
+          <Card className="border-2">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-primary" />
+                    Tema da Interface
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Escolha entre tema claro, escuro ou automático
+                  </CardDescription>
+                </div>
+                <Badge variant="outline" className="gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  Personalização
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ThemeSwitch />
+            </CardContent>
+          </Card>
+
+          <div className="p-4 bg-muted/50 rounded-lg border">
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-primary/10 rounded-md">
+                <Palette className="h-4 w-4 text-primary" />
+              </div>
+              <div className="space-y-1 flex-1">
+                <p className="text-sm font-medium">
+                  Sua preferência é salva automaticamente
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  O tema selecionado será aplicado em todo o painel administrativo e persistirá entre sessões. A opção "Sistema" sincroniza automaticamente com as preferências do seu dispositivo.
+                </p>
+              </div>
+            </div>
+          </div>
         </TabsContent>
 
         {/* Contact Tab */}
