@@ -62,7 +62,8 @@ const ServicesSection = () => {
       const { data, error } = await supabase
         .from("services")
         .select("*")
-        .order("display_order", { ascending: true });
+        .order("display_order", { ascending: true })
+        .order("created_at", { ascending: true });
 
       if (error) throw error;
       return data as Service[];
@@ -127,19 +128,28 @@ const ServicesSection = () => {
     setEditingService(null);
   };
 
-  const handleDragStart = (service: Service) => {
+  const handleDragStart = (e: React.DragEvent, service: Service) => {
     setDraggedService(service);
+    e.currentTarget.classList.add('dragging');
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (e: React.DragEvent) => {
     setDraggedService(null);
+    e.currentTarget.classList.remove('dragging');
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
   };
 
-  const handleDrop = async (targetService: Service) => {
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.currentTarget.classList.remove('drag-over');
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetService: Service) => {
+    e.currentTarget.classList.remove('drag-over');
+    
     if (!draggedService || draggedService.id === targetService.id) {
       setDraggedService(null);
       return;
@@ -188,6 +198,37 @@ const ServicesSection = () => {
 
   return (
     <div className="space-y-6">
+      <style>{`
+        .drag-item {
+          will-change: transform, opacity;
+        }
+        
+        .drag-item.dragging {
+          opacity: 0.4;
+          transform: scale(0.95) rotate(2deg);
+        }
+        
+        .drag-item.drag-over {
+          transform: scale(1.05);
+          box-shadow: 0 0 0 3px hsl(var(--primary) / 0.3),
+                      0 20px 40px -10px hsl(var(--primary) / 0.4);
+          border-radius: 12px;
+        }
+        
+        .drag-item:hover:not(.dragging) {
+          box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.2);
+        }
+        
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-2px); }
+          75% { transform: translateX(2px); }
+        }
+        
+        .drag-item.dragging {
+          animation: shake 0.3s ease-in-out;
+        }
+      `}</style>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">Orçamentos e Serviços</h2>
         <div className="flex flex-wrap gap-2">
@@ -251,13 +292,20 @@ const ServicesSection = () => {
                   <div
                     key={service.id}
                     draggable
-                    onDragStart={() => handleDragStart(service)}
+                    onDragStart={(e) => handleDragStart(e, service)}
                     onDragEnd={handleDragEnd}
                     onDragOver={handleDragOver}
-                    onDrop={() => handleDrop(service)}
-                    className={`cursor-move transition-opacity ${
-                      draggedService?.id === service.id ? "opacity-50" : ""
-                    }`}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, service)}
+                    className={`
+                      cursor-move transition-all duration-300 ease-out
+                      ${draggedService?.id === service.id ? "opacity-40 scale-95" : "opacity-100 scale-100"}
+                      hover:scale-[1.02] active:scale-[0.98]
+                      drag-item
+                    `}
+                    style={{
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
                   >
                     <ServiceCard
                       service={service}
