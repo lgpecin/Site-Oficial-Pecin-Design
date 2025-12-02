@@ -9,6 +9,7 @@ import ProjectForm from '@/components/admin/ProjectForm';
 import ServicesSection from '@/components/admin/ServicesSection';
 import UsersSection from '@/components/admin/UsersSection';
 import SettingsSection from '@/components/admin/SettingsSection';
+import StatisticsSection from '@/components/admin/StatisticsSection';
 import NotificationPanel from '@/components/admin/NotificationPanel';
 import DataExportImport from '@/components/admin/DataExportImport';
 import { Button } from '@/components/ui/button';
@@ -98,6 +99,8 @@ const Admin = () => {
         return <ServicesSection />;
       case 'users':
         return <UsersSection />;
+      case 'statistics':
+        return <StatisticsSection />;
       case 'settings':
         return <SettingsSection />;
       default:
