@@ -143,7 +143,7 @@ const ServicesCatalog = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-8">
-          <img src={logo} alt="Logo" className="h-12 mx-auto mb-4" width="48" height="48" loading="lazy" decoding="async" />
+          <img src={logo} alt="Logo" className="h-12 w-auto mx-auto mb-4" loading="lazy" decoding="async" />
           <h1 className="text-3xl font-bold mb-2">Orçamento de Serviços</h1>
           {shareLink.recipient_name && (
             <p className="text-lg text-muted-foreground">
