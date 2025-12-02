@@ -80,7 +80,7 @@ const ServiceSteps = () => {
   }, [steps.length]);
 
   return (
-    <section ref={sectionRef} className="relative py-16 md:py-20 bg-background">
+    <section ref={sectionRef} className="relative py-12 md:py-16 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <div ref={titleRef} className="text-center mb-6">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground min-h-[3rem]">
