@@ -6,6 +6,7 @@ import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import Particles from "./Particles";
 const Hero = () => {
   const parallaxRef = useRef<HTMLDivElement>(null);
   const iconsRef = useRef<HTMLDivElement>(null);
@@ -202,6 +203,11 @@ const Hero = () => {
       backgroundPosition: "center",
       opacity: 0.02
     }} aria-hidden="true" />
+      
+      {/* Particles Layer */}
+      <div className="absolute inset-0 z-[1]">
+        <Particles />
+      </div>
       
       {/* Floating Icons */}
       <div ref={iconsRef} className="absolute inset-0 z-5 pointer-events-none overflow-hidden">
