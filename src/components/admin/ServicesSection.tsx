@@ -4,12 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, LayoutGrid, List, GripVertical, Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { Card } from "@/components/ui/card";
 import ServiceCard from "./ServiceCard";
 import ServiceForm from "./ServiceForm";
 import ShareLinkManager from "./ShareLinkManager";
 import DataExportImport from "./DataExportImport";
+import * as Icons from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +46,7 @@ const ServicesSection = () => {
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isShareManagerOpen, setIsShareManagerOpen] = useState(false);
   const [draggedService, setDraggedService] = useState<Service | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const queryClient = useQueryClient();
 
   // Fixed category order - categories will always appear in this sequence
@@ -241,7 +244,27 @@ const ServicesSection = () => {
         }
       `}</style>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h2 className="text-2xl font-bold">Orçamentos e Serviços</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold">Orçamentos e Serviços</h2>
+          <div className="flex gap-1 border rounded-md p-1">
+            <Button
+              variant={viewMode === "grid" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("grid")}
+              className="h-8 w-8 p-0"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === "list" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("list")}
+              className="h-8 w-8 p-0"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
         <div className="flex flex-wrap gap-2">
           <DataExportImport 
             tableName="services" 
@@ -302,34 +325,115 @@ const ServicesSection = () => {
                 {categoryNames[category] || category}
                 <Badge variant="secondary">{categoryServices.length}</Badge>
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categoryServices.map((service) => (
-                  <div
-                    key={service.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, service)}
-                    onDragEnd={handleDragEnd}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={(e) => handleDrop(e, service)}
-                    className={`
-                      cursor-move transition-all duration-300 ease-out
-                      ${draggedService?.id === service.id ? "opacity-40 scale-95" : "opacity-100 scale-100"}
-                      hover:scale-[1.02] active:scale-[0.98]
-                      drag-item
-                    `}
-                    style={{
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }}
-                  >
-                    <ServiceCard
-                      service={service}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
-                    />
-                  </div>
-                ))}
-              </div>
+              
+              {viewMode === "grid" ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categoryServices.map((service) => (
+                    <div
+                      key={service.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, service)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, service)}
+                      className={`
+                        cursor-move transition-all duration-300 ease-out
+                        ${draggedService?.id === service.id ? "opacity-40 scale-95" : "opacity-100 scale-100"}
+                        hover:scale-[1.02] active:scale-[0.98]
+                        drag-item
+                      `}
+                      style={{
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                    >
+                      <ServiceCard
+                        service={service}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {categoryServices.map((service) => {
+                    const IconComponent = service.icon ? (Icons as any)[service.icon] : Icons.Folder;
+                    return (
+                      <Card
+                        key={service.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, service)}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, service)}
+                        className={`
+                          cursor-move transition-all duration-300 ease-out
+                          ${draggedService?.id === service.id ? "opacity-40 scale-[0.98]" : "opacity-100 scale-100"}
+                          hover:bg-muted/50 active:scale-[0.98]
+                          drag-item
+                        `}
+                        style={{
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        }}
+                      >
+                        <div className="flex items-center gap-4 p-4">
+                          <GripVertical className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                          
+                          <div 
+                            className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                            style={{ backgroundColor: `${service.color}20` }}
+                          >
+                            <IconComponent className="h-5 w-5" style={{ color: service.color }} />
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold truncate">{service.name}</h4>
+                            <p className="text-sm text-muted-foreground truncate">
+                              {service.description || "Sem descrição"}
+                            </p>
+                          </div>
+                          
+                          <div className="flex items-center gap-4 flex-shrink-0">
+                            <div className="text-right">
+                              <div className="font-semibold text-primary">
+                                R$ {service.price.toFixed(2)}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {service.delivery_days} {service.delivery_days === 1 ? 'dia' : 'dias'}
+                              </div>
+                            </div>
+                            
+                            <Badge variant={service.is_active ? "default" : "secondary"}>
+                              {service.is_active ? "Ativo" : "Inativo"}
+                            </Badge>
+                            
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleEdit(service)}
+                                className="h-8 w-8"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDelete(service.id)}
+                                className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )})}
         </div>
