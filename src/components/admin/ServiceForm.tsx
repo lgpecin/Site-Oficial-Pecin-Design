@@ -75,7 +75,20 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
           .eq("id", service.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("services").insert([data]);
+        // Get the max display_order for new services
+        const { data: maxOrderData } = await supabase
+          .from("services")
+          .select("display_order")
+          .order("display_order", { ascending: false })
+          .limit(1);
+        
+        const nextOrder = maxOrderData && maxOrderData.length > 0 
+          ? (maxOrderData[0].display_order || 0) + 1 
+          : 0;
+
+        const { error } = await supabase
+          .from("services")
+          .insert([{ ...data, display_order: nextOrder }]);
         if (error) throw error;
       }
     },
