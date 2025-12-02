@@ -1,14 +1,12 @@
 import { lazy, Suspense, useState, useEffect, memo } from "react";
-import { Settings } from "lucide-react";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
-import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import logo from "@/assets/logo.png";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import FloatingAdminButton from "@/components/FloatingAdminButton";
 import Lightbox from "@/components/Lightbox";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "@/components/TypewriterText";
@@ -169,13 +167,8 @@ const Index = () => {
       <header>
         <Navigation />
         
-        {/* Admin button - fixed position */}
-        {isAdmin && <Link to="/admin" aria-label="Painel Administrativo">
-            <Button className="fixed top-20 right-6 z-40 shadow-lg" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              ADMIN
-            </Button>
-          </Link>}
+        {/* Admin floating button */}
+        {isAdmin && <FloatingAdminButton />}
       </header>
       
       <main>
@@ -185,7 +178,7 @@ const Index = () => {
           <div className="container mx-auto px-6">
           <div ref={projectsRef} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-              <TypewriterText text="Um pouquinho do que faço." isInView={projectsInView} speed={50} />
+              <TypewriterText text="Um pouquinho do que eu faço." isInView={projectsInView} speed={50} />
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
               Esqueça os templates prontos. Aqui só entra suor, neurónios queimados e estratégias visuais que funcionam pra valor! Se liga:

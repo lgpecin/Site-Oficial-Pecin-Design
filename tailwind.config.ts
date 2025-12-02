@@ -136,6 +136,7 @@ export default {
         "float": "float 400s ease-in-out infinite",
         "pulse-slow": "pulse-slow 500s ease-in-out infinite",
         "blink": "blink 1s step-end infinite",
+        "spin-slow": "spin 3s linear infinite",
       },
     },
   },
