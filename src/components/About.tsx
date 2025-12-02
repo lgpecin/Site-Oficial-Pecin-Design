@@ -28,9 +28,9 @@ const About = () => {
     title: "Branding",
     description: "Desenvolvimento completo\nde marcas com propósito\ne personalidade"
   }];
-  return <section id="about" className="py-16 bg-secondary/30">
+  return <section id="about" className="py-12 sm:py-16 bg-secondary/30">
       <div className="container mx-auto px-6">
-        <div ref={ref} className="max-w-3xl mx-auto text-center mb-16">
+        <div ref={ref} className="max-w-3xl mx-auto text-center mb-8 sm:mb-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
             <TypewriterText text="E quem sou eu?" isInView={isInView} speed={80} />
           </h2>

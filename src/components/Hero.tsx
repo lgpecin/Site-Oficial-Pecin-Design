@@ -271,8 +271,11 @@ em visuais lindos e estratégicos.
         </div>
       </div>
       
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <ArrowDown className="w-8 h-8 text-primary/60" />
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10">
+        <div className="relative">
+          <ArrowDown className="w-8 h-8 text-primary drop-shadow-lg" strokeWidth={2.5} />
+          <div className="absolute inset-0 w-8 h-8 bg-primary/20 rounded-full blur-md animate-pulse"></div>
+        </div>
       </div>
     </section>;
 };

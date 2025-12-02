@@ -179,7 +179,7 @@ const Index = () => {
       <main>
         <Hero />
       
-        <section id="projects" className="py-16" aria-label="Projetos">
+        <section id="projects" className="py-12 sm:py-16" aria-label="Projetos">
           <div className="container mx-auto px-6">
           <div ref={projectsRef} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
