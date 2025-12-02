@@ -17,13 +17,13 @@ const ServiceCard = ({ service, onEdit, onDelete }: ServiceCardProps) => {
 
   return (
     <Card
-      className="p-4 hover:shadow-lg transition-all duration-200 border-2"
+      className="p-4 hover:shadow-lg transition-all duration-200 border-2 h-full flex flex-col"
       style={{
         borderColor: service.color || "#6366f1",
         opacity: service.is_active ? 1 : 0.5,
       }}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3 flex-1">
         <div
           className="p-3 rounded-lg flex-shrink-0"
           style={{ backgroundColor: `${service.color}20` }}
@@ -34,17 +34,15 @@ const ServiceCard = ({ service, onEdit, onDelete }: ServiceCardProps) => {
           />
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex flex-col">
           <h3 className="font-semibold text-lg mb-1 truncate">
             {service.name}
           </h3>
-          {service.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-              {service.description}
-            </p>
-          )}
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-3 min-h-[2.5rem]">
+            {service.description || ""}
+          </p>
 
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-4 text-sm mt-auto">
             <div className="flex items-center gap-1 text-primary font-semibold">
               <DollarSign className="w-4 h-4" />
               R$ {service.price.toFixed(2)}
