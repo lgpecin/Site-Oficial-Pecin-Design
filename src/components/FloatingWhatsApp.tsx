@@ -56,7 +56,7 @@ const FloatingWhatsApp = () => {
       aria-label="Fale no WhatsApp"
     >
       <div className="relative">
-        <div className="absolute inset-0 rounded-full bg-green-500/30 animate-ping" />
+        <div className="absolute inset-0 rounded-full bg-green-500/30 animate-ping-slow" />
         <img 
           src={whatsappLogo} 
           alt="WhatsApp" 
