@@ -30,7 +30,7 @@ const Navigation = () => {
             onClick={() => scrollToSection("hero")}
             className="hover:opacity-80 transition-opacity"
           >
-            <img src={logo} alt="Pecin Design" className="h-8" width="32" height="32" />
+            <img src={logo} alt="Pecin Design" className="h-8 w-auto" loading="eager" decoding="sync" />
           </button>
 
           <div className="hidden md:flex items-center gap-8">
