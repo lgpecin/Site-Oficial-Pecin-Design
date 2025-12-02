@@ -112,8 +112,8 @@ const ServiceSteps = () => {
           </div>
         </div>
 
-        {/* Cards em sequência vertical */}
-        <div className="max-w-3xl mx-auto space-y-8">
+        {/* Cards em grid 2x2 no mobile, sequência vertical no desktop */}
+        <div className="grid grid-cols-2 gap-4 md:max-w-3xl md:mx-auto md:space-y-8 md:grid-cols-1">
           {steps.map((step, index) => (
             <div
               key={index}
@@ -123,22 +123,24 @@ const ServiceSteps = () => {
                   : "opacity-0 translate-y-8"
               }`}
             >
-              <div className="bg-card border border-border rounded-2xl p-6 md:p-8 lg:p-10 shadow-lg">
-                <div className="flex flex-col items-center text-center gap-4 md:gap-6">
+              <div className="bg-card border border-border rounded-2xl p-4 md:p-8 lg:p-10 shadow-lg h-full">
+                <div className="flex flex-col items-center text-center gap-3 md:gap-6">
                   <div className="text-primary">
-                    {step.icon}
+                    <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center">
+                      {step.icon}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2 md:space-y-3">
-                    <div className="inline-block px-3 py-1.5 bg-primary/10 text-primary rounded-full text-xs md:text-sm font-medium">
+                  <div className="space-y-1.5 md:space-y-3">
+                    <div className="inline-block px-2 py-1 md:px-3 md:py-1.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
                       {step.duration}
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-card-foreground">
+                    <h3 className="text-base md:text-3xl font-bold text-card-foreground">
                       {step.title}
                     </h3>
                   </div>
                   
-                  <p className="text-sm md:text-base lg:text-lg text-muted-foreground leading-relaxed">
+                  <p className="text-xs md:text-base lg:text-lg text-muted-foreground leading-relaxed">
                     {step.description}
                   </p>
                 </div>
