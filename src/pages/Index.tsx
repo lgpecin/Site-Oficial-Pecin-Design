@@ -182,23 +182,7 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
               <TypewriterText text="Um pouquinho do que eu faço." isInView={projectsInView} speed={50} />
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-              Esqueça os templates prontos. Aqui só entra suor, neurónios queimados e estratégias visuais que funcionam pra valer! Se liga:
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                                                                                       
-            </p>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">Esqueça os templates prontos. Aqui só entra suor, neurônios queimados e estratégias visuais que funcionam pra valer! Se liga:                                                                                                                        </p>
             
             {/* Filtros de categoria */}
             <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12">
