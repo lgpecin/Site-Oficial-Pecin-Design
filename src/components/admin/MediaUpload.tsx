@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
+import { compressImage } from '@/lib/imageCompression';
 
 interface MediaUploadProps {
   onMediaUploaded: (url: string, fileType: 'image' | 'video', metadata?: any) => void;
@@ -48,7 +49,23 @@ const MediaUpload = ({
     try {
       setUploading(true);
 
-      const fileExt = file.name.split('.').pop();
+      // Comprimir imagem antes de fazer upload (apenas para imagens)
+      let fileToUpload = file;
+      if (file.type.startsWith('image/')) {
+        toast({
+          title: 'Comprimindo imagem...',
+          description: 'Otimizando para carregamento rápido',
+        });
+        
+        fileToUpload = await compressImage(file, {
+          maxWidth: 1920,
+          maxHeight: 1920,
+          quality: 0.92, // 92% de qualidade - imperceptível
+          convertToWebP: true
+        });
+      }
+
+      const fileExt = fileToUpload.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
@@ -56,7 +73,7 @@ const MediaUpload = ({
 
       const { error: uploadError } = await supabase.storage
         .from('project-images')
-        .upload(filePath, file);
+        .upload(filePath, fileToUpload);
 
       if (uploadError) {
         throw uploadError;
@@ -73,6 +90,9 @@ const MediaUpload = ({
 
       toast({
         title: `${type === 'video' ? 'Vídeo' : 'Imagem'} enviado com sucesso!`,
+        description: file.type.startsWith('image/') 
+          ? `Imagem comprimida e otimizada` 
+          : undefined,
       });
     } catch (error) {
       console.error('Error uploading media:', error);
@@ -132,10 +152,24 @@ const MediaUpload = ({
         <div className="border-2 border-dashed border-border rounded-md p-4">
           <Label htmlFor={`media-upload-${label}`} className="cursor-pointer">
             <div className="flex flex-col items-center justify-center gap-2">
-              <Upload className="h-8 w-8 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                {uploading ? 'Enviando...' : `Clique para selecionar ${acceptVideo ? 'imagem ou vídeo' : 'imagem'}`}
-              </span>
+              {uploading ? (
+                <>
+                  <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                  <span className="text-sm text-primary font-medium">
+                    Comprimindo e enviando...
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Clique para selecionar {acceptVideo ? 'imagem ou vídeo' : 'imagem'}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Compressão automática para carregamento rápido
+                  </span>
+                </>
+              )}
             </div>
           </Label>
           <Input
