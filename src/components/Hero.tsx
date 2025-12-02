@@ -259,13 +259,13 @@ em visuais lindos e estratégicos.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
-            <Button onClick={scrollToProjects} size="lg" className="group w-full sm:w-auto h-14 text-base sm:text-lg">
-              Se liga no meu trampo    
-              <ArrowDown className="ml-2 h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-y-1 transition-transform" />
-            </Button>
             <Button onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')} variant="outline" size="lg" className="w-full sm:w-auto h-14 text-base sm:text-lg">
               <img src={whatsappLogo} alt="WhatsApp" className="mr-2 sm:mr-3 w-7 h-7 sm:w-8 sm:h-8 object-contain" />
               Vamos conversar!      
+            </Button>
+            <Button onClick={scrollToProjects} size="lg" className="group w-full sm:w-auto h-14 text-base sm:text-lg">
+              Se liga no meu trampo    
+              <ArrowDown className="ml-2 h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-y-1 transition-transform" />
             </Button>
           </div>
         </div>
