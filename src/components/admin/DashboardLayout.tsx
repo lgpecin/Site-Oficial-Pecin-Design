@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LogOut, FolderOpen, DollarSign, UserCog, Home, Globe, Menu, Settings } from 'lucide-react';
+import { LogOut, FolderOpen, DollarSign, UserCog, Home, Globe, Menu, Settings, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import {
@@ -21,6 +21,7 @@ const mainSections = [
   { id: 'portfolio', label: 'Portfólio', icon: FolderOpen },
   { id: 'services', label: 'Orçamentos', icon: DollarSign },
   { id: 'users', label: 'Usuários', icon: UserCog },
+  { id: 'statistics', label: 'Estatísticas', icon: BarChart3 },
   { id: 'settings', label: 'Configurações', icon: Settings },
 ];
 
