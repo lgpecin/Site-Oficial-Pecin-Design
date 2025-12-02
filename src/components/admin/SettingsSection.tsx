@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import ThemeSwitch from "./ThemeSwitch";
 import ColorPicker from "./ColorPicker";
+import SEOSettings from "./SEOSettings";
 
 interface Setting {
   id: string;
@@ -221,6 +222,26 @@ const SettingsSection = () => {
 
         {/* General Tab */}
         <TabsContent value="general" className="space-y-6">
+          {/* Info Banner */}
+          <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-primary/10 rounded-md">
+                <Sparkles className="h-4 w-4 text-primary" />
+              </div>
+              <div className="space-y-1 flex-1">
+                <p className="text-sm font-medium text-primary">
+                  O que esta seção controla?
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  O <strong>Título</strong> e <strong>Descrição</strong> definidos aqui são os valores principais do seu site. 
+                  Eles são usados automaticamente como padrão nas <strong>Meta Tags de SEO</strong> (aba SEO), 
+                  nos compartilhamentos de redes sociais e em toda a identidade do site. 
+                  Pense neles como a "apresentação oficial" do seu portfólio.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <Card className="border-2">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -230,7 +251,7 @@ const SettingsSection = () => {
                     Informações do Site
                   </CardTitle>
                   <CardDescription className="mt-1">
-                    Defina o título e descrição do seu portfólio
+                    Defina o título e descrição base do seu portfólio
                   </CardDescription>
                 </div>
                 <Badge variant="secondary">Principal</Badge>
@@ -431,68 +452,10 @@ const SettingsSection = () => {
 
         {/* SEO Tab */}
         <TabsContent value="seo" className="space-y-6">
-          <Card className="border-2">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Search className="h-5 w-5 text-primary" />
-                    Otimização para Motores de Busca
-                  </CardTitle>
-                  <CardDescription className="mt-1">
-                    Configure meta tags e informações de SEO
-                  </CardDescription>
-                </div>
-                <Badge variant="secondary" className="gap-1">
-                  <Sparkles className="h-3 w-3" />
-                  Avançado
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="p-4 bg-muted/50 rounded-lg border">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-primary/10 rounded-md">
-                    <Search className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="space-y-1 flex-1">
-                    <p className="text-sm font-medium">
-                      As configurações de SEO são gerenciadas automaticamente
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      O título e descrição do site (aba Geral) são usados como meta tags para otimização em buscadores. Suas páginas já estão configuradas com sitemap.xml e robots.txt.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-card border rounded-lg">
-                  <div className="space-y-1">
-                    <p className="font-medium">Sitemap</p>
-                    <p className="text-sm text-muted-foreground">Arquivo de mapeamento do site</p>
-                  </div>
-                  <Badge variant="secondary">Ativo</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-card border rounded-lg">
-                  <div className="space-y-1">
-                    <p className="font-medium">Robots.txt</p>
-                    <p className="text-sm text-muted-foreground">Controle de rastreamento</p>
-                  </div>
-                  <Badge variant="secondary">Ativo</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-card border rounded-lg">
-                  <div className="space-y-1">
-                    <p className="font-medium">Open Graph Tags</p>
-                    <p className="text-sm text-muted-foreground">Compartilhamento em redes sociais</p>
-                  </div>
-                  <Badge variant="secondary">Ativo</Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <SEOSettings 
+            siteTitle={settings.find(s => s.setting_key === 'site_title')?.setting_value || 'Meu Portfólio'}
+            siteDescription={settings.find(s => s.setting_key === 'site_description')?.setting_value || 'Portfólio de projetos e serviços'}
+          />
         </TabsContent>
       </Tabs>
     </div>
