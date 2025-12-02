@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/admin/DashboardLayout';
 import DashboardHome from '@/components/admin/DashboardHome';
 import ProjectList from '@/components/admin/ProjectList';
 import ProjectForm from '@/components/admin/ProjectForm';
-import ClientsSection from '@/components/admin/ClientsSection';
+
 import ServicesSection from '@/components/admin/ServicesSection';
 import UsersSection from '@/components/admin/UsersSection';
 import SettingsSection from '@/components/admin/SettingsSection';
@@ -94,8 +94,6 @@ const Admin = () => {
             <ProjectList onEdit={handleEdit} refresh={refreshKey} />
           </div>
         );
-      case 'clients':
-        return <ClientsSection />;
       case 'services':
         return <ServicesSection />;
       case 'users':
