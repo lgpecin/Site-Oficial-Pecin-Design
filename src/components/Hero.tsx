@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { ArrowDown } from "lucide-react";
-import heroBg from "@/assets/hero-halftone.jpg";
+import heroBg from "@/assets/hero-bg-new.png";
 import logo from "@/assets/logo.png";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { useEffect, useRef, useState } from "react";
@@ -59,7 +59,7 @@ const Hero = () => {
           backgroundImage: `url(${heroBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.02,
+          opacity: 0.15,
         }}
         aria-hidden="true"
       />
