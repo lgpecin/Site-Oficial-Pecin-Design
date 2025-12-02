@@ -269,7 +269,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
   };
 
   const handleCopyLink = (token: string) => {
-    const url = `${window.location.origin}/#/services/${token}`;
+    const url = `${window.location.origin}/services/${token}`;
     navigator.clipboard.writeText(url);
     toast.success("Link copiado para a área de transferência");
   };
@@ -494,7 +494,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.open(`/#/services/${link.share_token}`, "_blank")}
+                      onClick={() => window.open(`/services/${link.share_token}`, "_blank")}
                       title="Visualizar"
                     >
                       <ExternalLink className="w-4 h-4" />
