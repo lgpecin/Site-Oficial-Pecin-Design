@@ -21,11 +21,13 @@ import {
   Palette,
   Bell,
   Shield,
-  Sparkles
+  Sparkles,
+  UserCog
 } from "lucide-react";
 import ThemeSwitch from "./ThemeSwitch";
 import ColorPicker from "./ColorPicker";
 import SEOSettings from "./SEOSettings";
+import UsersSection from "./UsersSection";
 
 interface Setting {
   id: string;
@@ -197,7 +199,7 @@ const SettingsSection = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+        <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
           <TabsTrigger value="general" className="gap-2">
             <Globe className="h-4 w-4" />
             Geral
@@ -217,6 +219,10 @@ const SettingsSection = () => {
           <TabsTrigger value="seo" className="gap-2">
             <Search className="h-4 w-4" />
             SEO
+          </TabsTrigger>
+          <TabsTrigger value="users" className="gap-2">
+            <UserCog className="h-4 w-4" />
+            Usuários
           </TabsTrigger>
         </TabsList>
 
@@ -456,6 +462,11 @@ const SettingsSection = () => {
             siteTitle={settings.find(s => s.setting_key === 'site_title')?.setting_value || 'Meu Portfólio'}
             siteDescription={settings.find(s => s.setting_key === 'site_description')?.setting_value || 'Portfólio de projetos e serviços'}
           />
+        </TabsContent>
+
+        {/* Users Tab */}
+        <TabsContent value="users" className="space-y-6">
+          <UsersSection />
         </TabsContent>
       </Tabs>
     </div>

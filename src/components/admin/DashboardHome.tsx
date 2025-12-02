@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { FolderOpen, DollarSign, UserCog, Settings, BarChart3 } from 'lucide-react';
+import { FolderOpen, DollarSign, Settings, BarChart3 } from 'lucide-react';
 
 interface DashboardHomeProps {
   onNavigate: (section: string) => void;
@@ -24,15 +24,6 @@ const DashboardHome = ({ onNavigate }: DashboardHomeProps) => {
       color: 'from-green-500/20 to-emerald-500/20',
       iconColor: 'text-green-500',
       borderColor: 'border-green-500/50'
-    },
-    { 
-      id: 'users', 
-      label: 'Usuários', 
-      icon: UserCog, 
-      description: 'Controle de acesso',
-      color: 'from-purple-500/20 to-pink-500/20',
-      iconColor: 'text-purple-500',
-      borderColor: 'border-purple-500/50'
     },
     { 
       id: 'statistics', 
@@ -62,7 +53,7 @@ const DashboardHome = ({ onNavigate }: DashboardHomeProps) => {
       </div>
 
       {/* Main Sections */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {mainSections.map((section) => {
           const Icon = section.icon;
           return (
