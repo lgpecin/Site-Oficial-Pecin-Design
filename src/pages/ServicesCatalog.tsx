@@ -2,8 +2,22 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Clock, DollarSign, Search } from "lucide-react";
-import * as Icons from "lucide-react";
+import { Clock, DollarSign, Search, Folder, Palette, Sparkles, Target, Zap, Camera, Film, Layout, Package, Megaphone, BookOpen } from "lucide-react";
+
+// Icon map for dynamic imports
+const iconMap: Record<string, React.ComponentType<any>> = {
+  Folder,
+  Palette,
+  Sparkles,
+  Target,
+  Zap,
+  Camera,
+  Film,
+  Layout,
+  Package,
+  Megaphone,
+  BookOpen,
+};
 import logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo } from "react";
@@ -129,7 +143,7 @@ const ServicesCatalog = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-8">
-          <img src={logo} alt="Logo" className="h-12 mx-auto mb-4" />
+          <img src={logo} alt="Logo" className="h-12 mx-auto mb-4" width="48" height="48" loading="lazy" decoding="async" />
           <h1 className="text-3xl font-bold mb-2">Orçamento de Serviços</h1>
           {shareLink.recipient_name && (
             <p className="text-lg text-muted-foreground">
@@ -163,8 +177,8 @@ const ServicesCatalog = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {servicesByCategory[category].map((service) => {
                     const IconComponent = service.icon
-                      ? (Icons as any)[service.icon] || Icons.Folder
-                      : Icons.Folder;
+                      ? iconMap[service.icon] || Folder
+                      : Folder;
 
                     return (
                       <Card

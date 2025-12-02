@@ -1,22 +1,40 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Particles = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
+  const animationFrameRef = useRef<number>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Intersection Observer to pause animation when not visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(canvas);
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas size
+    // Set canvas size with throttle
     const setCanvasSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     setCanvasSize();
-    window.addEventListener("resize", setCanvasSize);
+    
+    let resizeTimeout: number;
+    const throttledResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(setCanvasSize, 200);
+    };
+    window.addEventListener("resize", throttledResize, { passive: true });
 
     // Particle class
     class Particle {
@@ -56,9 +74,10 @@ const Particles = () => {
       }
     }
 
-    // Create particles
+    // Create particles - fewer on mobile
     const particles: Particle[] = [];
-    const particleCount = 80;
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 40 : 80;
     
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle());
@@ -66,6 +85,11 @@ const Particles = () => {
 
     // Animation loop
     const animate = () => {
+      if (!isVisible) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       particles.forEach((particle) => {
@@ -73,15 +97,19 @@ const Particles = () => {
         particle.draw();
       });
 
-      requestAnimationFrame(animate);
+      animationFrameRef.current = requestAnimationFrame(animate);
     };
 
     animate();
 
     return () => {
-      window.removeEventListener("resize", setCanvasSize);
+      window.removeEventListener("resize", throttledResize);
+      observer.disconnect();
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
-  }, []);
+  }, [isVisible]);
 
   return (
     <canvas

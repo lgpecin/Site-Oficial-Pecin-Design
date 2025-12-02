@@ -13,6 +13,7 @@ const ProjectCard = ({ title, category, image, description, onClick }: ProjectCa
     <Card 
       onClick={onClick} 
       className="group overflow-hidden border-0 shadow-lg hover-lift cursor-pointer bg-card optimize-rendering"
+      style={{ contain: 'layout' }}
     >
       <div className="relative aspect-square overflow-hidden">
         <img
