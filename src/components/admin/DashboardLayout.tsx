@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { LogOut, FolderOpen, Users, DollarSign, UserCog, Home, Globe, Menu, Settings } from 'lucide-react';
+import { LogOut, FolderOpen, DollarSign, UserCog, Home, Globe, Menu, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import {
@@ -19,7 +19,6 @@ interface DashboardLayoutProps {
 const mainSections = [
   { id: 'home', label: 'Início', icon: Home },
   { id: 'portfolio', label: 'Portfólio', icon: FolderOpen },
-  { id: 'clients', label: 'Clientes', icon: Users },
   { id: 'services', label: 'Orçamentos', icon: DollarSign },
   { id: 'users', label: 'Usuários', icon: UserCog },
   { id: 'settings', label: 'Configurações', icon: Settings },

@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { FolderOpen, Users, DollarSign, UserCog } from 'lucide-react';
+import { FolderOpen, DollarSign, UserCog } from 'lucide-react';
 
 interface DashboardHomeProps {
   onNavigate: (section: string) => void;
@@ -8,7 +8,6 @@ interface DashboardHomeProps {
 const DashboardHome = ({ onNavigate }: DashboardHomeProps) => {
   const mainSections = [
     { id: 'portfolio', label: 'Portfólio', icon: FolderOpen, description: 'Projetos públicos do site' },
-    { id: 'clients', label: 'Clientes', icon: Users, description: 'Gestão de clientes' },
     { id: 'services', label: 'Orçamentos', icon: DollarSign, description: 'Serviços e preços' },
     { id: 'users', label: 'Usuários', icon: UserCog, description: 'Controle de acesso' },
   ];
@@ -21,7 +20,7 @@ const DashboardHome = ({ onNavigate }: DashboardHomeProps) => {
       </div>
 
       {/* Main Sections */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mainSections.map((section) => {
           const Icon = section.icon;
           return (
