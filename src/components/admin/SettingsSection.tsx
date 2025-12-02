@@ -24,6 +24,7 @@ import {
   Sparkles
 } from "lucide-react";
 import ThemeSwitch from "./ThemeSwitch";
+import ColorPicker from "./ColorPicker";
 
 interface Setting {
   id: string;
@@ -283,6 +284,8 @@ const SettingsSection = () => {
             </CardContent>
           </Card>
 
+          <ColorPicker />
+
           <div className="p-4 bg-muted/50 rounded-lg border">
             <div className="flex items-start gap-3">
               <div className="p-2 bg-primary/10 rounded-md">
@@ -290,10 +293,10 @@ const SettingsSection = () => {
               </div>
               <div className="space-y-1 flex-1">
                 <p className="text-sm font-medium">
-                  Sua preferência é salva automaticamente
+                  Suas preferências são salvas automaticamente
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  O tema selecionado será aplicado em todo o painel administrativo e persistirá entre sessões. A opção "Sistema" sincroniza automaticamente com as preferências do seu dispositivo.
+                  O tema e as cores selecionadas serão aplicados em todo o painel administrativo e persistirão entre sessões. Todas as personalizações ficam salvas localmente no seu navegador.
                 </p>
               </div>
             </div>
