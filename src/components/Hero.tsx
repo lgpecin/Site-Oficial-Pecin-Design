@@ -59,7 +59,7 @@ const Hero = () => {
           backgroundImage: `url(${heroBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.15,
+          opacity: 0.25,
         }}
         aria-hidden="true"
       />
