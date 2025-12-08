@@ -35,6 +35,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
   const [technologies, setTechnologies] = useState<string[]>(['']);
   const [imageSpacing, setImageSpacing] = useState(16);
   const [hideBanner, setHideBanner] = useState(false);
+  const [notes, setNotes] = useState('');
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [tempBannerUrl, setTempBannerUrl] = useState('');
   const { toast } = useToast();
@@ -68,6 +69,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
       setYear(project.year);
       setImageSpacing(project.image_spacing ?? 16);
       setHideBanner(project.hide_banner ?? false);
+      setNotes(project.notes ?? '');
       setBannerMedia({ 
         url: project.banner_image || '', 
         type: 'image' 
@@ -107,6 +109,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
         banner_image: bannerMedia.url,
         image_spacing: imageSpacing,
         hide_banner: hideBanner,
+        notes: notes.trim() || null,
       };
 
       let finalProjectId = projectId;
@@ -423,6 +426,20 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
                 )}
               </div>
             ))}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="notes">Observações e Autoria (opcional)</Label>
+            <Textarea
+              id="notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={4}
+              placeholder="Ex: Projeto desenvolvido em parceria com [nome]. Créditos de fotografia: [fotógrafo]. Observações adicionais..."
+            />
+            <p className="text-sm text-muted-foreground">
+              Campo opcional para anotações de observações e créditos de autoria que aparecerão no final do projeto.
+            </p>
           </div>
 
           <div className="flex gap-4">
