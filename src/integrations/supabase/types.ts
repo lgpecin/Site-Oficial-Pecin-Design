@@ -678,6 +678,7 @@ export type Database = {
           hide_banner: boolean | null
           id: string
           image_spacing: number | null
+          notes: string | null
           title: string
           updated_at: string | null
           year: number
@@ -692,6 +693,7 @@ export type Database = {
           hide_banner?: boolean | null
           id?: string
           image_spacing?: number | null
+          notes?: string | null
           title: string
           updated_at?: string | null
           year: number
@@ -706,6 +708,7 @@ export type Database = {
           hide_banner?: boolean | null
           id?: string
           image_spacing?: number | null
+          notes?: string | null
           title?: string
           updated_at?: string | null
           year?: number
