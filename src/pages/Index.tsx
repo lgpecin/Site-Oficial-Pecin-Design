@@ -44,6 +44,7 @@ interface Project {
   year: string;
   imageSpacing: number;
   hideBanner?: boolean;
+  notes?: string;
 }
 const Index = () => {
   const {
@@ -102,7 +103,8 @@ const Index = () => {
           technologies: project.project_technologies?.map((t: any) => t.technology) || [],
           year: project.year.toString(),
           imageSpacing: project.image_spacing ?? 16,
-          hideBanner: project.hide_banner ?? false
+          hideBanner: project.hide_banner ?? false,
+          notes: project.notes ?? undefined
         };
       });
       return formattedProjects;
@@ -296,6 +298,18 @@ const Index = () => {
                     </span>)}
                 </div>
               </div>
+
+              {/* Observações e Autoria */}
+              {project.notes && (
+                <div className="pt-6 border-t border-border">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                    Observações e Autoria
+                  </h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+                    {project.notes}
+                  </p>
+                </div>
+              )}
             </div>}
         </DialogContent>
       </Dialog>
