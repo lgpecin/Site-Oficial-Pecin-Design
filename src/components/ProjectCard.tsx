@@ -20,10 +20,11 @@ const ProjectCard = ({ title, category, image, description, onClick }: ProjectCa
           src={image}
           alt={`${title} - ${category}`}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 will-change-transform"
-          loading="lazy"
-          decoding="async"
+          loading="eager"
+          decoding="sync"
           width="600"
           height="600"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 sm:p-6">
           <div className="text-primary-foreground">
