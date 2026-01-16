@@ -109,8 +109,7 @@ const Index = () => {
       });
       return formattedProjects;
     },
-    enabled: projectsInView,
-    // Only load when projects section is visible
+    enabled: true, // Load immediately on page load
     staleTime: 2 * 60 * 1000,
     // 2 minutes
     gcTime: 5 * 60 * 1000 // 5 minutes
@@ -248,7 +247,7 @@ const Index = () => {
               maxWidth: '1920px',
               margin: '0 auto',
               display: 'block'
-            }} loading="lazy" decoding="async" />}
+            }} loading="eager" decoding="sync" />}
               </div>}
 
               {/* Sobre o projeto */}
@@ -283,7 +282,7 @@ const Index = () => {
                 alt: `${project.title} - Detalhe ${index + 1}`,
                 projectIndex: selectedProject!,
                 mediaIndex: index
-              })} loading="lazy" decoding="async" />}
+              })} loading="eager" decoding="sync" />}
                   </div>)}
               </div>
 
