@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Card } from "./ui/card";
+import { Skeleton } from "./ui/skeleton";
 
 interface ProjectCardProps {
   title: string;
@@ -9,6 +11,8 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ title, category, image, description, onClick }: ProjectCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   return (
     <Card 
       onClick={onClick} 
@@ -16,15 +20,19 @@ const ProjectCard = ({ title, category, image, description, onClick }: ProjectCa
       style={{ contain: 'layout' }}
     >
       <div className="relative aspect-square overflow-hidden">
+        {!imageLoaded && (
+          <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
+        )}
         <img
           src={image}
           alt={`${title} - ${category}`}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 will-change-transform"
+          className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 will-change-transform ${!imageLoaded ? 'opacity-0' : 'opacity-100'} transition-opacity`}
           loading="eager"
           decoding="sync"
           width="600"
           height="600"
           fetchPriority="high"
+          onLoad={() => setImageLoaded(true)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 sm:p-6">
           <div className="text-primary-foreground">
