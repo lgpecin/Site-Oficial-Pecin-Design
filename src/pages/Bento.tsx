@@ -60,17 +60,16 @@ const Bento = () => {
         {/* Bento Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 auto-rows-[minmax(100px,1fr)] sm:auto-rows-[minmax(120px,1fr)]">
 
-          {/* Logo + Name — spans 2 cols, 1 row */}
-          <Link
-            to="/"
-            className="col-span-2 row-span-1 bg-card rounded-2xl p-6 flex items-center gap-4 border border-border hover:border-primary/40 transition-all duration-300 group"
+          {/* Logo + Info — spans 2 cols, 1 row */}
+          <div
+            className="col-span-2 row-span-1 bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-2 border border-border"
           >
-            <img src={logo} alt="Pecin Design" className="h-10 sm:h-14 w-auto group-hover:scale-105 transition-transform" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm text-muted-foreground truncate">Designer Gráfico • Maringá/PR</p>
-            </div>
-            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
-          </Link>
+            <img src={logo} alt="Pecin Design" className="h-14 sm:h-20 w-auto" />
+            <p className="text-xs sm:text-sm text-muted-foreground text-center">Designer Gráfico & Diretor de Arte</p>
+            <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1">
+              <MapPin className="w-3 h-3" /> Maringá/PR
+            </p>
+          </div>
 
           {/* Photo — 2 cols, 2 rows */}
           <div className="col-span-2 row-span-2 rounded-2xl overflow-hidden border border-border relative group">
@@ -149,23 +148,24 @@ const Bento = () => {
             <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">LinkedIn</span>
           </a>
 
+          {/* Behance — Ver portfólio */}
           <a
             href={settings.behance_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 row-span-1 bg-card border border-border hover:border-blue-400/40 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
+            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
           >
-            <BehanceIcon className="w-7 h-7 sm:w-8 sm:h-8 text-muted-foreground group-hover:text-blue-500 transition-colors" />
-            <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">Behance</span>
+            <BehanceIcon className="w-7 h-7 sm:w-8 sm:h-8 text-primary group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-medium text-primary">Ver portfólio</span>
           </a>
 
-          {/* View full portfolio */}
+          {/* Ver site */}
           <Link
             to="/"
             className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
           >
             <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-primary group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-medium text-primary">Ver portfólio</span>
+            <span className="text-xs font-medium text-primary">Ver site</span>
           </Link>
         </div>
       </div>
