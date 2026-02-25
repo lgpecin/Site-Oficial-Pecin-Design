@@ -106,15 +106,13 @@ const Bento = () => {
           </div>
 
           {/* WhatsApp CTA */}
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
+          <button
+            onClick={() => window.open(waUrl, "_blank", "noopener,noreferrer")}
+            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3 cursor-pointer"
           >
             <img src={whatsappLogo} alt="WhatsApp" className="w-10 h-10 sm:w-12 sm:h-12 object-contain group-hover:scale-110 transition-transform" />
             <span className="text-xs sm:text-sm font-medium text-primary">WhatsApp</span>
-          </a>
+          </button>
 
           {/* Email */}
           <a
@@ -131,7 +129,7 @@ const Bento = () => {
           {projects.slice(0, 4).map((project) => (
             <Link
               key={project.id}
-              to="/#projects"
+              to={`/?project=${project.id}#projects`}
               className="col-span-1 row-span-1 rounded-2xl overflow-hidden border border-border relative group cursor-pointer"
             >
               <BentoImage
