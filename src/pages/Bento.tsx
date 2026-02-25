@@ -35,10 +35,31 @@ const BentoImage = ({ src, alt, className }: { src: string; alt: string; classNa
   );
 };
 
-const Bento = () => {
-  const { settings } = useSiteSettings();
+const BentoSkeleton = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+    <div className="w-full max-w-5xl">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 auto-rows-[minmax(100px,1fr)] sm:auto-rows-[minmax(120px,1fr)]">
+        <Skeleton className="col-span-2 row-span-1 rounded-2xl h-[120px]" />
+        <Skeleton className="col-span-2 row-span-2 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+        <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
+      </div>
+    </div>
+  </div>
+);
 
-  const { data: projects = [] } = useQuery({
+const Bento = () => {
+  const { settings, loading: settingsLoading } = useSiteSettings();
+
+  const { data: projects = [], isLoading: projectsLoading } = useQuery({
     queryKey: ["bento-projects"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -51,6 +72,10 @@ const Bento = () => {
     },
     staleTime: 2 * 60 * 1000,
   });
+
+  const isLoading = settingsLoading || projectsLoading;
+
+  if (isLoading) return <BentoSkeleton />;
 
   const waUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`;
 
