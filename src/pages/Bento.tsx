@@ -72,18 +72,12 @@ const Bento = () => {
           </div>
 
           {/* Photo — 2 cols, 2 rows */}
-          <div className="col-span-2 row-span-2 rounded-2xl overflow-hidden border border-border relative group">
+          <div className="col-span-2 row-span-2 rounded-2xl overflow-hidden relative group">
             <BentoImage
               src={profilePhoto}
               alt="Léo - Designer"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-background/90 to-transparent p-4 sm:p-5">
-              <h2 className="text-lg sm:text-xl font-bold">Léo Pecin</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1">
-                <MapPin className="w-3 h-3" /> Maringá, PR • 22 anos
-              </p>
-            </div>
           </div>
 
           {/* WhatsApp CTA */}
