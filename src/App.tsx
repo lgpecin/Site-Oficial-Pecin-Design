@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 const Auth = lazy(() => import("./pages/Auth"));
 const Admin = lazy(() => import("./pages/Admin"));
 const ServicesCatalog = lazy(() => import("./pages/ServicesCatalog"));
+const Bento = lazy(() => import("./pages/Bento"));
 const Exit = lazy(() => import("./pages/Exit"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -37,6 +38,7 @@ const AppContent = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/services/:token" element={<ServicesCatalog />} />
+            <Route path="/bento" element={<Bento />} />
             <Route path="/exit" element={<Exit />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
