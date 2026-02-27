@@ -59,7 +59,7 @@ const ImageUpload = ({ onImageUploaded, label = 'Imagem', currentImage }: ImageU
         description: 'Imagem comprimida e otimizada',
       });
     } catch (error) {
-      console.error('Error uploading image:', error);
+      if (import.meta.env.DEV) console.error('Error uploading image:', error);
       toast({
         title: 'Erro ao enviar imagem',
         description: error instanceof Error ? error.message : 'Erro desconhecido',

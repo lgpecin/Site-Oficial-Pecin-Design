@@ -95,7 +95,7 @@ const MediaUpload = ({
           : undefined,
       });
     } catch (error) {
-      console.error('Error uploading media:', error);
+      if (import.meta.env.DEV) console.error('Error uploading media:', error);
       toast({
         title: 'Erro ao enviar arquivo',
         description: error instanceof Error ? error.message : 'Erro desconhecido',

@@ -72,7 +72,7 @@ const UserCreationForm = ({ onSuccess, onCancel }: UserCreationFormProps) => {
       toast({ title: 'Usuário criado com sucesso!' });
       onSuccess();
     } catch (error: any) {
-      console.error('Error creating user:', error);
+      if (import.meta.env.DEV) console.error('Error creating user:', error);
       toast({
         title: 'Erro ao criar usuário',
         description: error.message,

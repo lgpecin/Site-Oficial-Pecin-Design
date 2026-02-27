@@ -53,7 +53,7 @@ export const useAuth = () => {
 
       setIsAdmin(!!data && !error);
     } catch (error) {
-      console.error('Error checking admin role:', error);
+      if (import.meta.env.DEV) console.error('Error checking admin role:', error);
       setIsAdmin(false);
     } finally {
       setLoading(false);
