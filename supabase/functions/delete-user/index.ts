@@ -63,8 +63,17 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     )
   } catch (error: any) {
+    console.error('delete-user error:', error)
+    const message = error?.message ?? ''
+    const userMessage = message.includes('permissão') || message.includes('admin')
+      ? 'Access denied'
+      : message.includes('autenticado')
+      ? 'Authentication required'
+      : message.includes('própria conta')
+      ? 'Cannot delete your own account'
+      : 'An error occurred'
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: userMessage }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 },
     )
   }

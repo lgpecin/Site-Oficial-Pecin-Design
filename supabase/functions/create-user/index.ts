@@ -90,9 +90,15 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Erro desconhecido'
+    console.error('create-user error:', error)
+    const message = error instanceof Error ? error.message : ''
+    const userMessage = message.includes('permissão') || message.includes('admin')
+      ? 'Access denied'
+      : message.includes('autenticado')
+      ? 'Authentication required'
+      : 'An error occurred'
     return new Response(
-      JSON.stringify({ error: message }),
+      JSON.stringify({ error: userMessage }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
     )
   }
