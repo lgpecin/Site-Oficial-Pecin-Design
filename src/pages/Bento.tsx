@@ -36,9 +36,9 @@ const BentoImage = ({ src, alt, className }: { src: string; alt: string; classNa
 };
 
 const BentoSkeleton = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+  <div className="min-h-screen bg-background flex items-center justify-center p-2 sm:p-6 md:p-8">
     <div className="w-full max-w-5xl">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 auto-rows-[minmax(100px,1fr)] sm:auto-rows-[minmax(120px,1fr)]">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 auto-rows-[minmax(70px,1fr)] sm:auto-rows-[minmax(120px,1fr)]">
         <Skeleton className="col-span-2 row-span-1 rounded-2xl h-[120px]" />
         <Skeleton className="col-span-2 row-span-2 rounded-2xl" />
         <Skeleton className="col-span-1 row-span-1 rounded-2xl" />
@@ -80,18 +80,18 @@ const Bento = () => {
   const waUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`;
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-2 sm:p-6 md:p-8">
       <div className="w-full max-w-5xl">
         {/* Bento Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 auto-rows-[minmax(100px,1fr)] sm:auto-rows-[minmax(120px,1fr)]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 auto-rows-[minmax(70px,1fr)] sm:auto-rows-[minmax(120px,1fr)]">
 
           {/* Logo + Info — spans 2 cols, 1 row */}
           <div
-            className="col-span-2 row-span-1 bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-2 border border-border"
+            className="col-span-2 row-span-1 bg-card rounded-2xl p-3 sm:p-6 flex flex-col items-center justify-center gap-1 sm:gap-2 border border-border"
           >
-            <img src={logo} alt="Pecin Design" className="h-14 sm:h-20 w-auto" />
-            <p className="text-xs sm:text-sm text-muted-foreground text-center">Designer Gráfico & Diretor de Arte</p>
-            <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1">
+            <img src={logo} alt="Pecin Design" className="h-10 sm:h-20 w-auto" />
+            <p className="text-[10px] sm:text-sm text-muted-foreground text-center">Designer Gráfico & Diretor de Arte</p>
+            <p className="text-[10px] sm:text-sm text-muted-foreground flex items-center gap-1">
               <MapPin className="w-3 h-3" /> Maringá/PR
             </p>
           </div>
@@ -101,7 +101,7 @@ const Bento = () => {
             <BentoImage
               src={profilePhoto}
               alt="Léo - Designer"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[0.92] group-hover:rounded-2xl"
             />
           </div>
 
