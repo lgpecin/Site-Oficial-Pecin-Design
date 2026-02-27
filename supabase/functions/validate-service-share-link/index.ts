@@ -1,10 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const validateTokenSchema = z.object({
+  token: z.string().min(1).max(255)
+})
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,14 +17,7 @@ serve(async (req) => {
   }
 
   try {
-    const { token } = await req.json();
-
-    if (!token || typeof token !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Token é obrigatório' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const { token } = validateTokenSchema.parse(await req.json());
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
