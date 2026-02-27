@@ -98,7 +98,7 @@ export const useSEO = () => {
           link.href = seoData.seo_favicon_url;
         }
       } catch (error) {
-        console.error("Error loading SEO settings:", error);
+        if (import.meta.env.DEV) console.error("Error loading SEO settings:", error);
       }
     };
 

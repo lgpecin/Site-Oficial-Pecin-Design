@@ -52,7 +52,7 @@ const ProjectList = ({ onEdit, refresh }: ProjectListProps) => {
 
       setProjects(data || []);
     } catch (error) {
-      console.error('Error loading projects:', error);
+      if (import.meta.env.DEV) console.error('Error loading projects:', error);
       toast({
         title: 'Erro ao carregar projetos',
         variant: 'destructive',
@@ -79,7 +79,7 @@ const ProjectList = ({ onEdit, refresh }: ProjectListProps) => {
 
       loadProjects();
     } catch (error) {
-      console.error('Error deleting project:', error);
+      if (import.meta.env.DEV) console.error('Error deleting project:', error);
       toast({
         title: 'Erro ao excluir projeto',
         variant: 'destructive',
@@ -129,7 +129,7 @@ const ProjectList = ({ onEdit, refresh }: ProjectListProps) => {
         title: 'Ordem atualizada com sucesso!',
       });
     } catch (error) {
-      console.error('Error updating order:', error);
+      if (import.meta.env.DEV) console.error('Error updating order:', error);
       toast({
         title: 'Erro ao atualizar ordem',
         variant: 'destructive',

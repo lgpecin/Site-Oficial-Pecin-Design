@@ -341,7 +341,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
           resolve(canvas.toDataURL("image/png"));
         };
         img.onerror = () => {
-          console.error("Erro ao carregar logo");
+          if (import.meta.env.DEV) console.error("Erro ao carregar logo");
           resolve("");
         };
         img.src = logo;
@@ -432,7 +432,7 @@ const ShareLinkManager = ({ services }: ShareLinkManagerProps) => {
       document.body.removeChild(container);
       toast.success("PDF exportado com sucesso!");
     } catch (error) {
-      console.error("Erro detalhado ao exportar PDF:", error);
+      if (import.meta.env.DEV) console.error("Erro detalhado ao exportar PDF:", error);
       toast.error(`Erro ao exportar PDF: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     } finally {
       setExportingId(null);

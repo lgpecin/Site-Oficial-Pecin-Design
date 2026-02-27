@@ -87,7 +87,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
       const techs = project.project_technologies?.map(t => t.technology) || [''];
       setTechnologies(techs.length > 0 ? techs : ['']);
     } catch (error) {
-      console.error('Error loading project:', error);
+      if (import.meta.env.DEV) console.error('Error loading project:', error);
       toast({
         title: 'Erro ao carregar projeto',
         variant: 'destructive',
@@ -176,7 +176,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
 
       onSuccess();
     } catch (error) {
-      console.error('Error saving project:', error);
+      if (import.meta.env.DEV) console.error('Error saving project:', error);
       toast({
         title: 'Erro ao salvar projeto',
         description: error instanceof Error ? error.message : 'Erro desconhecido',
@@ -238,7 +238,7 @@ const ProjectForm = ({ projectId, onSuccess, onCancel }: ProjectFormProps) => {
         title: 'Imagem recortada com sucesso!',
       });
     } catch (error) {
-      console.error('Error uploading cropped image:', error);
+      if (import.meta.env.DEV) console.error('Error uploading cropped image:', error);
       toast({
         title: 'Erro ao fazer upload da imagem',
         variant: 'destructive',

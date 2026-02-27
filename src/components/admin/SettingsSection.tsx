@@ -56,7 +56,7 @@ const SettingsSection = () => {
       if (error) throw error;
       setSettings(data || []);
     } catch (error) {
-      console.error("Error fetching settings:", error);
+      if (import.meta.env.DEV) console.error("Error fetching settings:", error);
       toast.error("Erro ao carregar configurações");
     } finally {
       setLoading(false);
@@ -92,7 +92,7 @@ const SettingsSection = () => {
 
       toast.success("Configurações salvas com sucesso!");
     } catch (error) {
-      console.error("Error saving settings:", error);
+      if (import.meta.env.DEV) console.error("Error saving settings:", error);
       toast.error("Erro ao salvar configurações");
     } finally {
       setSaving(false);

@@ -89,7 +89,7 @@ const SEOSettings = ({ siteTitle, siteDescription }: SEOSettingsProps) => {
         seo_favicon_url: seoSettings.seo_favicon_url || "",
       });
     } catch (error) {
-      console.error("Error fetching SEO data:", error);
+      if (import.meta.env.DEV) console.error("Error fetching SEO data:", error);
       toast.error("Erro ao carregar dados de SEO");
     } finally {
       setLoading(false);
@@ -118,7 +118,7 @@ const SEOSettings = ({ siteTitle, siteDescription }: SEOSettingsProps) => {
       
       toast.success("Configurações de SEO salvas com sucesso!");
     } catch (error) {
-      console.error("Error saving SEO data:", error);
+      if (import.meta.env.DEV) console.error("Error saving SEO data:", error);
       toast.error("Erro ao salvar configurações de SEO");
     } finally {
       setSaving(false);
@@ -199,7 +199,7 @@ const SEOSettings = ({ siteTitle, siteDescription }: SEOSettingsProps) => {
 
       toast.success(`${type === 'favicon' ? 'Favicon' : 'Imagem OG'} carregada com sucesso!`);
     } catch (error) {
-      console.error(`Error uploading ${type}:`, error);
+      if (import.meta.env.DEV) console.error(`Error uploading ${type}:`, error);
       toast.error(`Erro ao fazer upload de ${type === 'favicon' ? 'favicon' : 'imagem'}`);
     } finally {
       setter(false);
