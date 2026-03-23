@@ -24,7 +24,7 @@ export const TypewriterText = ({
     setDisplayText("");
     setIsTyping(true);
     let currentIndex = 0;
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
 
     const timeout = setTimeout(() => {
       interval = setInterval(() => {
