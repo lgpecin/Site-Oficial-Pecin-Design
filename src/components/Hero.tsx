@@ -116,18 +116,18 @@ const Hero = () => {
               }
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto h-14 text-base sm:text-lg"
+              className="w-full sm:w-auto h-14 text-base sm:text-lg border border-primary flex items-center justify-center"
             >
               <img
                 src={whatsappLogo}
                 alt="WhatsApp"
-                className="mr-2 sm:mr-3 w-7 h-7 sm:w-8 sm:h-8 object-contain"
+                className="mr-2 sm:mr-3 w-7 h-7 sm:w-8 sm:h-8 object-contain flex-shrink-0"
                 width="32"
                 height="32"
                 loading="lazy"
                 decoding="async"
               />
-              Vamos conversar!
+              <span>Vamos conversar!</span>
             </Button>
             <Button
               onClick={scrollToProjects}
