@@ -63,10 +63,12 @@ const Index = () => {
     projectIndex: number;
     mediaIndex: number;
   } | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+  const [selectedCategory, setSelectedCategory] = useState<string>("__all__");
   const {
     isAdmin
   } = useAuth();
+  const { t } = useLanguage();
+  const { settings } = useSiteSettings();
 
   // Use React Query for projects
   const {
