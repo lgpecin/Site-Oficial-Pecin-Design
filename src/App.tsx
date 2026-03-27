@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { useSEO } from "@/hooks/useSEO";
 import { lazy, Suspense } from "react";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 
 // Lazy load admin and auth pages to reduce initial bundle
