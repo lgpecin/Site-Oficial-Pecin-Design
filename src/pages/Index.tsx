@@ -15,6 +15,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { supabase } from "@/integrations/supabase/client";
 import placeholderProject from "@/assets/placeholder-project.jpg";
 import { useQuery } from "@tanstack/react-query";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 // Lazy loading de componentes menos críticos para otimizar carregamento inicial
 const About = lazy(() => import("@/components/About"));
