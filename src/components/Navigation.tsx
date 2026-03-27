@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
+import { Globe } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
+  const { t, language, setLanguage } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,17 +41,37 @@ const Navigation = () => {
               onClick={() => scrollToSection("projects")}
               className="text-foreground/80 hover:text-primary transition-colors font-medium"
             >
-              Projetos
+              {t("nav.projects")}
             </button>
             <button
               onClick={() => scrollToSection("about")}
               className="text-foreground/80 hover:text-primary transition-colors font-medium"
             >
-              Sobre
+              {t("nav.about")}
             </button>
             <Button onClick={() => scrollToSection("contact")} size="sm">
-              Contato
+              {t("nav.contact")}
             </Button>
+            <button
+              onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
+              className="flex items-center gap-1.5 text-foreground/80 hover:text-primary transition-colors text-sm font-medium"
+              aria-label="Toggle language"
+            >
+              <Globe className="w-4 h-4" />
+              {language === "pt" ? "EN" : "PT"}
+            </button>
+          </div>
+
+          {/* Mobile language toggle */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
+              className="flex items-center gap-1 text-foreground/80 hover:text-primary transition-colors text-sm font-medium"
+              aria-label="Toggle language"
+            >
+              <Globe className="w-4 h-4" />
+              {language === "pt" ? "EN" : "PT"}
+            </button>
           </div>
         </div>
       </div>

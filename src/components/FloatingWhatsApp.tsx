@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const FloatingWhatsApp = () => {
   const [isVisible, setIsVisible] = useState(true);
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
   
   useEffect(() => {
     let rafId: number;
@@ -20,7 +22,6 @@ const FloatingWhatsApp = () => {
       });
     };
 
-    // Throttle scroll events
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
@@ -33,13 +34,11 @@ const FloatingWhatsApp = () => {
     };
     
     window.addEventListener("scroll", handleScroll, { passive: true });
-    checkVisibility(); // Check initial position
+    checkVisibility();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
   
@@ -53,7 +52,7 @@ const FloatingWhatsApp = () => {
       className={`fixed bottom-6 right-6 z-50 transition-all duration-300 hover:scale-110 will-change-transform ${
         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
-      aria-label="Fale no WhatsApp"
+      aria-label={t("floating.whatsapp")}
     >
       <div className="relative">
         <div className="absolute inset-0 rounded-full bg-green-500/30 animate-ping-slow" />
