@@ -15,21 +15,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { supabase } from "@/integrations/supabase/client";
 import placeholderProject from "@/assets/placeholder-project.jpg";
 import { useQuery } from "@tanstack/react-query";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-// Lazy loading de componentes menos críticos para otimizar carregamento inicial
+// Lazy loading
 const About = lazy(() => import("@/components/About"));
 const ServiceSteps = lazy(() => import("@/components/ServiceSteps"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
 const SocialMedia = lazy(() => import("@/components/SocialMedia"));
+
 interface ProjectMedia {
   url: string;
   type: 'image' | 'video';
-  metadata?: {
-    width: number;
-    height: number;
-  };
+  metadata?: { width: number; height: number };
 }
+
 interface Project {
   id: string;
   title: string;
@@ -46,43 +47,24 @@ interface Project {
   hideBanner?: boolean;
   notes?: string;
 }
-const Index = () => {
-  const {
-    ref: projectsRef,
-    isInView: projectsInView
-  } = useInView({
-    threshold: 0.1,
-    triggerOnce: true
-  });
-  const [selectedProject, setSelectedProject] = useState<number | null>(null);
-  const [lightboxImage, setLightboxImage] = useState<{
-    src: string;
-    alt: string;
-    projectIndex: number;
-    mediaIndex: number;
-  } | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-  const {
-    isAdmin
-  } = useAuth();
 
-  // Use React Query for projects
-  const {
-    data: projects = [],
-    isLoading: loading
-  } = useQuery({
+const Index = () => {
+  const { ref: projectsRef, isInView: projectsInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string; projectIndex: number; mediaIndex: number } | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("__all__");
+  const { isAdmin } = useAuth();
+  const { t } = useLanguage();
+  const { settings } = useSiteSettings();
+
+  const { data: projects = [], isLoading: loading } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('projects').select(`
+      const { data, error } = await supabase.from('projects').select(`
           *,
           project_images (image_url, display_order, file_type, metadata),
           project_technologies (technology)
-        `).order('display_order', {
-        ascending: true
-      }).limit(20);
+        `).order('display_order', { ascending: true }).limit(20);
       if (error) throw error;
       const formattedProjects: Project[] = (data || []).map((project: any) => {
         const sortedMedia = project.project_images?.sort((a: any, b: any) => a.display_order - b.display_order) || [];
@@ -109,20 +91,15 @@ const Index = () => {
       });
       return formattedProjects;
     },
-    enabled: true, // Load immediately on page load
+    enabled: true,
     staleTime: 2 * 60 * 1000,
-    // 2 minutes
-    gcTime: 5 * 60 * 1000 // 5 minutes
+    gcTime: 5 * 60 * 1000
   });
+
   const project = selectedProject !== null ? projects[selectedProject] : null;
+  const categories = ["__all__", ...Array.from(new Set(projects.map(p => p.category)))];
+  const filteredProjects = selectedCategory === "__all__" ? projects : projects.filter(p => p.category === selectedCategory);
 
-  // Extrair categorias únicas
-  const categories = ["Todos", ...Array.from(new Set(projects.map(p => p.category)))];
-
-  // Filtrar projetos por categoria
-  const filteredProjects = selectedCategory === "Todos" ? projects : projects.filter(p => p.category === selectedCategory);
-
-  // Funções de navegação do lightbox
   const handleLightboxPrevious = () => {
     if (!lightboxImage) return;
     const currentProject = projects[lightboxImage.projectIndex];
@@ -130,14 +107,10 @@ const Index = () => {
     const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
     if (currentImageIndex > 0) {
       const prevImage = images[currentImageIndex - 1];
-      setLightboxImage({
-        src: prevImage.url,
-        alt: `${currentProject.title} - Detalhe ${currentImageIndex}`,
-        projectIndex: lightboxImage.projectIndex,
-        mediaIndex: currentImageIndex - 1
-      });
+      setLightboxImage({ src: prevImage.url, alt: `${currentProject.title} - ${t("projects.detail")} ${currentImageIndex}`, projectIndex: lightboxImage.projectIndex, mediaIndex: currentImageIndex - 1 });
     }
   };
+
   const handleLightboxNext = () => {
     if (!lightboxImage) return;
     const currentProject = projects[lightboxImage.projectIndex];
@@ -145,66 +118,63 @@ const Index = () => {
     const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
     if (currentImageIndex < images.length - 1) {
       const nextImage = images[currentImageIndex + 1];
-      setLightboxImage({
-        src: nextImage.url,
-        alt: `${currentProject.title} - Detalhe ${currentImageIndex + 2}`,
-        projectIndex: lightboxImage.projectIndex,
-        mediaIndex: currentImageIndex + 1
-      });
+      setLightboxImage({ src: nextImage.url, alt: `${currentProject.title} - ${t("projects.detail")} ${currentImageIndex + 2}`, projectIndex: lightboxImage.projectIndex, mediaIndex: currentImageIndex + 1 });
     }
   };
+
   const getLightboxNavigationInfo = () => {
-    if (!lightboxImage) return {
-      hasPrevious: false,
-      hasNext: false
-    };
+    if (!lightboxImage) return { hasPrevious: false, hasNext: false };
     const currentProject = projects[lightboxImage.projectIndex];
     const images = currentProject.detailMedia.filter(m => m.type === 'image');
     const currentImageIndex = images.findIndex(m => m.url === lightboxImage.src);
-    return {
-      hasPrevious: currentImageIndex > 0,
-      hasNext: currentImageIndex < images.length - 1
-    };
+    return { hasPrevious: currentImageIndex > 0, hasNext: currentImageIndex < images.length - 1 };
   };
-  return <div className="min-h-screen">
+
+  const whatsappLink = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`;
+
+  return (
+    <div className="min-h-screen">
       <header>
         <Navigation />
-        
-        {/* Admin floating button */}
         {isAdmin && <FloatingAdminButton />}
       </header>
       
       <main>
         <Hero />
       
-        <section id="projects" className="py-12 sm:py-16" aria-label="Projetos">
+        <section id="projects" className="py-12 sm:py-16" aria-label={t("nav.projects")}>
           <div className="container mx-auto px-6">
-          <div ref={projectsRef} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-              <TypewriterText text="Um pouquinho do que eu faço." isInView={projectsInView} speed={50} />
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">Esqueça os templates prontos. Aqui só entra suor, neurônios queimados e estratégias visuais que funcionam pra valer! Se liga:                                                                                                                        </p>
-            
-            {/* Filtros de categoria */}
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12">
-              {categories.map(category => <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-1.5 sm:px-6 sm:py-2 rounded-full text-xs sm:text-base font-medium transition-all ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
-                  {category}
-                </button>)}
+            <div ref={projectsRef} className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
+                <TypewriterText text={t("projects.title")} isInView={projectsInView} speed={50} />
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">{t("projects.subtitle")}</p>
+              
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12">
+                {categories.map(category => (
+                  <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-1.5 sm:px-6 sm:py-2 rounded-full text-xs sm:text-base font-medium transition-all ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
+                    {category === "__all__" ? t("projects.filter_all") : category}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          
-          {loading ? <div className="text-center py-12 text-muted-foreground">
-              Carregando projetos...
-            </div> : filteredProjects.length === 0 ? <div className="text-center py-12 text-muted-foreground">
-              Nenhum projeto disponível nesta categoria.
-            </div> : <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8 max-w-7xl mx-auto px-2 sm:px-4">
-              {filteredProjects.map((project, index) => {
-              const originalIndex = projects.findIndex(p => p.id === project.id);
-              return <AnimatedSection key={project.id}>
-                    <ProjectCard {...project} onClick={() => setSelectedProject(originalIndex)} />
-                  </AnimatedSection>;
-            })}
-            </div>}
+            
+            {loading ? (
+              <div className="text-center py-12 text-muted-foreground">{t("projects.loading")}</div>
+            ) : filteredProjects.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">{t("projects.empty")}</div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8 max-w-7xl mx-auto px-2 sm:px-4">
+                {filteredProjects.map((project, index) => {
+                  const originalIndex = projects.findIndex(p => p.id === project.id);
+                  return (
+                    <AnimatedSection key={project.id}>
+                      <ProjectCard {...project} onClick={() => setSelectedProject(originalIndex)} />
+                    </AnimatedSection>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </section>
 
@@ -221,95 +191,62 @@ const Index = () => {
 
       <Dialog open={selectedProject !== null} onOpenChange={() => setSelectedProject(null)}>
         <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
-          {project && <div className="space-y-12">
-              {/* Título e metadados */}
+          {project && (
+            <div className="space-y-12">
               <div>
                 <DialogTitle className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                   {project.title}
                 </DialogTitle>
                 <div className="flex flex-wrap gap-3">
-                  <span className="inline-block px-4 py-2 bg-primary/90 text-primary-foreground rounded-full text-sm font-medium">
-                    {project.category}
-                  </span>
-                  <span className="inline-block px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">
-                    {project.year}
-                  </span>
+                  <span className="inline-block px-4 py-2 bg-primary/90 text-primary-foreground rounded-full text-sm font-medium">{project.category}</span>
+                  <span className="inline-block px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">{project.year}</span>
                 </div>
               </div>
 
-              {/* Mídia principal */}
-              {!project.hideBanner && <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
-                {project.bannerType === 'video' ? <video src={project.bannerImage} controls className="w-full h-auto" style={{
-              maxWidth: '1920px',
-              margin: '0 auto',
-              display: 'block'
-            }} preload="metadata" /> : <img src={project.bannerImage} alt={`${project.title} - Banner do projeto`} className="w-full h-auto" style={{
-              maxWidth: '1920px',
-              margin: '0 auto',
-              display: 'block'
-            }} loading="eager" decoding="sync" />}
-              </div>}
-
-              {/* Sobre o projeto */}
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                  Sobre o Projeto
-                </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {project.fullDescription}
-                </p>
-              </div>
-
-              {/* Mídias de detalhes */}
-              <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: `${project.imageSpacing}px`
-          }}>
-                {project.detailMedia.map((media, index) => <div key={index} className="relative w-full overflow-hidden shadow-xl" style={{
-              borderRadius: project.imageSpacing === 0 ? '0' : '1rem'
-            }}>
-                    {media.type === 'video' ? <video src={media.url} controls className="w-full h-auto" style={{
-                maxWidth: '1920px',
-                margin: '0 auto',
-                display: 'block'
-              }} preload="metadata" /> : <img src={media.url} alt={`${project.title} - Detalhe ${index + 1}`} className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity" style={{
-                maxWidth: '1920px',
-                margin: '0 auto',
-                display: 'block'
-              }} onClick={() => setLightboxImage({
-                src: media.url,
-                alt: `${project.title} - Detalhe ${index + 1}`,
-                projectIndex: selectedProject!,
-                mediaIndex: index
-              })} loading="eager" decoding="sync" />}
-                  </div>)}
-              </div>
-
-              {/* Softwares Utilizados */}
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                  Softwares Utilizados
-                </h2>
-                <div className="flex flex-wrap gap-3">
-                  {project.technologies.map(tech => <span key={tech} className="inline-block px-6 py-3 bg-primary/10 text-primary rounded-full text-base font-medium hover:bg-primary/20 transition-colors">
-                      {tech}
-                    </span>)}
-                </div>
-              </div>
-
-              {/* Observações e Autoria */}
-              {project.notes && (
-                <div className="pt-6 border-t border-border">
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                    Observações e Autoria
-                  </h2>
-                  <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {project.notes}
-                  </p>
+              {!project.hideBanner && (
+                <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl">
+                  {project.bannerType === 'video' ? (
+                    <video src={project.bannerImage} controls className="w-full h-auto" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} preload="metadata" />
+                  ) : (
+                    <img src={project.bannerImage} alt={`${project.title} - Banner`} className="w-full h-auto" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} loading="eager" decoding="sync" />
+                  )}
                 </div>
               )}
-            </div>}
+
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">{t("projects.about_project")}</h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">{project.fullDescription}</p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: `${project.imageSpacing}px` }}>
+                {project.detailMedia.map((media, index) => (
+                  <div key={index} className="relative w-full overflow-hidden shadow-xl" style={{ borderRadius: project.imageSpacing === 0 ? '0' : '1rem' }}>
+                    {media.type === 'video' ? (
+                      <video src={media.url} controls className="w-full h-auto" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} preload="metadata" />
+                    ) : (
+                      <img src={media.url} alt={`${project.title} - ${t("projects.detail")} ${index + 1}`} className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} onClick={() => setLightboxImage({ src: media.url, alt: `${project.title} - ${t("projects.detail")} ${index + 1}`, projectIndex: selectedProject!, mediaIndex: index })} loading="eager" decoding="sync" />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">{t("projects.software_used")}</h2>
+                <div className="flex flex-wrap gap-3">
+                  {project.technologies.map(tech => (
+                    <span key={tech} className="inline-block px-6 py-3 bg-primary/10 text-primary rounded-full text-base font-medium hover:bg-primary/20 transition-colors">{tech}</span>
+                  ))}
+                </div>
+              </div>
+
+              {project.notes && (
+                <div className="pt-6 border-t border-border">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4">{t("projects.notes")}</h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">{project.notes}</p>
+                </div>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
@@ -320,17 +257,17 @@ const Index = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <img src={logo} alt="Pecin Design - Logo" className="h-8 w-auto hover:scale-110 transition-transform duration-300" loading="lazy" />
-              <p className="text-muted-foreground text-center md:text-left">
-                © 2025 Pecin Design. Todos os direitos reservados.
-              </p>
+              <p className="text-muted-foreground text-center md:text-left">{t("footer.rights")}</p>
             </div>
-            <a href="https://wa.me/5511999999999?text=Olá! Vim através do seu portfólio." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium" aria-label="Fale no WhatsApp">
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium" aria-label={t("footer.whatsapp")}>
               <img src={whatsappLogo} alt="WhatsApp" className="w-5 h-5 object-contain" aria-hidden="true" />
-              Fale no WhatsApp
+              {t("footer.whatsapp")}
             </a>
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;

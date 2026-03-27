@@ -6,12 +6,14 @@ import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { useEffect, useRef, useState } from "react";
 import { AlternatingTypewriter } from "./AlternatingTypewriter";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Particles from "./Particles";
 
 const Hero = () => {
   const parallaxRef = useRef<HTMLDivElement>(null);
   const [scrollOffset, setScrollOffset] = useState(0);
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -64,7 +66,6 @@ const Hero = () => {
         aria-hidden="true"
       />
 
-      {/* Particles Layer */}
       <div className="absolute inset-0 z-[1]">
         <Particles />
       </div>
@@ -85,12 +86,12 @@ const Hero = () => {
           </div>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 leading-tight px-2 [text-shadow:0_0_40px_hsl(var(--primary)/0.15)]">
-            Bora tornar seu projeto
+            {t("hero.title_line1")}
             <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              em algo{" "}
+              {t("hero.title_line2")}{" "}
               <AlternatingTypewriter
-                words={["único?", "transformador?", "poderoso?", "animal?"]}
+                words={[t("hero.word1"), t("hero.word2"), t("hero.word3"), t("hero.word4")]}
                 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
                 typingSpeed={100}
                 deletingSpeed={50}
@@ -100,8 +101,7 @@ const Hero = () => {
           </h1>
 
           <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground mb-6 sm:mb-12 max-w-2xl mx-auto px-4">
-            Aqui é simples: eu gosto de canalizar todo o caos criativo em visuais lindos e
-            estratégicos.
+            {t("hero.subtitle")}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
@@ -127,14 +127,14 @@ const Hero = () => {
                 loading="lazy"
                 decoding="async"
               />
-              <span>Vamos conversar!</span>
+              <span>{t("hero.cta_whatsapp")}</span>
             </Button>
             <Button
               onClick={scrollToProjects}
               size="lg"
               className="group w-full sm:w-auto h-14 text-base sm:text-lg"
             >
-              Se liga no meu trampo
+              {t("hero.cta_projects")}
               <ArrowDown className="ml-2 h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-y-1 transition-transform" />
             </Button>
           </div>
