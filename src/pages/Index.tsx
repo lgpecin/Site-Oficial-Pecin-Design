@@ -121,10 +121,10 @@ const Index = () => {
   const project = selectedProject !== null ? projects[selectedProject] : null;
 
   // Extrair categorias únicas
-  const categories = ["Todos", ...Array.from(new Set(projects.map(p => p.category)))];
+  const categories = ["__all__", ...Array.from(new Set(projects.map(p => p.category)))];
 
   // Filtrar projetos por categoria
-  const filteredProjects = selectedCategory === "Todos" ? projects : projects.filter(p => p.category === selectedCategory);
+  const filteredProjects = selectedCategory === "__all__" ? projects : projects.filter(p => p.category === selectedCategory);
 
   // Funções de navegação do lightbox
   const handleLightboxPrevious = () => {
