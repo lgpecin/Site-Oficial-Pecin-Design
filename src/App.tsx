@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 
 // Lazy load admin and auth pages to reduce initial bundle
 const Auth = lazy(() => import("./pages/Auth"));
+const IndexEN = lazy(() => import("./pages/IndexEN"));
 const Admin = lazy(() => import("./pages/Admin"));
 const ServicesCatalog = lazy(() => import("./pages/ServicesCatalog"));
 const Bento = lazy(() => import("./pages/Bento"));
@@ -36,6 +37,7 @@ const AppContent = () => {
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/en" element={<IndexEN />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/services/:token" element={<ServicesCatalog />} />
