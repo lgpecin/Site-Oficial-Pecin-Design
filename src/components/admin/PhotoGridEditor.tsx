@@ -126,9 +126,11 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
       <div className="flex flex-wrap gap-4 items-end">
         <div className="space-y-1">
           <Label className="text-sm">Cor de Fundo</Label>
-          <ColorPicker
+          <input
+            type="color"
             value={data.backgroundColor}
-            onChange={(color) => onChange({ ...data, backgroundColor: color })}
+            onChange={(e) => onChange({ ...data, backgroundColor: e.target.value })}
+            className="w-10 h-10 rounded cursor-pointer border border-border"
           />
         </div>
         <div className="space-y-1">
