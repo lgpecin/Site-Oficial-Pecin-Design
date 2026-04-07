@@ -76,11 +76,26 @@ const Index = () => {
           image: project.banner_image || placeholderProject,
           bannerImage: project.banner_image || placeholderProject,
           bannerType: 'image' as 'image' | 'video',
-          detailMedia: sortedMedia.map((img: any) => ({
-            url: img.image_url,
-            type: (img.file_type || 'image') as 'image' | 'video',
-            metadata: img.metadata
-          })),
+          detailMedia: sortedMedia.map((img: any) => {
+            const ft = img.file_type || 'image';
+            if (ft === 'grid') {
+              const meta = img.metadata as any;
+              return {
+                url: 'grid',
+                type: 'grid' as const,
+                gridData: {
+                  backgroundColor: meta?.backgroundColor || '#000000',
+                  images: meta?.images || [],
+                  columns: meta?.columns || 3,
+                },
+              };
+            }
+            return {
+              url: img.image_url,
+              type: ft as 'image' | 'video',
+              metadata: img.metadata,
+            };
+          }),
           description: project.description,
           fullDescription: project.full_description,
           technologies: project.project_technologies?.map((t: any) => t.technology) || [],
