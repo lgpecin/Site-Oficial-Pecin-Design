@@ -256,7 +256,7 @@ const Index = () => {
                             key={imgIdx}
                             src={imgUrl}
                             alt={`${project.title} - Grid ${index + 1} - ${imgIdx + 1}`}
-                            className="w-full aspect-square object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                            className="w-full h-auto object-contain cursor-pointer hover:opacity-90 transition-opacity"
                             onClick={() => setLightboxImage({
                               src: imgUrl,
                               alt: `${project.title} - Grid ${index + 1}`,

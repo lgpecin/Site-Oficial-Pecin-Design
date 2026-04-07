@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { X, Upload, Loader2, GripVertical } from 'lucide-react';
+import { X, Upload, Loader2, GripVertical, Download } from 'lucide-react';
 import { compressImage } from '@/lib/imageCompression';
-
+import html2canvas from 'html2canvas';
 
 export interface GridData {
   backgroundColor: string;
@@ -24,6 +24,8 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
   const [uploading, setUploading] = useState(false);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const uploadImages = async (files: FileList) => {
@@ -109,7 +111,29 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
     setDragOverIndex(null);
   };
 
+  const exportAsPng = async () => {
+    if (!gridRef.current || data.images.length === 0) return;
+    setExporting(true);
+    try {
+      const canvas = await html2canvas(gridRef.current, {
+        backgroundColor: data.backgroundColor,
+        useCORS: true,
+        scale: 2,
+      });
+      const link = document.createElement('a');
+      link.download = `grid-export-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast({ title: 'Grade exportada com sucesso!' });
+    } catch (error) {
+      toast({ title: 'Erro ao exportar grade', variant: 'destructive' });
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const columns = data.columns || 3;
+  const inputId = `grid-upload-${data.backgroundColor}`;
 
   return (
     <div className="border-2 border-dashed border-primary/40 rounded-lg p-4 space-y-4 bg-primary/5">
@@ -118,9 +142,17 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
           <GripVertical className="h-4 w-4 text-muted-foreground" />
           Grade de Fotos
         </Label>
-        <Button type="button" variant="destructive" size="sm" onClick={onRemove}>
-          <X className="h-4 w-4 mr-1" /> Remover Grade
-        </Button>
+        <div className="flex gap-2">
+          {data.images.length > 0 && (
+            <Button type="button" variant="outline" size="sm" onClick={exportAsPng} disabled={exporting}>
+              {exporting ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Download className="h-4 w-4 mr-1" />}
+              Exportar PNG
+            </Button>
+          )}
+          <Button type="button" variant="destructive" size="sm" onClick={onRemove}>
+            <X className="h-4 w-4 mr-1" /> Remover Grade
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-4 items-end">
@@ -149,7 +181,8 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
       {/* Preview da grade */}
       {data.images.length > 0 && (
         <div
-          className="rounded-lg p-3 gap-2"
+          ref={gridRef}
+          className="rounded-lg p-1 gap-1"
           style={{
             backgroundColor: data.backgroundColor,
             display: 'grid',
@@ -159,7 +192,7 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
           {data.images.map((url, index) => (
             <div
               key={index}
-              className={`relative group cursor-grab rounded overflow-hidden ${
+              className={`relative group cursor-grab overflow-hidden ${
                 dragOverIndex === index ? 'ring-2 ring-primary' : ''
               }`}
               draggable
@@ -171,7 +204,7 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
               <img
                 src={url}
                 alt={`Grid ${index + 1}`}
-                className="w-full aspect-square object-cover"
+                className="w-full h-auto object-contain"
               />
               <Button
                 type="button"
@@ -193,7 +226,7 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
-        <Label htmlFor={`grid-upload-${Date.now()}`} className="cursor-pointer">
+        <Label htmlFor={inputId} className="cursor-pointer">
           <div className="flex flex-col items-center gap-2">
             {uploading ? (
               <>
@@ -214,7 +247,7 @@ const PhotoGridEditor = ({ data, onChange, onRemove }: PhotoGridEditorProps) => 
           </div>
         </Label>
         <Input
-          id={`grid-upload-${Date.now()}`}
+          id={inputId}
           type="file"
           accept="image/*"
           multiple
