@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { X, Upload, Loader2, GripVertical } from 'lucide-react';
 import { compressImage } from '@/lib/imageCompression';
-import ColorPicker from './ColorPicker';
+
 
 export interface GridData {
   backgroundColor: string;
