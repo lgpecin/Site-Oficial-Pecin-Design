@@ -235,15 +235,50 @@ const Index = () => {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: `${project.imageSpacing}px` }}>
-                {project.detailMedia.map((media, index) => (
-                  <div key={index} className="relative w-full overflow-hidden shadow-xl" style={{ borderRadius: project.imageSpacing === 0 ? '0' : '1rem' }}>
-                    {media.type === 'video' ? (
-                      <video src={media.url} controls className="w-full h-auto" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} preload="metadata" />
-                    ) : (
-                      <img src={media.url} alt={`${project.title} - ${t("projects.detail")} ${index + 1}`} className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} onClick={() => setLightboxImage({ src: media.url, alt: `${project.title} - ${t("projects.detail")} ${index + 1}`, projectIndex: selectedProject!, mediaIndex: index })} loading="eager" decoding="sync" />
-                    )}
-                  </div>
-                ))}
+                {project.detailMedia.map((media, index) => {
+                  if (media.type === 'grid' && media.gridData) {
+                    const cols = media.gridData.columns || 3;
+                    return (
+                      <div
+                        key={index}
+                        className="w-full overflow-hidden shadow-xl"
+                        style={{
+                          backgroundColor: media.gridData.backgroundColor,
+                          borderRadius: project.imageSpacing === 0 ? '0' : '1rem',
+                          display: 'grid',
+                          gridTemplateColumns: `repeat(${cols}, 1fr)`,
+                          gap: '4px',
+                          padding: '4px',
+                        }}
+                      >
+                        {media.gridData.images.map((imgUrl, imgIdx) => (
+                          <img
+                            key={imgIdx}
+                            src={imgUrl}
+                            alt={`${project.title} - Grid ${index + 1} - ${imgIdx + 1}`}
+                            className="w-full aspect-square object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                            onClick={() => setLightboxImage({
+                              src: imgUrl,
+                              alt: `${project.title} - Grid ${index + 1}`,
+                              projectIndex: selectedProject!,
+                              mediaIndex: index,
+                            })}
+                            loading="lazy"
+                          />
+                        ))}
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={index} className="relative w-full overflow-hidden shadow-xl" style={{ borderRadius: project.imageSpacing === 0 ? '0' : '1rem' }}>
+                      {media.type === 'video' ? (
+                        <video src={media.url} controls className="w-full h-auto" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} preload="metadata" />
+                      ) : (
+                        <img src={media.url} alt={`${project.title} - ${t("projects.detail")} ${index + 1}`} className="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity" style={{ maxWidth: '1920px', margin: '0 auto', display: 'block' }} onClick={() => setLightboxImage({ src: media.url, alt: `${project.title} - ${t("projects.detail")} ${index + 1}`, projectIndex: selectedProject!, mediaIndex: index })} loading="eager" decoding="sync" />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               <div>
