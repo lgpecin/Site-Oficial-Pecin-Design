@@ -27,8 +27,9 @@ const SocialMedia = lazy(() => import("@/components/SocialMedia"));
 
 interface ProjectMedia {
   url: string;
-  type: 'image' | 'video';
-  metadata?: { width: number; height: number };
+  type: 'image' | 'video' | 'grid';
+  metadata?: any;
+  gridData?: { backgroundColor: string; images: string[]; columns?: number };
 }
 
 interface Project {
