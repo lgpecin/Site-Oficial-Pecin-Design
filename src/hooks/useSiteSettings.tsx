@@ -17,7 +17,7 @@ const defaultSettings: SiteSettings = {
   whatsapp_number: "5511999999999",
   whatsapp_message: "Olá! Vim através do seu portfólio.",
   instagram_url: "https://instagram.com",
-  linkedin_url: "https://linkedin.com",
+  linkedin_url: "https://www.linkedin.com/in/leonardo-gomes-a6a9b7213",
   behance_url: "https://behance.net",
   site_email: "contato@exemplo.com",
   site_phone: "(11) 99999-9999",
