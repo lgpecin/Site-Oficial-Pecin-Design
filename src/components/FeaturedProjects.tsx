@@ -38,7 +38,7 @@ const FeaturedProjects = ({ projects, onProjectClick }: FeaturedProjectsProps) =
           }}
           plugins={[
             Autoplay({
-              delay: 5000,
+              delay: 1000,
             }),
           ]}
           className="w-full max-w-6xl mx-auto"
