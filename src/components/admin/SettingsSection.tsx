@@ -22,12 +22,14 @@ import {
   Bell,
   Shield,
   Sparkles,
-  UserCog
+  UserCog,
+  Images
 } from "lucide-react";
 import ThemeSwitch from "./ThemeSwitch";
 import ColorPicker from "./ColorPicker";
 import SEOSettings from "./SEOSettings";
 import UsersSection from "./UsersSection";
+import CarouselManager from "./CarouselManager";
 
 interface Setting {
   id: string;
@@ -199,7 +201,7 @@ const SettingsSection = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
+        <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:inline-grid">
           <TabsTrigger value="general" className="gap-2">
             <Globe className="h-4 w-4" />
             Geral
@@ -207,6 +209,10 @@ const SettingsSection = () => {
           <TabsTrigger value="appearance" className="gap-2">
             <Palette className="h-4 w-4" />
             Aparência
+          </TabsTrigger>
+          <TabsTrigger value="carousel" className="gap-2">
+            <Images className="h-4 w-4" />
+            Carrossel
           </TabsTrigger>
           <TabsTrigger value="contact" className="gap-2">
             <Mail className="h-4 w-4" />
@@ -462,6 +468,11 @@ const SettingsSection = () => {
             siteTitle={settings.find(s => s.setting_key === 'site_title')?.setting_value || 'Meu Portfólio'}
             siteDescription={settings.find(s => s.setting_key === 'site_description')?.setting_value || 'Portfólio de projetos e serviços'}
           />
+        </TabsContent>
+
+        {/* Carousel Tab */}
+        <TabsContent value="carousel" className="space-y-6">
+          <CarouselManager />
         </TabsContent>
 
         {/* Users Tab */}

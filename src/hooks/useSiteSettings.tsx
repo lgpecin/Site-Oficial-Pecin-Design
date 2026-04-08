@@ -11,6 +11,7 @@ interface SiteSettings {
   site_phone: string;
   site_title: string;
   site_description: string;
+  carousel_speed: string;
 }
 
 const defaultSettings: SiteSettings = {
@@ -23,6 +24,7 @@ const defaultSettings: SiteSettings = {
   site_phone: "(11) 99999-9999",
   site_title: "Meu Portfólio",
   site_description: "Portfólio de projetos e serviços",
+  carousel_speed: "30",
 };
 
 export const useSiteSettings = () => {

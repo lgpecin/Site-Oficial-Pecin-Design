@@ -3,6 +3,7 @@ import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "./TypewriterText";
 import { AnimatedSection } from "./AnimatedSection";
 import { useLanguage } from "@/contexts/LanguageContext";
+import InfiniteCarousel from "./InfiniteCarousel";
 
 const About = () => {
   const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
@@ -52,6 +53,8 @@ const About = () => {
           </AnimatedSection>
         </div>
       </div>
+
+      <InfiniteCarousel />
     </section>
   );
 };
