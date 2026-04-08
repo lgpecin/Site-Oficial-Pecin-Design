@@ -22,7 +22,8 @@ import {
   Bell,
   Shield,
   Sparkles,
-  UserCog
+  UserCog,
+  Images
 } from "lucide-react";
 import ThemeSwitch from "./ThemeSwitch";
 import ColorPicker from "./ColorPicker";
