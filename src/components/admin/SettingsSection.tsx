@@ -211,7 +211,7 @@ const SettingsSection = () => {
             Aparência
           </TabsTrigger>
           <TabsTrigger value="carousel" className="gap-2">
-            <Image className="h-4 w-4" />
+            <Images className="h-4 w-4" />
             Carrossel
           </TabsTrigger>
           <TabsTrigger value="contact" className="gap-2">
