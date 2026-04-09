@@ -196,6 +196,7 @@ const Index = () => {
         </section>
 
         <Suspense fallback={<div className="py-16" />}>
+          <InfiniteCarousel />
           <About />
           <ServiceSteps />
           <FAQ />
