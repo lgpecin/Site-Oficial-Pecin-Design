@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
@@ -21,7 +21,7 @@ const fallbackImages = [slide1, slide2, slide3, slide4, slide5, slide6];
 const InfiniteCarousel = () => {
   const [images, setImages] = useState<string[]>([]);
   const { settings } = useSiteSettings();
-  const speed = Number(settings.carousel_speed) || 30;
+  const speed = Number(settings.carousel_speed) || 15;
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -41,18 +41,16 @@ const InfiniteCarousel = () => {
 
   if (images.length === 0) return null;
 
-  // Duplicate images enough to fill the screen and create seamless loop
-  const duplicated = [...images, ...images, ...images, ...images];
+  // Duplicate images twice for seamless loop (translate -50% to loop first half)
+  const duplicated = [...images, ...images];
   const duration = images.length * speed;
 
   return (
-    <div className="w-full overflow-hidden mt-12">
+    <section className="w-full overflow-hidden py-8">
       <div
         className="flex animate-marquee"
         style={{
           animationDuration: `${duration}s`,
-          animationTimingFunction: "linear",
-          animationIterationCount: "infinite",
         }}
       >
         {duplicated.map((src, i) => (
@@ -66,7 +64,7 @@ const InfiniteCarousel = () => {
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -24,7 +24,7 @@ const defaultSettings: SiteSettings = {
   site_phone: "(11) 99999-9999",
   site_title: "Meu Portfólio",
   site_description: "Portfólio de projetos e serviços",
-  carousel_speed: "30",
+  carousel_speed: "15",
 };
 
 export const useSiteSettings = () => {

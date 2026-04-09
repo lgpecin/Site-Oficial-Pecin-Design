@@ -20,6 +20,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 // Lazy loading
 const About = lazy(() => import("@/components/About"));
+const InfiniteCarousel = lazy(() => import("@/components/InfiniteCarousel"));
 const ServiceSteps = lazy(() => import("@/components/ServiceSteps"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const Contact = lazy(() => import("@/components/Contact"));
@@ -195,6 +196,7 @@ const Index = () => {
         </section>
 
         <Suspense fallback={<div className="py-16" />}>
+          <InfiniteCarousel />
           <About />
           <ServiceSteps />
           <FAQ />
