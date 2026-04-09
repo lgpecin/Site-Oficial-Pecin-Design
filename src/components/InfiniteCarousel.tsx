@@ -41,16 +41,21 @@ const InfiniteCarousel = () => {
 
   if (images.length === 0) return null;
 
-  // Duplicate images twice for seamless loop (translate -50% to loop first half)
-  const duplicated = [...images, ...images];
+  // Triple images for seamless infinite loop
+  const duplicated = [...images, ...images, ...images];
   const duration = images.length * speed;
 
   return (
-    <section className="w-full overflow-hidden py-8">
+    <section className="relative w-full overflow-hidden py-8 mb-12">
+      {/* Green glow background */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at center, hsl(162 75% 28% / 0.12) 0%, transparent 70%)',
+      }} />
       <div
         className="flex animate-marquee"
         style={{
           animationDuration: `${duration}s`,
+          width: 'max-content',
         }}
       >
         {duplicated.map((src, i) => (
