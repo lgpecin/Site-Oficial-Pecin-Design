@@ -53,9 +53,9 @@ const About = () => {
           </AnimatedSection>
         </div>
       </div>
-
-      <InfiniteCarousel />
     </section>
+  );
+};
   );
 };
 export default About;
