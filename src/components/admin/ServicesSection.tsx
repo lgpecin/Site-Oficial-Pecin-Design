@@ -4,13 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, LayoutGrid, List, GripVertical, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, LayoutGrid, List, GripVertical, Edit, Trash2, Calculator } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import ServiceCard from "./ServiceCard";
 import ServiceForm from "./ServiceForm";
 import ShareLinkManager from "./ShareLinkManager";
 import DataExportImport from "./DataExportImport";
+import BudgetCalculator from "./BudgetCalculator";
 import * as Icons from "lucide-react";
 import {
   Dialog,
@@ -45,6 +46,7 @@ const ServicesSection = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isShareManagerOpen, setIsShareManagerOpen] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [draggedService, setDraggedService] = useState<Service | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const queryClient = useQueryClient();
@@ -271,6 +273,10 @@ const ServicesSection = () => {
             buttonLabel="Serviços"
             onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["services"] })}
           />
+          <Button onClick={() => setIsCalculatorOpen(true)} variant="outline" className="flex-1 sm:flex-none">
+            <Calculator className="w-4 h-4 mr-2" />
+            Calculadora
+          </Button>
           <Button onClick={() => setIsShareManagerOpen(true)} variant="outline" className="flex-1 sm:flex-none">
             Gerenciar Links
           </Button>
@@ -456,6 +462,15 @@ const ServicesSection = () => {
             <DialogTitle>Gerenciar Links Compartilháveis</DialogTitle>
           </DialogHeader>
           <ShareLinkManager services={services} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isCalculatorOpen} onOpenChange={setIsCalculatorOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Calculadora de Orçamento</DialogTitle>
+          </DialogHeader>
+          <BudgetCalculator services={services} />
         </DialogContent>
       </Dialog>
     </div>
