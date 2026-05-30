@@ -4,13 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, LayoutGrid, List, GripVertical, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, LayoutGrid, List, GripVertical, Edit, Trash2, Calculator } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import ServiceCard from "./ServiceCard";
 import ServiceForm from "./ServiceForm";
 import ShareLinkManager from "./ShareLinkManager";
 import DataExportImport from "./DataExportImport";
+import BudgetCalculator from "./BudgetCalculator";
 import * as Icons from "lucide-react";
 import {
   Dialog,
