@@ -46,6 +46,7 @@ const ServicesSection = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isShareManagerOpen, setIsShareManagerOpen] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [draggedService, setDraggedService] = useState<Service | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const queryClient = useQueryClient();
