@@ -464,6 +464,15 @@ const ServicesSection = () => {
           <ShareLinkManager services={services} />
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isCalculatorOpen} onOpenChange={setIsCalculatorOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Calculadora de Orçamento</DialogTitle>
+          </DialogHeader>
+          <BudgetCalculator services={services} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
