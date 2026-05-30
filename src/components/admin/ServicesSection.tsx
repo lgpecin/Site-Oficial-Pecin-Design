@@ -273,6 +273,10 @@ const ServicesSection = () => {
             buttonLabel="Serviços"
             onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ["services"] })}
           />
+          <Button onClick={() => setIsCalculatorOpen(true)} variant="outline" className="flex-1 sm:flex-none">
+            <Calculator className="w-4 h-4 mr-2" />
+            Calculadora
+          </Button>
           <Button onClick={() => setIsShareManagerOpen(true)} variant="outline" className="flex-1 sm:flex-none">
             Gerenciar Links
           </Button>
