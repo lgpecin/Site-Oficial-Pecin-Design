@@ -87,19 +87,123 @@ const BudgetCalculator = ({ services }: BudgetCalculatorProps) => {
   const formatBRL = (v: number) =>
     v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+  const exportPDF = () => {
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const marginX = 40;
+    let y = 50;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("Orçamento", marginX, y);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(
+      new Date().toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+      pageW - marginX,
+      y,
+      { align: "right" }
+    );
+    y += 24;
+    doc.setDrawColor(200);
+    doc.line(marginX, y, pageW - marginX, y);
+    y += 24;
+
+    // Header
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text("Serviço", marginX, y);
+    doc.text("Qtd", pageW - marginX - 180, y, { align: "right" });
+    doc.text("Unit.", pageW - marginX - 90, y, { align: "right" });
+    doc.text("Subtotal", pageW - marginX, y, { align: "right" });
+    y += 8;
+    doc.line(marginX, y, pageW - marginX, y);
+    y += 16;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    items.forEach((it) => {
+      const svc = services.find((s) => s.id === it.serviceId);
+      if (!svc) return;
+      if (y > 760) {
+        doc.addPage();
+        y = 50;
+      }
+      const lineTotal = svc.price * (it.quantity || 0);
+      const nameLines = doc.splitTextToSize(svc.name, pageW - marginX * 2 - 220);
+      doc.text(nameLines, marginX, y);
+      doc.text(String(it.quantity), pageW - marginX - 180, y, { align: "right" });
+      doc.text(formatBRL(svc.price), pageW - marginX - 90, y, { align: "right" });
+      doc.text(formatBRL(lineTotal), pageW - marginX, y, { align: "right" });
+      y += 14 * nameLines.length + 6;
+    });
+
+    y += 10;
+    doc.line(marginX, y, pageW - marginX, y);
+    y += 20;
+
+    const rightLabel = (label: string, value: string, bold = false) => {
+      doc.setFont("helvetica", bold ? "bold" : "normal");
+      doc.text(label, pageW - marginX - 140, y, { align: "right" });
+      doc.text(value, pageW - marginX, y, { align: "right" });
+      y += 16;
+    };
+
+    rightLabel("Subtotal:", formatBRL(subtotal));
+    if (safeDiscount > 0)
+      rightLabel(`Desconto (${safeDiscount}%):`, `- ${formatBRL(discountValue)}`);
+    if (safeUrgency > 0)
+      rightLabel(`Urgência (${safeUrgency}%):`, `+ ${formatBRL(urgencyValue)}`);
+    if (maxDeliveryDays > 0)
+      rightLabel(
+        "Prazo estimado:",
+        `${maxDeliveryDays} ${maxDeliveryDays === 1 ? "dia" : "dias"}`
+      );
+    y += 4;
+    doc.setFontSize(13);
+    rightLabel("TOTAL:", formatBRL(total), true);
+
+    y += 30;
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(9);
+    doc.setTextColor(120);
+    doc.text(
+      "Orçamento válido por 7 dias. Valores sujeitos a alteração conforme escopo final.",
+      marginX,
+      y
+    );
+
+    doc.save(`orcamento-${new Date().toISOString().split("T")[0]}.pdf`);
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">
           <Calculator className="h-5 w-5 text-primary" />
           <p className="text-sm text-muted-foreground">
             Monte um orçamento somando serviços, quantidades, desconto e urgência.
           </p>
         </div>
-        <Button onClick={addItem} size="sm" disabled={activeServices.length === 0}>
-          <Plus className="h-4 w-4 mr-1" />
-          Adicionar serviço
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={exportPDF}
+            size="sm"
+            variant="outline"
+            disabled={items.length === 0}
+          >
+            <FileDown className="h-4 w-4 mr-1" />
+            Exportar PDF
+          </Button>
+          <Button onClick={addItem} size="sm" disabled={activeServices.length === 0}>
+            <Plus className="h-4 w-4 mr-1" />
+            Adicionar serviço
+          </Button>
+        </div>
       </div>
 
       {items.length === 0 ? (
