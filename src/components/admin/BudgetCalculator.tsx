@@ -11,7 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2, Calculator } from "lucide-react";
+import { Plus, Trash2, Calculator, FileDown } from "lucide-react";
+import jsPDF from "jspdf";
 import type { Service } from "./ServicesSection";
 
 interface BudgetCalculatorProps {
