@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -22,13 +23,17 @@ import {
   Building2,
   Mail,
   Phone,
+  FileText,
+  Wrench,
 } from "lucide-react";
 import * as Icons from "lucide-react";
 import { toast } from "sonner";
 import ClientServiceForm from "./ClientServiceForm";
 import AddFromTemplateDialog from "./AddFromTemplateDialog";
 import BudgetCalculator from "../BudgetCalculator";
-import type { BudgetClient, ClientService } from "./types";
+import BudgetsList from "./BudgetsList";
+import BudgetEditor from "./BudgetEditor";
+import type { BudgetClient, ClientService, ClientBudget } from "./types";
 import type { Service } from "../ServicesSection";
 
 type Props = {
@@ -61,6 +66,8 @@ const ClientServicesView = ({ client, onBack }: Props) => {
   const [editing, setEditing] = useState<ClientService | null>(null);
   const [isTemplateOpen, setIsTemplateOpen] = useState(false);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
+  const [tab, setTab] = useState<"budgets" | "services">("budgets");
+  const [activeBudget, setActiveBudget] = useState<ClientBudget | null>(null);
   const qc = useQueryClient();
 
   const { data: services = [], isLoading } = useQuery({
@@ -113,6 +120,16 @@ const ClientServicesView = ({ client, onBack }: Props) => {
     display_order: s.display_order,
   }));
 
+  if (activeBudget) {
+    return (
+      <BudgetEditor
+        client={client}
+        budget={activeBudget}
+        onBack={() => setActiveBudget(null)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -141,25 +158,44 @@ const ClientServicesView = ({ client, onBack }: Props) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setIsCalcOpen(true)}
-            disabled={services.length === 0}
-          >
-            <Calculator className="w-4 h-4 mr-2" />
-            Calculadora
-          </Button>
-          <Button variant="outline" onClick={() => setIsTemplateOpen(true)}>
-            <LibraryBig className="w-4 h-4 mr-2" />
-            Adicionar do template
-          </Button>
-          <Button onClick={() => setIsFormOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Novo serviço
-          </Button>
-        </div>
       </div>
+
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "budgets" | "services")}>
+        <TabsList>
+          <TabsTrigger value="budgets">
+            <FileText className="w-4 h-4 mr-2" />
+            Orçamentos
+          </TabsTrigger>
+          <TabsTrigger value="services">
+            <Wrench className="w-4 h-4 mr-2" />
+            Serviços do cliente
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="budgets" className="mt-6">
+          <BudgetsList client={client} onOpenBudget={setActiveBudget} />
+        </TabsContent>
+
+        <TabsContent value="services" className="mt-6 space-y-6">
+          <div className="flex flex-wrap gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setIsCalcOpen(true)}
+              disabled={services.length === 0}
+            >
+              <Calculator className="w-4 h-4 mr-2" />
+              Calculadora rápida
+            </Button>
+            <Button variant="outline" onClick={() => setIsTemplateOpen(true)}>
+              <LibraryBig className="w-4 h-4 mr-2" />
+              Adicionar do template
+            </Button>
+            <Button onClick={() => setIsFormOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Novo serviço
+            </Button>
+          </div>
+
 
       {isLoading ? (
         <div className="text-center py-8 text-muted-foreground">Carregando serviços...</div>
@@ -261,6 +297,10 @@ const ClientServicesView = ({ client, onBack }: Props) => {
             ))}
         </div>
       )}
+        </TabsContent>
+      </Tabs>
+
+
 
       <Dialog open={isFormOpen} onOpenChange={handleClose}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
