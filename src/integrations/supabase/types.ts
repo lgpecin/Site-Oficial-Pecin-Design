@@ -156,6 +156,66 @@ export type Database = {
         }
         Relationships: []
       }
+      budget_items: {
+        Row: {
+          budget_id: string
+          client_service_id: string | null
+          created_at: string
+          delivery_days: number
+          description: string | null
+          display_order: number
+          group_color: string | null
+          group_label: string | null
+          id: string
+          name: string
+          price: number
+          quantity: number
+        }
+        Insert: {
+          budget_id: string
+          client_service_id?: string | null
+          created_at?: string
+          delivery_days?: number
+          description?: string | null
+          display_order?: number
+          group_color?: string | null
+          group_label?: string | null
+          id?: string
+          name: string
+          price?: number
+          quantity?: number
+        }
+        Update: {
+          budget_id?: string
+          client_service_id?: string | null
+          created_at?: string
+          delivery_days?: number
+          description?: string | null
+          display_order?: number
+          group_color?: string | null
+          group_label?: string | null
+          id?: string
+          name?: string
+          price?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_items_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "client_budgets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "budget_items_client_service_id_fkey"
+            columns: ["client_service_id"]
+            isOneToOne: false
+            referencedRelation: "client_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       carousel_images: {
         Row: {
           created_at: string
@@ -179,6 +239,56 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      client_budgets: {
+        Row: {
+          client_id: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          id: string
+          name: string
+          notes: string | null
+          start_date: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          name: string
+          notes?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          name?: string
+          notes?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_budgets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "budget_clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       client_products: {
         Row: {

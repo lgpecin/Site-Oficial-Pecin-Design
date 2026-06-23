@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -22,13 +23,17 @@ import {
   Building2,
   Mail,
   Phone,
+  FileText,
+  Wrench,
 } from "lucide-react";
 import * as Icons from "lucide-react";
 import { toast } from "sonner";
 import ClientServiceForm from "./ClientServiceForm";
 import AddFromTemplateDialog from "./AddFromTemplateDialog";
 import BudgetCalculator from "../BudgetCalculator";
-import type { BudgetClient, ClientService } from "./types";
+import BudgetsList from "./BudgetsList";
+import BudgetEditor from "./BudgetEditor";
+import type { BudgetClient, ClientService, ClientBudget } from "./types";
 import type { Service } from "../ServicesSection";
 
 type Props = {
@@ -61,6 +66,8 @@ const ClientServicesView = ({ client, onBack }: Props) => {
   const [editing, setEditing] = useState<ClientService | null>(null);
   const [isTemplateOpen, setIsTemplateOpen] = useState(false);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
+  const [tab, setTab] = useState<"budgets" | "services">("budgets");
+  const [activeBudget, setActiveBudget] = useState<ClientBudget | null>(null);
   const qc = useQueryClient();
 
   const { data: services = [], isLoading } = useQuery({
