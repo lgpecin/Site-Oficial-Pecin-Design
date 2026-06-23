@@ -297,6 +297,10 @@ const ClientServicesView = ({ client, onBack }: Props) => {
             ))}
         </div>
       )}
+        </TabsContent>
+      </Tabs>
+
+
 
       <Dialog open={isFormOpen} onOpenChange={handleClose}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
