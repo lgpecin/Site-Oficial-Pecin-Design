@@ -120,6 +120,16 @@ const ClientServicesView = ({ client, onBack }: Props) => {
     display_order: s.display_order,
   }));
 
+  if (activeBudget) {
+    return (
+      <BudgetEditor
+        client={client}
+        budget={activeBudget}
+        onBack={() => setActiveBudget(null)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -148,25 +158,44 @@ const ClientServicesView = ({ client, onBack }: Props) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setIsCalcOpen(true)}
-            disabled={services.length === 0}
-          >
-            <Calculator className="w-4 h-4 mr-2" />
-            Calculadora
-          </Button>
-          <Button variant="outline" onClick={() => setIsTemplateOpen(true)}>
-            <LibraryBig className="w-4 h-4 mr-2" />
-            Adicionar do template
-          </Button>
-          <Button onClick={() => setIsFormOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Novo serviço
-          </Button>
-        </div>
       </div>
+
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "budgets" | "services")}>
+        <TabsList>
+          <TabsTrigger value="budgets">
+            <FileText className="w-4 h-4 mr-2" />
+            Orçamentos
+          </TabsTrigger>
+          <TabsTrigger value="services">
+            <Wrench className="w-4 h-4 mr-2" />
+            Serviços do cliente
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="budgets" className="mt-6">
+          <BudgetsList client={client} onOpenBudget={setActiveBudget} />
+        </TabsContent>
+
+        <TabsContent value="services" className="mt-6 space-y-6">
+          <div className="flex flex-wrap gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setIsCalcOpen(true)}
+              disabled={services.length === 0}
+            >
+              <Calculator className="w-4 h-4 mr-2" />
+              Calculadora rápida
+            </Button>
+            <Button variant="outline" onClick={() => setIsTemplateOpen(true)}>
+              <LibraryBig className="w-4 h-4 mr-2" />
+              Adicionar do template
+            </Button>
+            <Button onClick={() => setIsFormOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Novo serviço
+            </Button>
+          </div>
+
 
       {isLoading ? (
         <div className="text-center py-8 text-muted-foreground">Carregando serviços...</div>
