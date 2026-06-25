@@ -264,228 +264,266 @@ const BudgetEditor = ({ client, budget, onBack }: Props) => {
   const totalDays = draft.reduce((s, i) => s + i.delivery_days, 0);
 
   // ============ PDF EXPORT ============
-  const exportPDF = () => {
+  const loadLogoDataUrl = async (): Promise<{ url: string; w: number; h: number } | null> => {
+    try {
+      const res = await fetch(siteLogo);
+      const blob = await res.blob();
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result as string);
+        fr.onerror = reject;
+        fr.readAsDataURL(blob);
+      });
+      const dims = await new Promise<{ w: number; h: number }>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+        img.onerror = () => resolve({ w: 0, h: 0 });
+        img.src = dataUrl;
+      });
+      return { url: dataUrl, w: dims.w, h: dims.h };
+    } catch {
+      return null;
+    }
+  };
+
+  const exportPDF = async () => {
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
     const BAND_W = 56;
-    const BAND_COLOR: [number, number, number] = [132, 204, 22]; // lime green
+    const BAND_COLOR: [number, number, number] = [132, 204, 22];
     const TEXT_DARK: [number, number, number] = [15, 15, 15];
     const PRICE_GREEN: [number, number, number] = [22, 101, 52];
     const MUTED: [number, number, number] = [110, 110, 110];
 
+    const logo = await loadLogoDataUrl();
+
     const drawHeader = () => {
-      // left lime band
       doc.setFillColor(...BAND_COLOR);
       doc.rect(0, 0, BAND_W, pageH, "F");
-
-      // Pec/n des/gh logo
-      const lx = BAND_W + 40;
-      const ly = 60;
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(20);
-      doc.setTextColor(...TEXT_DARK);
-      doc.text("Pec/n", lx, ly);
-      doc.text("des/gh", lx, ly + 22);
-      // accent strokes on the slashes — approximate
-      doc.setDrawColor(...BAND_COLOR);
-      doc.setLineWidth(2);
-      doc.line(lx + 40, ly + 4, lx + 50, ly - 12);
-    };
-
-    // ============ PAGE 1: Etapas & Prazos ============
-    drawHeader();
-    let y = 170;
-    const cx = BAND_W + 40;
-    const rightX = pageW - 40;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(34);
-    doc.setTextColor(...TEXT_DARK);
-    doc.text("3. Etapas", cx, y);
-    y += 36;
-    doc.text("    & Prazos.", cx, y);
-    y += 50;
-
-    let groupIdx = 0;
-    groups.forEach((g) => {
-      groupIdx++;
-      // group title
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(13);
-      doc.setTextColor(...TEXT_DARK);
-      const title = `${groupIdx} - ${g.label}`;
-      doc.text(title, cx, y);
-      // accent label (project tag) in group color
-      const titleW = doc.getTextWidth(title);
-      const r = parseInt((g.color || "#84cc16").slice(1, 3), 16);
-      const gg = parseInt((g.color || "#84cc16").slice(3, 5), 16);
-      const bb = parseInt((g.color || "#84cc16").slice(5, 7), 16);
-      doc.setTextColor(r, gg, bb);
-      doc.text(g.label === "Sem grupo" ? "" : "", cx + titleW + 6, y);
-      y += 18;
-
-      // items
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
-      g.items.forEach((it, idx) => {
-        if (y > pageH - 140) {
-          doc.addPage();
-          drawHeader();
-          y = 80;
-        }
-        doc.setTextColor(...TEXT_DARK);
-        const numbering = `${groupIdx}.${idx + 1} - ${it.name}`;
-        doc.text(numbering, cx, y);
-        const days = `${it.delivery_days} ${it.delivery_days === 1 ? "dia útil" : "dias úteis"}`;
-        doc.text(days, rightX, y, { align: "right" });
-        y += 16;
-      });
-      y += 14;
-    });
-
-    // Total row at bottom
-    const footY = pageH - 110;
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(13);
-    doc.setTextColor(...TEXT_DARK);
-    doc.text("Prazo total", cx, footY);
-    doc.text(`${totalDays} ${totalDays === 1 ? "dia útil" : "dias úteis"}`, rightX, footY, {
-      align: "right",
-    });
-    doc.text("Disponibilidade para início", cx, footY + 20);
-    const startStr = meta.start_date
-      ? new Date(meta.start_date + "T00:00:00").toLocaleDateString("pt-BR")
-      : "—";
-    doc.text(startStr, rightX, footY + 20, { align: "right" });
-
-    // bottom divider
-    doc.setDrawColor(...TEXT_DARK);
-    doc.setLineWidth(0.8);
-    doc.line(pageW / 2 - 50, pageH - 50, pageW / 2 + 50, pageH - 50);
-
-    // ============ PAGE 2: Investimento ============
-    doc.addPage();
-    drawHeader();
-
-    // Group color bands on the left (per group)
-    let bandY = 200;
-    const bandW = 28;
-    const bandX = BAND_W;
-
-    y = 170;
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(34);
-    doc.setTextColor(...TEXT_DARK);
-    doc.text("5. Investimento.", cx, y);
-    y += 50;
-
-    groupIdx = 0;
-    groups.forEach((g) => {
-      groupIdx++;
-      const groupStartY = y - 14;
-
-      // color band with rotated label
-      const r = parseInt((g.color || "#84cc16").slice(1, 3), 16);
-      const gg = parseInt((g.color || "#84cc16").slice(3, 5), 16);
-      const bb = parseInt((g.color || "#84cc16").slice(5, 7), 16);
-
-      const itemsBlockHeight = g.items.reduce((h, it) => {
-        const descLines = it.description
-          ? doc.splitTextToSize(it.description, pageW - cx - 60).length
-          : 0;
-        return h + 22 + 16 + descLines * 13 + 14;
-      }, 0);
-
-      doc.setFillColor(r, gg, bb);
-      doc.rect(bandX, groupStartY, bandW, itemsBlockHeight + 10, "F");
-      // label rotated
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(12);
-      doc.text(
-        g.label,
-        bandX + bandW / 2 + 4,
-        groupStartY + itemsBlockHeight / 2 + 20,
-        { angle: 90 }
-      );
-
-      g.items.forEach((it, idx) => {
-        if (y > pageH - 120) {
-          doc.addPage();
-          drawHeader();
-          y = 80;
-        }
-        // title: "0X. Name: R$ XXX"
-        const num = String(idx + 1).padStart(2, "0");
+      if (logo && logo.w && logo.h) {
+        const targetH = 48;
+        const targetW = (logo.w / logo.h) * targetH;
+        doc.addImage(logo.url, "PNG", BAND_W + 40, 32, targetW, targetH);
+      } else {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(18);
         doc.setTextColor(...TEXT_DARK);
-        const titleText = `${num}. ${it.name}:`;
-        doc.text(titleText, cx, y);
-        const titleW = doc.getTextWidth(titleText);
-        doc.setTextColor(...PRICE_GREEN);
-        doc.text(` ${formatBRL(it.price * it.quantity)}`, cx + titleW + 2, y);
+        doc.text("Pecin Design", BAND_W + 40, 60);
+      }
+    };
+
+    const cx = BAND_W + 40;
+    const rightX = pageW - 40;
+    let y = 170;
+
+    // ============ PAGE 1: Etapas & Prazos ============
+    if (pdfOpts.stagesPage) {
+      drawHeader();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(34);
+      doc.setTextColor(...TEXT_DARK);
+      doc.text("Etapas", cx, y);
+      y += 36;
+      doc.text("& Prazos.", cx, y);
+      y += 50;
+
+      let groupIdx = 0;
+      groups.forEach((g) => {
+        groupIdx++;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(13);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text(`${groupIdx} - ${g.label}`, cx, y);
         y += 18;
 
-        // description bold subtitle (first part) and incluso text
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        g.items.forEach((it, idx) => {
+          if (y > pageH - 140) {
+            doc.addPage();
+            drawHeader();
+            y = 80;
+          }
+          doc.setTextColor(...TEXT_DARK);
+          doc.text(`${groupIdx}.${idx + 1} - ${it.name}`, cx, y);
+          if (pdfOpts.itemDays) {
+            const days = `${it.delivery_days} ${it.delivery_days === 1 ? "dia útil" : "dias úteis"}`;
+            doc.text(days, rightX, y, { align: "right" });
+          }
+          y += 16;
+        });
+        y += 14;
+      });
+
+      const footY = pageH - 110;
+      if (pdfOpts.totalDays) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(13);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text("Prazo total", cx, footY);
+        doc.text(`${totalDays} ${totalDays === 1 ? "dia útil" : "dias úteis"}`, rightX, footY, {
+          align: "right",
+        });
+      }
+      if (pdfOpts.startDate) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(13);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text("Disponibilidade para início", cx, footY + 20);
+        const startStr = meta.start_date
+          ? new Date(meta.start_date + "T00:00:00").toLocaleDateString("pt-BR")
+          : "—";
+        doc.text(startStr, rightX, footY + 20, { align: "right" });
+      }
+
+      doc.setDrawColor(...TEXT_DARK);
+      doc.setLineWidth(0.8);
+      doc.line(pageW / 2 - 50, pageH - 50, pageW / 2 + 50, pageH - 50);
+    }
+
+    // ============ PAGE 2: Investimento ============
+    if (pdfOpts.investmentPage) {
+      if (pdfOpts.stagesPage) doc.addPage();
+      drawHeader();
+
+      const bandW = 28;
+      const bandX = BAND_W;
+
+      y = 170;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(34);
+      doc.setTextColor(...TEXT_DARK);
+      doc.text("Investimento.", cx, y);
+      y += 50;
+
+      let groupIdx = 0;
+      groups.forEach((g) => {
+        groupIdx++;
+        const groupStartY = y - 14;
+        const r = parseInt((g.color || "#84cc16").slice(1, 3), 16);
+        const gg = parseInt((g.color || "#84cc16").slice(3, 5), 16);
+        const bb = parseInt((g.color || "#84cc16").slice(5, 7), 16);
+
+        const itemsBlockHeight = g.items.reduce((h, it) => {
+          const descLines = pdfOpts.description && it.description
+            ? doc.splitTextToSize(it.description, pageW - cx - 60).length
+            : 0;
+          return h + 22 + 16 + descLines * 13 + 14;
+        }, 0);
+
+        doc.setFillColor(r, gg, bb);
+        doc.rect(bandX, groupStartY, bandW, itemsBlockHeight + 10, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text(g.label, bandX + bandW / 2 + 4, groupStartY + itemsBlockHeight / 2 + 20, { angle: 90 });
+
+        g.items.forEach((it, idx) => {
+          if (y > pageH - 120) {
+            doc.addPage();
+            drawHeader();
+            y = 80;
+          }
+          const num = String(idx + 1).padStart(2, "0");
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(18);
+          doc.setTextColor(...TEXT_DARK);
+          let titleText = `${num}. ${it.name}`;
+          if (pdfOpts.quantity && it.quantity > 1) titleText += ` ×${it.quantity}`;
+          titleText += ":";
+          doc.text(titleText, cx, y);
+          const titleW = doc.getTextWidth(titleText);
+
+          if (pdfOpts.itemSubtotal || pdfOpts.unitPrice) {
+            doc.setTextColor(...PRICE_GREEN);
+            const priceText = pdfOpts.itemSubtotal
+              ? ` ${formatBRL(it.price * it.quantity)}`
+              : ` ${formatBRL(it.price)}`;
+            doc.text(priceText, cx + titleW + 2, y);
+          }
+          y += 18;
+
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          doc.setTextColor(...TEXT_DARK);
+          if (pdfOpts.description && it.description) {
+            const lines = doc.splitTextToSize(it.description, pageW - cx - 60);
+            lines.forEach((line: string) => {
+              doc.text(line, cx, y);
+              y += 13;
+            });
+          }
+          if (pdfOpts.hours && it.hours > 0) {
+            doc.setTextColor(...MUTED);
+            doc.text(`${it.hours}h estimadas`, cx, y);
+            y += 13;
+          }
+          y += 12;
+        });
+        y += 4;
+      });
+
+      if (y > pageH - 140) {
+        doc.addPage();
+        drawHeader();
+        y = 100;
+      }
+      y += 10;
+      doc.setDrawColor(200);
+      doc.line(cx, y, rightX, y);
+      y += 22;
+
+      if (pdfOpts.subtotal) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(...MUTED);
+        doc.text("Subtotal", cx, y);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text(formatBRL(subtotal), rightX, y, { align: "right" });
+        y += 16;
+      }
+      if (pdfOpts.discount && discount > 0) {
+        doc.setTextColor(...MUTED);
+        const dLabel =
+          meta.discount_type === "percent"
+            ? `Desconto (${meta.discount_value}%)`
+            : "Desconto";
+        doc.text(dLabel, cx, y);
+        doc.setTextColor(200, 50, 50);
+        doc.text(`- ${formatBRL(discount)}`, rightX, y, { align: "right" });
+        y += 16;
+      }
+      if (pdfOpts.total) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text("Total", cx, y + 10);
+        doc.setTextColor(...PRICE_GREEN);
+        doc.text(formatBRL(total), rightX, y + 10, { align: "right" });
+        y += 30;
+      }
+
+      if (pdfOpts.notes && meta.notes) {
+        y += 14;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(...TEXT_DARK);
+        doc.text("Observações", cx, y);
+        y += 14;
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
-        doc.setTextColor(...TEXT_DARK);
-        if (it.description) {
-          const lines = doc.splitTextToSize(it.description, pageW - cx - 60);
-          lines.forEach((line: string) => {
-            doc.text(line, cx, y);
-            y += 13;
-          });
-        }
-        y += 12;
-      });
-      y += 4;
-    });
+        const lines = doc.splitTextToSize(meta.notes, pageW - cx - 60);
+        lines.forEach((line: string) => {
+          doc.text(line, cx, y);
+          y += 12;
+        });
+      }
 
-    // Totals
-    if (y > pageH - 140) {
-      doc.addPage();
-      drawHeader();
-      y = 100;
+      doc.setDrawColor(...TEXT_DARK);
+      doc.setLineWidth(0.8);
+      doc.line(pageW / 2 - 50, pageH - 50, pageW / 2 + 50, pageH - 50);
     }
-    y += 10;
-    doc.setDrawColor(200);
-    doc.line(cx, y, rightX, y);
-    y += 22;
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(...MUTED);
-    doc.text("Subtotal", cx, y);
-    doc.setTextColor(...TEXT_DARK);
-    doc.text(formatBRL(subtotal), rightX, y, { align: "right" });
-    y += 16;
-
-    if (discount > 0) {
-      doc.setTextColor(...MUTED);
-      const dLabel =
-        meta.discount_type === "percent"
-          ? `Desconto (${meta.discount_value}%)`
-          : "Desconto";
-      doc.text(dLabel, cx, y);
-      doc.setTextColor(200, 50, 50);
-      doc.text(`- ${formatBRL(discount)}`, rightX, y, { align: "right" });
-      y += 16;
-    }
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.setTextColor(...TEXT_DARK);
-    doc.text("Total", cx, y + 10);
-    doc.setTextColor(...PRICE_GREEN);
-    doc.text(formatBRL(total), rightX, y + 10, { align: "right" });
-
-    // bottom divider
-    doc.setDrawColor(...TEXT_DARK);
-    doc.setLineWidth(0.8);
-    doc.line(pageW / 2 - 50, pageH - 50, pageW / 2 + 50, pageH - 50);
 
     doc.save(`${meta.name || "orcamento"}-${client.name}.pdf`);
   };
