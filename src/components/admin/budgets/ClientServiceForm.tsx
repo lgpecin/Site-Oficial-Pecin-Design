@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import * as Icons from "lucide-react";
+import HoursPricingHelper from "./HoursPricingHelper";
 import type { ClientService } from "./types";
 
 const categories = [
@@ -51,6 +52,7 @@ const ClientServiceForm = ({ clientId, service, onClose }: Props) => {
     category: service?.category || "estatico",
     price: service?.price ?? 0,
     delivery_days: service?.delivery_days ?? 1,
+    hours: service?.hours ?? 0,
     icon: service?.icon || "Folder",
     color: service?.color || "#6366f1",
     is_active: service?.is_active ?? true,
@@ -161,6 +163,12 @@ const ClientServiceForm = ({ clientId, service, onClose }: Props) => {
           required
         />
       </div>
+
+      <HoursPricingHelper
+        hours={form.hours}
+        onHoursChange={(h) => setForm({ ...form, hours: h })}
+        onApplySuggested={(p) => setForm({ ...form, price: p })}
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <div>

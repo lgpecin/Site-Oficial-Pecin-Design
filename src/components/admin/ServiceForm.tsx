@@ -15,6 +15,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Service } from "./ServicesSection";
+import HoursPricingHelper from "./budgets/HoursPricingHelper";
 import * as Icons from "lucide-react";
 
 type ServiceFormProps = {
@@ -50,6 +51,7 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
     category: "estatico" | "branding" | "carrossel" | "ebook" | "marca" | "outros" | "reels";
     price: number;
     delivery_days: number;
+    hours: number;
     icon: string;
     color: string;
     is_active: boolean;
@@ -59,6 +61,7 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
     category: (service?.category as any) || "estatico",
     price: service?.price || 0,
     delivery_days: service?.delivery_days || 1,
+    hours: (service as any)?.hours || 0,
     icon: service?.icon || "Folder",
     color: service?.color || "#6366f1",
     is_active: service?.is_active ?? true,
@@ -184,6 +187,12 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
           required
         />
       </div>
+
+      <HoursPricingHelper
+        hours={formData.hours}
+        onHoursChange={(h) => setFormData({ ...formData, hours: h })}
+        onApplySuggested={(p) => setFormData({ ...formData, price: p })}
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <div>

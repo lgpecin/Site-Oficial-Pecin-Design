@@ -114,6 +114,7 @@ const ClientServicesView = ({ client, onBack }: Props) => {
     category: s.category,
     price: s.price,
     delivery_days: s.delivery_days,
+    hours: s.hours || 0,
     icon: s.icon,
     color: s.color,
     is_active: s.is_active,

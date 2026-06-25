@@ -166,6 +166,7 @@ export type Database = {
           display_order: number
           group_color: string | null
           group_label: string | null
+          hours: number
           id: string
           name: string
           price: number
@@ -180,6 +181,7 @@ export type Database = {
           display_order?: number
           group_color?: string | null
           group_label?: string | null
+          hours?: number
           id?: string
           name: string
           price?: number
@@ -194,6 +196,7 @@ export type Database = {
           display_order?: number
           group_color?: string | null
           group_label?: string | null
+          hours?: number
           id?: string
           name?: string
           price?: number
@@ -340,6 +343,7 @@ export type Database = {
           delivery_days: number
           description: string | null
           display_order: number
+          hours: number
           icon: string | null
           id: string
           is_active: boolean
@@ -356,6 +360,7 @@ export type Database = {
           delivery_days?: number
           description?: string | null
           display_order?: number
+          hours?: number
           icon?: string | null
           id?: string
           is_active?: boolean
@@ -372,6 +377,7 @@ export type Database = {
           delivery_days?: number
           description?: string | null
           display_order?: number
+          hours?: number
           icon?: string | null
           id?: string
           is_active?: boolean
@@ -1055,6 +1061,7 @@ export type Database = {
           delivery_days: number
           description: string | null
           display_order: number | null
+          hours: number
           icon: string | null
           id: string
           is_active: boolean | null
@@ -1069,6 +1076,7 @@ export type Database = {
           delivery_days: number
           description?: string | null
           display_order?: number | null
+          hours?: number
           icon?: string | null
           id?: string
           is_active?: boolean | null
@@ -1083,6 +1091,7 @@ export type Database = {
           delivery_days?: number
           description?: string | null
           display_order?: number | null
+          hours?: number
           icon?: string | null
           id?: string
           is_active?: boolean | null

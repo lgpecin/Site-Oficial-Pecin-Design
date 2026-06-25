@@ -19,6 +19,7 @@ export type ClientService = {
   category: string;
   price: number;
   delivery_days: number;
+  hours: number;
   icon: string | null;
   color: string | null;
   is_active: boolean;
@@ -47,6 +48,7 @@ export type BudgetItem = {
   description: string | null;
   price: number;
   delivery_days: number;
+  hours: number;
   quantity: number;
   group_label: string | null;
   group_color: string | null;
