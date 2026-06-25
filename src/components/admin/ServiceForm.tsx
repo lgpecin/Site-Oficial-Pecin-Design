@@ -188,6 +188,12 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
         />
       </div>
 
+      <HoursPricingHelper
+        hours={formData.hours}
+        onHoursChange={(h) => setFormData({ ...formData, hours: h })}
+        onApplySuggested={(p) => setFormData({ ...formData, price: p })}
+      />
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="icon">Ícone</Label>
