@@ -715,7 +715,33 @@ const BudgetEditor = ({ client, budget, onBack }: Props) => {
                   />
                 </div>
                 <div className="md:col-span-1">
-                  <Label className="text-xs">Preço</Label>
+                  <Label className="text-xs">Horas</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="0.5"
+                    value={it.hours || 0}
+                    onChange={(e) =>
+                      updateItem(it.id, { hours: parseFloat(e.target.value) || 0 })
+                    }
+                  />
+                </div>
+                <div className="md:col-span-1">
+                  <Label className="text-xs flex items-center justify-between">
+                    Preço
+                    {hourlyRate > 0 && (it.hours || 0) > 0 && (
+                      <button
+                        type="button"
+                        className="text-[10px] text-primary hover:underline"
+                        title={`Sugestão: ${formatBRL((it.hours || 0) * hourlyRate)}`}
+                        onClick={() =>
+                          updateItem(it.id, { price: (it.hours || 0) * hourlyRate })
+                        }
+                      >
+                        ✨
+                      </button>
+                    )}
+                  </Label>
                   <Input
                     type="number"
                     min={0}
