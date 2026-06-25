@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import * as Icons from "lucide-react";
+import HoursPricingHelper from "./HoursPricingHelper";
 import type { ClientService } from "./types";
 
 const categories = [
