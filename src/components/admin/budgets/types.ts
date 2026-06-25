@@ -48,6 +48,7 @@ export type BudgetItem = {
   description: string | null;
   price: number;
   delivery_days: number;
+  hours: number;
   quantity: number;
   group_label: string | null;
   group_color: string | null;
