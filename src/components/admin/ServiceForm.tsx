@@ -15,6 +15,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Service } from "./ServicesSection";
+import HoursPricingHelper from "./budgets/HoursPricingHelper";
 import * as Icons from "lucide-react";
 
 type ServiceFormProps = {
