@@ -199,6 +199,7 @@ const BudgetEditor = ({ client, budget, onBack }: Props) => {
             description: d.description,
             price: d.price,
             delivery_days: d.delivery_days,
+            hours: d.hours || 0,
             quantity: d.quantity,
             group_label: d.group_label,
             group_color: d.group_color,
