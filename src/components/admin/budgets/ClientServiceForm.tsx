@@ -164,6 +164,12 @@ const ClientServiceForm = ({ clientId, service, onClose }: Props) => {
         />
       </div>
 
+      <HoursPricingHelper
+        hours={form.hours}
+        onHoursChange={(h) => setForm({ ...form, hours: h })}
+        onApplySuggested={(p) => setForm({ ...form, price: p })}
+      />
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label>Ícone</Label>
