@@ -838,6 +838,45 @@ const BudgetEditor = ({ client, budget, onBack }: Props) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isPdfOptionsOpen} onOpenChange={setIsPdfOptionsOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>O que incluir no PDF</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-3 py-2 text-sm">
+            {([
+              ["stagesPage", "Página 1 — Etapas & Prazos"],
+              ["investmentPage", "Página 2 — Investimento"],
+              ["description", "Descrição dos itens"],
+              ["quantity", "Quantidade"],
+              ["hours", "Horas estimadas"],
+              ["unitPrice", "Preço unitário (sem somar qtd)"],
+              ["itemSubtotal", "Valor por item (preço × qtd)"],
+              ["itemDays", "Prazo por item"],
+              ["totalDays", "Prazo total"],
+              ["startDate", "Data de início"],
+              ["subtotal", "Subtotal"],
+              ["discount", "Desconto"],
+              ["total", "Total"],
+              ["notes", "Observações"],
+            ] as const).map(([key, label]) => (
+              <label key={key} className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={(pdfOpts as any)[key]}
+                  onCheckedChange={(v) =>
+                    setPdfOpts((p) => ({ ...p, [key]: !!v }))
+                  }
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setIsPdfOptionsOpen(false)}>Fechar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
