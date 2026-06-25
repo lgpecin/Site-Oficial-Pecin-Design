@@ -68,6 +68,25 @@ const BudgetEditor = ({ client, budget, onBack }: Props) => {
     notes: budget.notes || "",
   });
   const [isTemplateOpen, setIsTemplateOpen] = useState(false);
+  const [isPdfOptionsOpen, setIsPdfOptionsOpen] = useState(false);
+  const { hourlyRate } = useHourlyRate();
+
+  const [pdfOpts, setPdfOpts] = useState({
+    stagesPage: true,
+    investmentPage: true,
+    description: true,
+    quantity: true,
+    hours: false,
+    unitPrice: false,
+    itemSubtotal: true,
+    itemDays: true,
+    totalDays: true,
+    subtotal: true,
+    discount: true,
+    total: true,
+    startDate: true,
+    notes: false,
+  });
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["budget_items", budget.id],
