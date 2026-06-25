@@ -115,6 +115,7 @@ const BudgetEditor = ({ client, budget, onBack }: Props) => {
       description: "",
       price: 0,
       delivery_days: 1,
+      hours: 0,
       quantity: 1,
       group_label: groupLabel || null,
       group_color: groupColor || null,
