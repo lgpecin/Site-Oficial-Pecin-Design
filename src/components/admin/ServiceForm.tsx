@@ -51,6 +51,7 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
     category: "estatico" | "branding" | "carrossel" | "ebook" | "marca" | "outros" | "reels";
     price: number;
     delivery_days: number;
+    hours: number;
     icon: string;
     color: string;
     is_active: boolean;
@@ -60,6 +61,7 @@ const ServiceForm = ({ service, onClose }: ServiceFormProps) => {
     category: (service?.category as any) || "estatico",
     price: service?.price || 0,
     delivery_days: service?.delivery_days || 1,
+    hours: (service as any)?.hours || 0,
     icon: service?.icon || "Folder",
     color: service?.color || "#6366f1",
     is_active: service?.is_active ?? true,
