@@ -545,6 +545,9 @@ const BudgetEditor = ({ client, budget, onBack }: Props) => {
           </div>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" size="icon" onClick={() => setIsPdfOptionsOpen(true)} title="Opções do PDF">
+            <Settings2 className="w-4 h-4" />
+          </Button>
           <Button variant="outline" onClick={exportPDF} disabled={draft.length === 0}>
             <FileDown className="w-4 h-4 mr-1" />
             Exportar PDF
