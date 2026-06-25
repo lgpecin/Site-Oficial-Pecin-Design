@@ -52,6 +52,7 @@ const ClientServiceForm = ({ clientId, service, onClose }: Props) => {
     category: service?.category || "estatico",
     price: service?.price ?? 0,
     delivery_days: service?.delivery_days ?? 1,
+    hours: service?.hours ?? 0,
     icon: service?.icon || "Folder",
     color: service?.color || "#6366f1",
     is_active: service?.is_active ?? true,
