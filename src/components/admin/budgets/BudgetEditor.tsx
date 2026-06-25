@@ -28,9 +28,14 @@ import {
   Save,
   LibraryBig,
   GripVertical,
+  Settings2,
 } from "lucide-react";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
+import { Checkbox } from "@/components/ui/checkbox";
+import siteLogo from "@/assets/logo.png";
+import HoursPricingHelper from "./HoursPricingHelper";
+import { useHourlyRate } from "@/hooks/useHourlyRate";
 import type { BudgetClient, ClientBudget, BudgetItem, ClientService } from "./types";
 
 type Props = {
