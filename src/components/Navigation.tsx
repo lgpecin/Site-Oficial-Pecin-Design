@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Globe } from "lucide-react";
+
 import logo from "@/assets/logo.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -52,25 +52,49 @@ const Navigation = () => {
             <Button onClick={() => scrollToSection("contact")} size="sm">
               {t("nav.contact")}
             </Button>
-            <button
-              onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
-              className="flex items-center gap-1.5 text-foreground/80 hover:text-primary transition-colors text-sm font-medium"
-              aria-label="Toggle language"
-            >
-              <Globe className="w-4 h-4" />
-              {language === "pt" ? "EN" : "PT"}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setLanguage("pt")}
+                className={`text-xl leading-none transition-all hover:scale-110 ${
+                  language === "pt" ? "opacity-100 scale-110" : "opacity-50 grayscale hover:opacity-80 hover:grayscale-0"
+                }`}
+                aria-label="Português"
+                title="Português"
+              >
+                🇧🇷
+              </button>
+              <button
+                onClick={() => setLanguage("en")}
+                className={`text-xl leading-none transition-all hover:scale-110 ${
+                  language === "en" ? "opacity-100 scale-110" : "opacity-50 grayscale hover:opacity-80 hover:grayscale-0"
+                }`}
+                aria-label="English"
+                title="English"
+              >
+                🇺🇸
+              </button>
+            </div>
           </div>
 
           {/* Mobile language toggle */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
             <button
-              onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
-              className="flex items-center gap-1 text-foreground/80 hover:text-primary transition-colors text-sm font-medium"
-              aria-label="Toggle language"
+              onClick={() => setLanguage("pt")}
+              className={`text-xl leading-none transition-all ${
+                language === "pt" ? "opacity-100 scale-110" : "opacity-50 grayscale"
+              }`}
+              aria-label="Português"
             >
-              <Globe className="w-4 h-4" />
-              {language === "pt" ? "EN" : "PT"}
+              🇧🇷
+            </button>
+            <button
+              onClick={() => setLanguage("en")}
+              className={`text-xl leading-none transition-all ${
+                language === "en" ? "opacity-100 scale-110" : "opacity-50 grayscale"
+              }`}
+              aria-label="English"
+            >
+              🇺🇸
             </button>
           </div>
         </div>
