@@ -84,7 +84,7 @@ const ServiceSteps = () => {
               {Math.round(scrollProgress * 100)}%
             </span>
             <div className="relative w-1 h-64 bg-border rounded-full overflow-hidden">
-              <div className="absolute top-0 left-0 w-full bg-primary transition-all duration-100 ease-out rounded-full" style={{ height: `${scrollProgress * 100}%` }} />
+              <div className="absolute top-0 left-0 w-full bg-primary transition-[height] duration-100 ease-out rounded-full" style={{ height: `${scrollProgress * 100}%` }} />
             </div>
             <span className="text-xs text-muted-foreground mt-2">
               {t("steps.step")} {visibleSteps}/{steps.length}
@@ -94,8 +94,9 @@ const ServiceSteps = () => {
 
         <div className="grid grid-cols-2 gap-4 md:max-w-3xl md:mx-auto md:space-y-8 md:grid-cols-1">
           {steps.map((step, index) => (
-            <div key={index} className={`transition-all duration-700 ${index < visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div key={index} style={{ transitionDelay: index < visibleSteps ? `${Math.min(index, 4) * 40}ms` : "0ms" }} className={`transition-[opacity,transform] duration-[400ms] ease-out ${index < visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <div className="bg-card border border-border rounded-2xl p-4 md:p-8 lg:p-10 shadow-lg h-full">
+
                 <div className="flex flex-col items-center text-center gap-3 md:gap-6">
                   <div className="text-primary">
                     <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center">

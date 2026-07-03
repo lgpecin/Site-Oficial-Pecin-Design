@@ -22,13 +22,14 @@ const SocialMedia = () => {
         </div>
         <div className="flex justify-center items-center gap-6 md:gap-8 animate-fade-up">
           {socialLinks.map((social) => (
-            <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className={`group transition-all duration-300 ${social.color}`} aria-label={social.name}>
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-background border-2 border-border flex items-center justify-center group-hover:scale-110 group-hover:border-current transition-all duration-300 shadow-sm hover:shadow-lg">
+            <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className={`group transition-colors duration-200 ${social.color}`} aria-label={social.name}>
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-background border-2 border-border flex items-center justify-center transition-[transform,border-color,box-shadow] duration-200 ease-out md:group-hover:scale-110 md:group-hover:border-current md:hover:shadow-lg active:scale-[0.97] shadow-sm">
                 <social.icon className="w-6 h-6 md:w-7 md:h-7" />
               </div>
             </a>
           ))}
         </div>
+
       </div>
     </section>
   );

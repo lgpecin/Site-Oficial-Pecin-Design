@@ -23,7 +23,7 @@ const Navigation = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-200 ease-out ${
         scrolled ? "bg-background/80 backdrop-blur-lg shadow-sm" : "bg-transparent"
       }`}
     >
@@ -31,10 +31,11 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
           <button
             onClick={() => scrollToSection("hero")}
-            className="hover:opacity-80 transition-opacity"
+            className="hover:opacity-80 transition-opacity duration-150 active:scale-[0.97]"
           >
             <img src={logo} alt="Pecin Design" className="h-8 w-auto" loading="eager" decoding="sync" />
           </button>
+
 
           <div className="hidden md:flex items-center gap-8">
             <button
@@ -55,8 +56,8 @@ const Navigation = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setLanguage("pt")}
-                className={`text-xl leading-none transition-all hover:scale-110 ${
-                  language === "pt" ? "opacity-100 scale-110" : "opacity-50 grayscale hover:opacity-80 hover:grayscale-0"
+                className={`text-xl leading-none transition-[opacity,filter,transform] duration-150 ease-out active:scale-95 md:hover:scale-110 ${
+                  language === "pt" ? "opacity-100 scale-110" : "opacity-50 grayscale md:hover:opacity-80 md:hover:grayscale-0"
                 }`}
                 aria-label="Português"
                 title="Português"
@@ -65,8 +66,8 @@ const Navigation = () => {
               </button>
               <button
                 onClick={() => setLanguage("en")}
-                className={`text-xl leading-none transition-all hover:scale-110 ${
-                  language === "en" ? "opacity-100 scale-110" : "opacity-50 grayscale hover:opacity-80 hover:grayscale-0"
+                className={`text-xl leading-none transition-[opacity,filter,transform] duration-150 ease-out active:scale-95 md:hover:scale-110 ${
+                  language === "en" ? "opacity-100 scale-110" : "opacity-50 grayscale md:hover:opacity-80 md:hover:grayscale-0"
                 }`}
                 aria-label="English"
                 title="English"
@@ -80,7 +81,7 @@ const Navigation = () => {
           <div className="md:hidden flex items-center gap-2">
             <button
               onClick={() => setLanguage("pt")}
-              className={`text-xl leading-none transition-all ${
+              className={`text-xl leading-none transition-[opacity,filter,transform] duration-150 ease-out active:scale-95 ${
                 language === "pt" ? "opacity-100 scale-110" : "opacity-50 grayscale"
               }`}
               aria-label="Português"
@@ -89,7 +90,7 @@ const Navigation = () => {
             </button>
             <button
               onClick={() => setLanguage("en")}
-              className={`text-xl leading-none transition-all ${
+              className={`text-xl leading-none transition-[opacity,filter,transform] duration-150 ease-out active:scale-95 ${
                 language === "en" ? "opacity-100 scale-110" : "opacity-50 grayscale"
               }`}
               aria-label="English"
@@ -97,6 +98,7 @@ const Navigation = () => {
               🇺🇸
             </button>
           </div>
+
         </div>
       </div>
     </nav>
