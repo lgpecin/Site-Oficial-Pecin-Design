@@ -183,7 +183,7 @@ const ServicesCatalog = () => {
                     return (
                       <Card
                         key={service.id}
-                        className="p-4 hover:shadow-lg transition-all duration-200 border-2"
+                        className="p-4 hover:shadow-lg transition-shadow duration-200 ease-out border-2"
                         style={{ borderColor: service.color || "#6366f1" }}
                       >
                         <div className="flex items-start gap-3 mb-4">
