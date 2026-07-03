@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AnimatedTextProps {
   text: string;
@@ -10,66 +10,68 @@ interface AnimatedTextProps {
 const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*";
 
 export const AnimatedText = ({ text, isInView, className = "", delay = 0 }: AnimatedTextProps) => {
-  const [displayText, setDisplayText] = useState(text.split("").map(() => ""));
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [displayText, setDisplayText] = useState<string[]>(() => text.split("").map(() => ""));
+  const doneRef = useRef(false);
 
   useEffect(() => {
-    if (!isInView || isAnimating) return;
+    if (!isInView || doneRef.current) return;
 
-    setIsAnimating(true);
+    // Reduced motion: skip scramble, show text instantly
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      setDisplayText(text.split(""));
+      doneRef.current = true;
+      return;
+    }
+
     const duration = 800;
-    const scrambleSpeed = 50; // Increased from 30ms to 50ms
-    const startTime = Date.now();
-    let rafId: number;
+    const scrambleInterval = 50;
+    const startTime = performance.now() + delay;
+    let rafId = 0;
+    let lastTick = 0;
+    let cancelled = false;
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime - delay;
-      
+    const tick = (now: number) => {
+      if (cancelled) return;
+      const elapsed = now - startTime;
       if (elapsed < 0) {
-        rafId = requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(tick);
         return;
       }
-      
-      const progress = Math.min(elapsed / duration, 1);
-
-      setDisplayText(
-        text.split("").map((char, index) => {
-          if (char === " ") return " ";
-          
-          const charProgress = (progress * text.length - index) / 2;
-          
-          if (charProgress >= 1) {
-            return char;
-          } else if (charProgress > 0) {
-            return characters[Math.floor(Math.random() * characters.length)];
-          } else {
+      if (now - lastTick >= scrambleInterval) {
+        lastTick = now;
+        const progress = Math.min(elapsed / duration, 1);
+        setDisplayText(
+          text.split("").map((char, index) => {
+            if (char === " ") return " ";
+            const charProgress = (progress * text.length - index) / 2;
+            if (charProgress >= 1) return char;
+            if (charProgress > 0) return characters[Math.floor(Math.random() * characters.length)];
             return "";
-          }
-        })
-      );
-
-      if (progress < 1) {
-        setTimeout(() => {
-          rafId = requestAnimationFrame(animate);
-        }, scrambleSpeed);
-      } else {
-        setDisplayText(text.split(""));
-        setIsAnimating(false);
+          })
+        );
+        if (progress >= 1) {
+          setDisplayText(text.split(""));
+          doneRef.current = true;
+          return; // stop the rAF loop — no more work needed
+        }
       }
+      rafId = requestAnimationFrame(tick);
     };
 
-    rafId = requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(tick);
 
     return () => {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
+      cancelled = true;
+      if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [isInView, text, delay, isAnimating]);
+  }, [isInView, text, delay]);
 
   return (
-    <span 
-      className={`inline-block transition-opacity duration-700 ${
+    <span
+      className={`inline-block transition-opacity duration-300 ease-out ${
         isInView ? "opacity-100" : "opacity-0"
       } ${className}`}
     >

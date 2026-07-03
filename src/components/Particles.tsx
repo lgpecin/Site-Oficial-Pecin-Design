@@ -1,34 +1,29 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const Particles = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isVisible, setIsVisible] = useState(true);
-  const animationFrameRef = useRef<number>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Intersection Observer to pause animation when not visible
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0 }
-    );
-
-    observer.observe(canvas);
+    // Respect reduced motion — skip the animation entirely
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas size with throttle
+    let isVisible = true;
+    let isTabVisible = document.visibilityState === "visible";
+    let animationFrame = 0;
+
     const setCanvasSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     setCanvasSize();
-    
+
     let resizeTimeout: number;
     const throttledResize = () => {
       clearTimeout(resizeTimeout);
@@ -36,7 +31,6 @@ const Particles = () => {
     };
     window.addEventListener("resize", throttledResize, { passive: true });
 
-    // Particle class
     class Particle {
       x: number;
       y: number;
@@ -57,8 +51,6 @@ const Particles = () => {
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-
-        // Wrap around screen
         if (this.x > canvas.width) this.x = 0;
         if (this.x < 0) this.x = canvas.width;
         if (this.y > canvas.height) this.y = 0;
@@ -74,46 +66,66 @@ const Particles = () => {
       }
     }
 
-    // Create particles - fewer on mobile
-    const particles: Particle[] = [];
     const isMobile = window.innerWidth < 768;
-    const particleCount = isMobile ? 40 : 80;
-    
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
-    }
+    const particleCount = isMobile ? 30 : 60;
+    const particles: Particle[] = [];
+    for (let i = 0; i < particleCount; i++) particles.push(new Particle());
 
-    // Animation loop
     const animate = () => {
-      if (!isVisible) {
-        animationFrameRef.current = requestAnimationFrame(animate);
-        return;
-      }
-
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach((particle) => {
-        particle.update();
-        particle.draw();
-      });
-
-      animationFrameRef.current = requestAnimationFrame(animate);
+      for (const p of particles) {
+        p.update();
+        p.draw();
+      }
+      animationFrame = requestAnimationFrame(animate);
     };
 
-    animate();
+    const start = () => {
+      if (animationFrame) return;
+      animationFrame = requestAnimationFrame(animate);
+    };
+    const stop = () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
+    };
+    const sync = () => {
+      if (isVisible && isTabVisible) start();
+      else stop();
+    };
+
+    // Pause when the canvas leaves the viewport
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
+    // Pause when the tab is hidden
+    const onVis = () => {
+      isTabVisible = document.visibilityState === "visible";
+      sync();
+    };
+    document.addEventListener("visibilitychange", onVis);
+
+    sync();
 
     return () => {
       window.removeEventListener("resize", throttledResize);
+      document.removeEventListener("visibilitychange", onVis);
       observer.disconnect();
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      stop();
     };
-  }, [isVisible]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="absolute inset-0 pointer-events-none"
       style={{ opacity: 0.4 }}
     />
