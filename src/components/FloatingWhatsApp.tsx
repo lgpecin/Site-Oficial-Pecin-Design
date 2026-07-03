@@ -45,15 +45,16 @@ const FloatingWhatsApp = () => {
   const whatsappLink = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`;
   
   return (
-    <a 
-      href={whatsappLink} 
-      target="_blank" 
-      rel="noopener noreferrer" 
-      className={`fixed bottom-6 right-6 z-50 transition-all duration-300 hover:scale-110 will-change-transform ${
+    <a
+      href={whatsappLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`fixed bottom-6 right-6 z-50 transition-[opacity,transform] duration-200 ease-out will-change-transform md:hover:scale-110 active:scale-[0.97] ${
         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
       aria-label={t("floating.whatsapp")}
     >
+
       <div className="relative">
         <div className="absolute inset-0 rounded-full bg-green-500/30 animate-ping-slow" />
         <img 

@@ -101,23 +101,23 @@ const Bento = () => {
             <BentoImage
               src={profilePhoto}
               alt="Léo - Designer"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[0.92] group-hover:rounded-2xl"
+              className="w-full h-full object-cover transition-transform duration-300 ease-out md:group-hover:scale-[0.94] md:group-hover:rounded-2xl"
             />
           </div>
 
           {/* WhatsApp CTA */}
           <button
             onClick={() => window.open(waUrl, "_blank", "noopener,noreferrer")}
-            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3 cursor-pointer"
+            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-[background-color,border-color] duration-200 ease-out active:scale-[0.97] group p-3 cursor-pointer"
           >
-            <img src={whatsappLogo} alt="WhatsApp" className="w-10 h-10 sm:w-12 sm:h-12 object-contain group-hover:scale-110 transition-transform" />
+            <img src={whatsappLogo} alt="WhatsApp" className="w-10 h-10 sm:w-12 sm:h-12 object-contain md:group-hover:scale-110 transition-transform duration-200 ease-out" />
             <span className="text-xs sm:text-sm font-medium text-primary">WhatsApp</span>
           </button>
 
           {/* Email */}
           <a
             href={`mailto:${settings.site_email}`}
-            className="col-span-1 row-span-1 bg-card border border-border hover:border-primary/40 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
+            className="col-span-1 row-span-1 bg-card border border-border hover:border-primary/40 rounded-2xl flex flex-col items-center justify-center gap-2 transition-[background-color,border-color,color] duration-200 ease-out active:scale-[0.97] group p-3"
           >
             <Mail className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground group-hover:text-primary transition-colors" />
             <span className="text-xs sm:text-sm text-muted-foreground group-hover:text-foreground transition-colors truncate max-w-full px-1">
@@ -135,9 +135,9 @@ const Bento = () => {
               <BentoImage
                 src={project.banner_image || placeholderProject}
                 alt={project.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300 ease-out"
               />
-              <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-2">
+              <div className="absolute inset-0 bg-background/60 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 ease-out flex flex-col items-center justify-center p-2">
                 <p className="text-xs sm:text-sm font-semibold text-center leading-tight">{project.title}</p>
                 <span className="text-[10px] sm:text-xs text-primary mt-1">{project.category}</span>
               </div>
@@ -149,7 +149,7 @@ const Bento = () => {
             href={settings.instagram_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 row-span-1 bg-card border border-border hover:border-pink-500/40 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
+            className="col-span-1 row-span-1 bg-card border border-border hover:border-pink-500/40 rounded-2xl flex flex-col items-center justify-center gap-2 transition-[background-color,border-color,color] duration-200 ease-out active:scale-[0.97] group p-3"
           >
             <Instagram className="w-7 h-7 sm:w-8 sm:h-8 text-muted-foreground group-hover:text-pink-500 transition-colors" />
             <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">Instagram</span>
@@ -159,7 +159,7 @@ const Bento = () => {
             href={settings.linkedin_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 row-span-1 bg-card border border-border hover:border-blue-500/40 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
+            className="col-span-1 row-span-1 bg-card border border-border hover:border-blue-500/40 rounded-2xl flex flex-col items-center justify-center gap-2 transition-[background-color,border-color,color] duration-200 ease-out active:scale-[0.97] group p-3"
           >
             <Linkedin className="w-7 h-7 sm:w-8 sm:h-8 text-muted-foreground group-hover:text-blue-600 transition-colors" />
             <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">LinkedIn</span>
@@ -170,18 +170,18 @@ const Bento = () => {
             href={settings.behance_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
+            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-[background-color,border-color,color] duration-200 ease-out active:scale-[0.97] group p-3"
           >
-            <BehanceIcon className="w-7 h-7 sm:w-8 sm:h-8 text-primary group-hover:scale-110 transition-transform" />
+            <BehanceIcon className="w-7 h-7 sm:w-8 sm:h-8 text-primary md:group-hover:scale-110 transition-transform duration-200 ease-out" />
             <span className="text-xs font-medium text-primary">Ver portfólio</span>
           </a>
 
           {/* Ver site */}
           <Link
             to="/"
-            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300 group p-3"
+            className="col-span-1 row-span-1 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-2xl flex flex-col items-center justify-center gap-2 transition-[background-color,border-color,color] duration-200 ease-out active:scale-[0.97] group p-3"
           >
-            <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-primary group-hover:scale-110 transition-transform" />
+            <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-primary md:group-hover:scale-110 transition-transform duration-200 ease-out" />
             <span className="text-xs font-medium text-primary">Ver site</span>
           </Link>
         </div>

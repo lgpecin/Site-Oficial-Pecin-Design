@@ -60,7 +60,7 @@ const DashboardHome = ({ onNavigate }: DashboardHomeProps) => {
             <button
               key={section.id}
               onClick={() => onNavigate(section.id)}
-              className={`group relative p-6 bg-gradient-to-br ${section.color} border-2 ${section.borderColor} rounded-2xl hover:scale-105 transition-all duration-300 hover:shadow-2xl`}
+              className={`group relative p-6 bg-gradient-to-br ${section.color} border-2 ${section.borderColor} rounded-2xl transition-[transform,box-shadow] duration-200 ease-out md:hover:scale-[1.03] md:hover:shadow-2xl active:scale-[0.99]`}
             >
               <div className="flex flex-col items-center text-center space-y-4">
                 <div className={`p-4 bg-card/80 backdrop-blur rounded-full group-hover:scale-110 transition-transform border-2 ${section.borderColor}`}>

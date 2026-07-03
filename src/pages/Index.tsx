@@ -169,11 +169,12 @@ const Index = () => {
               
               <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12">
                 {categories.map(category => (
-                  <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-1.5 sm:px-6 sm:py-2 rounded-full text-xs sm:text-base font-medium transition-all ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
+                  <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-1.5 sm:px-6 sm:py-2 rounded-full text-xs sm:text-base font-medium transition-[background-color,transform,box-shadow] duration-150 ease-out active:scale-95 ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
                     {category === "__all__" ? t("projects.filter_all") : category}
                   </button>
                 ))}
               </div>
+
             </div>
             
             {loading ? (
@@ -185,12 +186,13 @@ const Index = () => {
                 {filteredProjects.map((project, index) => {
                   const originalIndex = projects.findIndex(p => p.id === project.id);
                   return (
-                    <AnimatedSection key={project.id}>
+                    <AnimatedSection key={project.id} index={index}>
                       <ProjectCard {...project} onClick={() => setSelectedProject(originalIndex)} />
                     </AnimatedSection>
                   );
                 })}
               </div>
+
             )}
           </div>
         </section>
