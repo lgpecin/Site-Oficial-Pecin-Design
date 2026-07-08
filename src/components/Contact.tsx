@@ -1,30 +1,14 @@
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { Mail, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
-import { useState } from "react";
-import { toast } from "@/hooks/use-toast";
 import { useInView } from "@/hooks/use-in-view";
-import { TypewriterText } from "./TypewriterText";
-import { AnimatedSection } from "./AnimatedSection";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Contact = () => {
-  const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  const { ref } = useInView({ threshold: 0.1, triggerOnce: true });
   const { settings } = useSiteSettings();
   const { t } = useLanguage();
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: t("contact.toast_title"),
-      description: t("contact.toast_desc"),
-    });
-    setFormData({ name: "", email: "", message: "" });
-  };
 
   return (
     <section id="contact" className="py-12 sm:py-16 relative overflow-hidden">
@@ -33,47 +17,31 @@ const Contact = () => {
         <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px] animate-float" style={{ animationDelay: '1s', animationDuration: '8s' }}></div>
         <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[110px] animate-float" style={{ animationDelay: '2s', animationDuration: '10s' }}></div>
       </div>
-      
+
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-2xl mx-auto">
-          <div ref={ref} className="text-center mb-12">
+          <div ref={ref} className="text-center mb-10">
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <MessageSquare className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-              <TypewriterText text={t("contact.title")} isInView={isInView} speed={70} />
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
+                {t("contact.title")}
+              </span>
             </h2>
             <p className="text-lg text-muted-foreground">{t("contact.subtitle")}</p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 mb-8 animate-fade-up items-center justify-center">
-            <Button size="lg" onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')} className="h-16 text-xl px-10">
-              <img src={whatsappLogo} alt="WhatsApp" className="mr-3 w-10 h-10 object-contain" width="40" height="40" loading="lazy" decoding="async" />
+          <div className="flex items-center justify-center">
+            <Button
+              size="lg"
+              onClick={() => window.open(`https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(settings.whatsapp_message)}`, '_blank')}
+              className="h-20 md:h-24 text-xl md:text-2xl px-10 md:px-14 rounded-2xl shadow-xl transition-transform duration-200 ease-out hover:scale-[1.03] active:scale-[0.98]"
+            >
+              <img src={whatsappLogo} alt="WhatsApp" className="mr-4 w-12 h-12 md:w-14 md:h-14 object-contain" width="56" height="56" loading="lazy" decoding="async" />
               {t("contact.cta_whatsapp")}
             </Button>
-            <div className="text-center text-muted-foreground py-4 md:py-0 md:flex md:items-center">
-              {t("contact.or")}
-            </div>
-            <div className="flex items-center justify-center text-muted-foreground font-medium">{t("contact.send_email")}</div>
           </div>
-
-          <AnimatedSection>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Input placeholder={t("contact.name_placeholder")} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required className="h-12" />
-              </div>
-              <div>
-                <Input type="email" placeholder={t("contact.email_placeholder")} value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required className="h-12" />
-              </div>
-              <div>
-                <Textarea placeholder={t("contact.message_placeholder")} value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} required className="min-h-[150px] resize-none" />
-              </div>
-              <Button type="submit" size="lg" className="w-full">
-                <Mail className="mr-2 h-4 w-4" />
-                {t("contact.send_button")}
-              </Button>
-            </form>
-          </AnimatedSection>
         </div>
       </div>
     </section>
