@@ -199,3 +199,10 @@ All colors MUST be HSL.
   }
 }
 
+
+/* FAQ items: playful hover rotation using per-item CSS var; open state stays straight */
+@media (hover: hover) and (pointer: fine) {
+  .faq-item[data-state="closed"]:hover {
+    transform: scale(1.03) rotate(var(--faq-rot, 0deg));
+  }
+}
