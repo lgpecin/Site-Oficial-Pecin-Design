@@ -35,9 +35,15 @@ const About = () => {
           </AnimatedSection>
 
           <div className="grid grid-cols-2 gap-3 md:gap-4">
-            {skills.map((skill) => (
+            {skills.map((skill, index) => {
+              const rotations = [-1.8, 1.5, 2, -1.3];
+              const rot = rotations[index % rotations.length];
+              return (
               <AnimatedSection key={skill.titleKey}>
-                <div className="text-center p-4 md:p-6 rounded-2xl bg-background shadow-sm hover:shadow-md transition-shadow h-full flex flex-col justify-center">
+                <div
+                  style={{ ["--about-rot" as any]: `${rot}deg` }}
+                  className="about-card text-center p-4 md:p-6 rounded-2xl bg-background shadow-sm h-full flex flex-col justify-center border-2 border-transparent origin-center transition-[transform,border-color,box-shadow] duration-300 ease-out hover:border-primary hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.4),0_10px_30px_-10px_hsl(var(--primary)/0.35)]"
+                >
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-2 md:mb-3">
                     <skill.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                   </div>
@@ -45,7 +51,8 @@ const About = () => {
                   <p className="text-xs md:text-sm text-muted-foreground">{t(skill.descKey)}</p>
                 </div>
               </AnimatedSection>
-            ))}
+              );
+            })}
           </div>
         </div>
 

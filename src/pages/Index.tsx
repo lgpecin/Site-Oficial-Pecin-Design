@@ -11,6 +11,7 @@ import Lightbox from "@/components/Lightbox";
 import { useInView } from "@/hooks/use-in-view";
 import { TypewriterText } from "@/components/TypewriterText";
 import { AnimatedSection } from "@/components/AnimatedSection";
+import PortfolioVectorDecoration from "@/components/PortfolioVectorDecoration";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import placeholderProject from "@/assets/placeholder-project.jpg";
@@ -161,20 +162,46 @@ const Index = () => {
       
         <section id="projects" className="py-12 sm:py-16" aria-label={t("nav.projects")}>
           <div className="container mx-auto px-6">
-            <div ref={projectsRef} className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
-                  {t("projects.title")}
-                </span>
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">{t("projects.subtitle")}</p>
+            <div ref={projectsRef} className="text-center mb-16 relative">
+              <div className="relative inline-block">
+                <div className="absolute inset-0 flex items-center justify-center z-0" style={{ transform: 'scale(1.8)' }}>
+                  <PortfolioVectorDecoration />
+                </div>
+                {/* Selection box around the title */}
+                <div className="relative z-10 inline-block">
+                  <div className="portfolio-selection-box-wrapper">
+                    {/* Dashed border */}
+                    <div className="portfolio-dashed-border" />
+                    {/* Corner handles */}
+                    <span className="portfolio-handle-square" style={{ top: -4, left: -4 }} />
+                    <span className="portfolio-handle-square" style={{ top: -4, right: -4 }} />
+                    <span className="portfolio-handle-square" style={{ bottom: -4, left: -4 }} />
+                    <span className="portfolio-handle-square" style={{ bottom: -4, right: -4 }} />
+                    {/* Mid-side handles */}
+                    <span className="portfolio-handle-square small" style={{ top: -3, left: '50%', transform: 'translateX(-50%)' }} />
+                    <span className="portfolio-handle-square small" style={{ bottom: -3, left: '50%', transform: 'translateX(-50%)' }} />
+                    <span className="portfolio-handle-square small" style={{ top: '50%', left: -3, transform: 'translateY(-50%)' }} />
+                    <span className="portfolio-handle-square small" style={{ top: '50%', right: -3, transform: 'translateY(-50%)' }} />
+                    <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight px-6 py-3">
+                      <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
+                        {t("projects.title")}
+                      </span>
+                    </h2>
+                  </div>
+                </div>
+              </div>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4 mt-6">{t("projects.subtitle")}</p>
               
               <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12">
-                {categories.map(category => (
-                  <button key={category} onClick={() => setSelectedCategory(category)} className={`px-3 py-1.5 sm:px-6 sm:py-2 rounded-full text-xs sm:text-base font-medium transition-[background-color,transform,box-shadow] duration-150 ease-out active:scale-95 ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}>
+                {categories.map((category, index) => {
+                  const rotations = [-1.5, 2, -1.8, 1.3, -2, 1.5];
+                  const rot = rotations[index % rotations.length];
+                  return (
+                  <button key={category} onClick={() => setSelectedCategory(category)} style={{ ["--filter-rot" as any]: `${rot}deg` }} className={`filter-btn px-3 py-1.5 sm:px-6 sm:py-2 rounded-full text-xs sm:text-base font-medium origin-center transition-[background-color,transform,box-shadow,border-color] duration-300 ease-out active:scale-95 border-2 ${selectedCategory === category ? 'bg-primary text-primary-foreground shadow-lg scale-105 border-primary' : 'bg-secondary text-secondary-foreground border-transparent hover:border-primary hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.4),0_10px_30px_-10px_hsl(var(--primary)/0.35)]'}`}>
                     {category === "__all__" ? t("projects.filter_all") : category}
                   </button>
-                ))}
+                  );
+                })}
               </div>
 
             </div>

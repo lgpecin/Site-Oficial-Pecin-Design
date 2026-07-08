@@ -116,7 +116,8 @@ const Hero = () => {
               }
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto h-14 text-base sm:text-lg border border-primary flex items-center justify-center"
+              className="hero-btn w-full sm:w-auto h-14 text-base sm:text-lg border-2 border-primary flex items-center justify-center origin-center transition-[transform,border-color,box-shadow] duration-300 ease-out hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.4),0_10px_30px_-10px_hsl(var(--primary)/0.35)]"
+              style={{ ["--hero-rot" as any]: "-1.5deg" }}
             >
               <img
                 src={whatsappLogo}
@@ -132,7 +133,8 @@ const Hero = () => {
             <Button
               onClick={scrollToProjects}
               size="lg"
-              className="group w-full sm:w-auto h-14 text-base sm:text-lg"
+              className="hero-btn group w-full sm:w-auto h-14 text-base sm:text-lg border-2 border-transparent origin-center transition-[transform,border-color,box-shadow] duration-300 ease-out hover:border-primary hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.4),0_10px_30px_-10px_hsl(var(--primary)/0.35)]"
+              style={{ ["--hero-rot" as any]: "1.8deg" }}
             >
               {t("hero.cta_projects")}
               <ArrowDown className="ml-2 h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-y-1 transition-transform" />
