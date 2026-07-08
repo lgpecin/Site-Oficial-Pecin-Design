@@ -57,19 +57,29 @@ const FAQ = () => {
 
         <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="space-y-4">
-            {faqs.map((faq, index) => (
-              <AnimatedSection key={index}>
-                <AccordionItem value={`item-${index}`} className="bg-card rounded-lg px-6 border-0 shadow-sm">
-                  <AccordionTrigger className="text-left hover:no-underline py-6">
-                    <span className="font-semibold text-lg">{t(faq.questionKey)}</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
-                    {faq.answer || t(faq.answerKey!)}
-                  </AccordionContent>
-                </AccordionItem>
-              </AnimatedSection>
-            ))}
+            {faqs.map((faq, index) => {
+              const rotations = [-2, 1.5, -1.2, 2, -1.8, 1.3];
+              const rot = rotations[index % rotations.length];
+              return (
+                <AnimatedSection key={index}>
+                  <AccordionItem
+                    value={`item-${index}`}
+                    style={{ ["--faq-rot" as any]: `${rot}deg` }}
+                    className="faq-item bg-card rounded-lg px-6 border-2 border-transparent shadow-sm origin-center transition-[transform,border-color,box-shadow] duration-300 ease-out hover:scale-[1.03] hover:border-primary hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.4),0_10px_30px_-10px_hsl(var(--primary)/0.35)] data-[state=open]:scale-[1.02] data-[state=open]:border-primary data-[state=open]:shadow-[0_0_0_1px_hsl(var(--primary)/0.4),0_10px_30px_-10px_hsl(var(--primary)/0.35)]"
+                  >
+                    <AccordionTrigger className="text-left hover:no-underline py-6">
+                      <span className="font-semibold text-lg">{t(faq.questionKey)}</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-6 leading-relaxed">
+                      {faq.answer || t(faq.answerKey!)}
+                    </AccordionContent>
+                  </AccordionItem>
+                </AnimatedSection>
+              );
+            })}
           </Accordion>
+
+
           
           <div className="text-center mt-12">
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

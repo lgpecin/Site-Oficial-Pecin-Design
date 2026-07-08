@@ -66,8 +66,13 @@ const ServiceSteps = () => {
   }, [steps.length]);
 
   return (
-    <section ref={sectionRef} className="relative py-12 md:py-16 bg-background">
-      <div className="container mx-auto px-4 md:px-6">
+    <section ref={sectionRef} className="relative py-12 md:py-16 bg-background overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground))_1px,transparent_1px)] [background-size:32px_32px]"
+      />
+      <div className="container mx-auto px-4 md:px-6 relative">
+
         <div ref={titleRef} className="text-center mb-6">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
             <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
