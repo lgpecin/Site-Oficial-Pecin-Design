@@ -162,8 +162,10 @@ const Index = () => {
         <section id="projects" className="py-12 sm:py-16" aria-label={t("nav.projects")}>
           <div className="container mx-auto px-6">
             <div ref={projectsRef} className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-                <TypewriterText text={t("projects.title")} isInView={projectsInView} speed={50} />
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
+                  {t("projects.title")}
+                </span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">{t("projects.subtitle")}</p>
               

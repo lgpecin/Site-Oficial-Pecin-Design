@@ -20,8 +20,10 @@ const About = () => {
     <section id="about" className="py-12 sm:py-16 bg-secondary/30">
       <div className="container mx-auto px-6">
         <div ref={ref} className="max-w-3xl mx-auto text-center mb-8 sm:mb-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-            <TypewriterText text={t("about.title")} isInView={isInView} speed={80} />
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
+              {t("about.title")}
+            </span>
           </h2>
         </div>
 

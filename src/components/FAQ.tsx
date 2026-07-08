@@ -48,8 +48,10 @@ const FAQ = () => {
     <section id="faq" className="py-12 sm:py-16 bg-muted/30">
       <div className="container mx-auto px-6">
         <div ref={ref} className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 min-h-[3rem]">
-            <TypewriterText text={t("faq.title")} isInView={isInView} speed={60} />
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
+              {t("faq.title")}
+            </span>
           </h2>
         </div>
 

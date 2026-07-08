@@ -69,49 +69,36 @@ const ServiceSteps = () => {
     <section ref={sectionRef} className="relative py-12 md:py-16 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <div ref={titleRef} className="text-center mb-6">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground min-h-[3rem]">
-            <TypewriterText text={t("steps.title")} isInView={isInView} speed={80} />
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
+            <span className="inline-block transition-transform duration-200 ease-out hover:scale-105">
+              {t("steps.title")}
+            </span>
           </h2>
         </div>
         
-        <p className="text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed">
+        <p className="text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed">
           {t("steps.subtitle")}
         </p>
 
-        <div className={`hidden lg:block fixed left-8 top-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${isSectionVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-xs text-muted-foreground mb-2">
-              {Math.round(scrollProgress * 100)}%
-            </span>
-            <div className="relative w-1 h-64 bg-border rounded-full overflow-hidden">
-              <div className="absolute top-0 left-0 w-full bg-primary transition-[height] duration-100 ease-out rounded-full" style={{ height: `${scrollProgress * 100}%` }} />
-            </div>
-            <span className="text-xs text-muted-foreground mt-2">
-              {t("steps.step")} {visibleSteps}/{steps.length}
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 md:max-w-3xl md:mx-auto md:space-y-8 md:grid-cols-1">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 max-w-6xl mx-auto">
           {steps.map((step, index) => (
             <div key={index} style={{ transitionDelay: index < visibleSteps ? `${Math.min(index, 4) * 40}ms` : "0ms" }} className={`transition-[opacity,transform] duration-[400ms] ease-out ${index < visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <div className="bg-card border border-border rounded-2xl p-4 md:p-8 lg:p-10 shadow-lg h-full">
-
-                <div className="flex flex-col items-center text-center gap-3 md:gap-6">
+              <div className="bg-card border border-border rounded-2xl p-4 md:p-5 shadow-lg h-full transition-transform duration-200 ease-out md:hover:scale-[1.03]">
+                <div className="flex flex-col items-center text-center gap-2 md:gap-3">
                   <div className="text-primary">
-                    <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center">
+                    <div className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center">
                       {step.icon}
                     </div>
                   </div>
-                  <div className="space-y-1.5 md:space-y-3">
-                    <div className="inline-block px-2 py-1 md:px-3 md:py-1.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                  <div className="space-y-1.5">
+                    <div className="inline-block px-2 py-0.5 md:px-2.5 md:py-1 bg-primary/10 text-primary rounded-full text-[10px] md:text-xs font-medium">
                       {t(step.durationKey)}
                     </div>
-                    <h3 className="text-base md:text-3xl font-bold text-card-foreground">
+                    <h3 className="text-sm md:text-base font-bold text-card-foreground leading-tight">
                       {t(step.titleKey)}
                     </h3>
                   </div>
-                  <p className="text-xs md:text-base lg:text-lg text-muted-foreground leading-relaxed">
+                  <p className="text-xs md:text-sm text-muted-foreground leading-snug">
                     {t(step.descKey)}
                   </p>
                 </div>
