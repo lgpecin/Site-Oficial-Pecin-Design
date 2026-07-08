@@ -205,4 +205,110 @@ All colors MUST be HSL.
   .faq-item[data-state="closed"]:hover {
     transform: scale(1.03) rotate(var(--faq-rot, 0deg));
   }
+
+  /* Step cards: same playful rotation on hover */
+  .step-card:hover {
+    transform: scale(1.03) rotate(var(--step-rot, 0deg));
+  }
+
+  /* Hero CTA buttons: subtle rotation on hover */
+  .hero-btn:hover {
+    transform: rotate(var(--hero-rot, 0deg));
+  }
+
+  /* About skill cards: rotation on hover */
+  .about-card:hover {
+    transform: scale(1.03) rotate(var(--about-rot, 0deg));
+  }
+
+  /* Filter buttons: rotation on hover */
+  .filter-btn:hover {
+    transform: scale(1.05) rotate(var(--filter-rot, 0deg));
+  }
+
+  /* Project cards: rotation on hover */
+  .project-card:hover {
+    transform: scale(1.03) rotate(var(--card-rot, 0deg));
+  }
+}
+
+/* ── Portfolio Vector Decoration ── */
+.portfolio-vector-wrapper {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.portfolio-vector-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.portfolio-anchor {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.portfolio-handle {
+  opacity: 0;
+  animation: handleFadeIn 0.8s ease-out forwards;
+  animation-delay: 1.6s;
+}
+
+.portfolio-selection-box-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.portfolio-dashed-border {
+  position: absolute;
+  inset: 0;
+  border: 1.5px dashed hsl(var(--primary));
+  border-radius: 3px;
+  opacity: 0.7;
+  animation: selectionPulse 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.portfolio-handle-square {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: hsl(var(--primary));
+  border: 1.5px solid hsl(var(--foreground));
+  border-radius: 1px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.portfolio-handle-square.small {
+  width: 6px;
+  height: 6px;
+}
+
+@keyframes handleFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes selectionPulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .portfolio-vector-wrapper {
+    max-width: 90vw;
+  }
 }

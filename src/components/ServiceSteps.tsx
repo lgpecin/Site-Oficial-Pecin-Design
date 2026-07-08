@@ -42,7 +42,7 @@ const ServiceSteps = () => {
         setIsSectionVisible(isVisible);
         const rawProgress = Math.max(0, Math.min(1, (viewportHeight - rect.top) / (sectionHeight + viewportHeight * 0.3)));
         setScrollProgress(rawProgress);
-        const stepsToShow = Math.min(steps.length, Math.floor(rawProgress * (steps.length + 2)));
+        const stepsToShow = Math.min(steps.length, Math.floor(rawProgress * (steps.length + 2) * 1.2));
         setVisibleSteps(stepsToShow);
       });
     };
@@ -66,10 +66,10 @@ const ServiceSteps = () => {
   }, [steps.length]);
 
   return (
-    <section ref={sectionRef} className="relative py-12 md:py-16 bg-background overflow-hidden">
+    <section ref={sectionRef} className="relative py-12 md:py-16 overflow-hidden" style={{ backgroundColor: 'hsl(0 0% 5%)' }}>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground))_1px,transparent_1px)] [background-size:32px_32px]"
+        className="pointer-events-none absolute inset-0 opacity-[0.03] [background-image:linear-gradient(to_right,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground))_1px,transparent_1px)] [background-size:32px_32px]"
       />
       <div className="container mx-auto px-4 md:px-6 relative">
 
@@ -86,9 +86,15 @@ const ServiceSteps = () => {
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 max-w-6xl mx-auto">
-          {steps.map((step, index) => (
+          {steps.map((step, index) => {
+            const rotations = [-2, 1.5, -1.2, 2, -1.8, 1.3];
+            const rot = rotations[index % rotations.length];
+            return (
             <div key={index} style={{ transitionDelay: index < visibleSteps ? `${Math.min(index, 4) * 40}ms` : "0ms" }} className={`transition-[opacity,transform] duration-[400ms] ease-out ${index < visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <div className="bg-card border border-border rounded-2xl p-4 md:p-5 shadow-lg h-full transition-transform duration-200 ease-out md:hover:scale-[1.03]">
+              <div
+                style={{ ["--step-rot" as any]: `${rot}deg` }}
+                className="step-card bg-card border-2 border-transparent rounded-2xl p-4 md:p-5 shadow-lg h-full origin-center transition-[transform,border-color,box-shadow] duration-300 ease-out md:hover:scale-[1.03] md:hover:border-primary md:hover:shadow-[0_0_0_1px_hsl(var(--primary)/0.4),0_10px_30px_-10px_hsl(var(--primary)/0.35)]"
+              >
                 <div className="flex flex-col items-center text-center gap-2 md:gap-3">
                   <div className="text-primary">
                     <div className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center">
@@ -109,12 +115,13 @@ const ServiceSteps = () => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-12 md:mt-16 px-4 md:px-0">
           <div className="max-w-3xl mx-auto">
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-6 flex items-start gap-3">
+            <div className="bg-primary/15 border border-primary/30 rounded-xl p-4 md:p-6 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">

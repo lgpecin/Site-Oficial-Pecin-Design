@@ -55,7 +55,7 @@ const translations: Record<Language, Record<string, string>> = {
     "hero.cta_projects": "Se liga no meu trampo",
 
     // Projects
-    "projects.title": "Um pouquinho do que eu faço.",
+    "projects.title": "Portfólio",
     "projects.subtitle": "Esqueça os templates prontos. Aqui só entra suor, neurônios queimados e estratégias visuais que funcionam pra valer! Se liga:",
     "projects.filter_all": "Todos",
     "projects.loading": "Carregando projetos...",
@@ -160,7 +160,7 @@ const translations: Record<Language, Record<string, string>> = {
     "hero.cta_projects": "Check out my work",
 
     // Projects
-    "projects.title": "A little of what I do.",
+    "projects.title": "Portfolio",
     "projects.subtitle": "Forget ready-made templates. Here you'll find sweat, burned neurons, and visual strategies that truly work! Check it out:",
     "projects.filter_all": "All",
     "projects.loading": "Loading projects...",
