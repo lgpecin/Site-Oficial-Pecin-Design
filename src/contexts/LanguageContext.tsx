@@ -233,16 +233,8 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Contact
     "contact.title": "Let's Talk?",
-    "contact.subtitle": "Have a project in mind? Reach me by email or WhatsApp.",
+    "contact.subtitle": "Have a project in mind? Reach me by WhatsApp.",
     "contact.cta_whatsapp": "Chat on WhatsApp",
-    "contact.or": "or",
-    "contact.send_email": "Send an email",
-    "contact.name_placeholder": "Your name",
-    "contact.email_placeholder": "Your email",
-    "contact.message_placeholder": "Your message",
-    "contact.send_button": "Send Message",
-    "contact.toast_title": "Message sent!",
-    "contact.toast_desc": "Thanks for reaching out. I'll reply soon!",
 
     // Social Media
     "social.title": "Follow me on social media",
