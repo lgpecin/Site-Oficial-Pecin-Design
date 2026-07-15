@@ -159,14 +159,19 @@ All colors MUST be HSL.
   @keyframes marquee {
     0% {
       transform: translateX(0);
+      -webkit-transform: translateX(0);
     }
     100% {
-      transform: translateX(-33.3333%);
+      transform: translateX(var(--marquee-distance, -33.3333%));
+      -webkit-transform: translateX(var(--marquee-distance, -33.3333%));
     }
   }
 
-  .animate-marquee {
+  .carousel-track {
     animation: marquee linear infinite;
+    -webkit-animation: marquee linear infinite;
+    will-change: transform;
+    -webkit-will-change: transform;
   }
 
   /* Custom easing tokens (Emil Kowalski's strong curves) */
@@ -193,7 +198,7 @@ All colors MUST be HSL.
     transition-duration: 0.15s !important;
     scroll-behavior: auto !important;
   }
-  .animate-marquee,
+  .carousel-track,
   .animate-ping-slow {
     animation: none !important;
   }
