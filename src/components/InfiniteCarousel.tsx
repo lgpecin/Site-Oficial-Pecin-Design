@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
@@ -20,6 +20,7 @@ const fallbackImages = [slide1, slide2, slide3, slide4, slide5, slide6];
 
 const InfiniteCarousel = () => {
   const [images, setImages] = useState<string[]>([]);
+  const trackRef = useRef<HTMLDivElement>(null);
   const { settings } = useSiteSettings();
   const speed = Number(settings.carousel_speed) || 15;
 
@@ -39,6 +40,44 @@ const InfiniteCarousel = () => {
     fetchImages();
   }, []);
 
+  // Once images are loaded, measure the width of one set and use px-based animation
+  // This avoids Safari's buggy percentage-based translateX on max-content elements
+  useEffect(() => {
+    if (!trackRef.current || images.length === 0) return;
+
+    const measure = () => {
+      const track = trackRef.current;
+      if (!track) return;
+      // Total width / 3 sets = width of one set
+      const oneSetWidth = track.scrollWidth / 3;
+      track.style.setProperty("--marquee-distance", `-${oneSetWidth}px`);
+    };
+
+    // Measure after images load
+    const imgs = trackRef.current.querySelectorAll("img");
+    let loaded = 0;
+    const total = imgs.length;
+
+    const onLoad = () => {
+      loaded++;
+      if (loaded >= total) measure();
+    };
+
+    imgs.forEach((img) => {
+      if (img.complete) {
+        loaded++;
+      } else {
+        img.addEventListener("load", onLoad, { once: true });
+      }
+    });
+
+    if (loaded >= total) measure();
+
+    // Also measure on resize
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [images]);
+
   if (images.length === 0) return null;
 
   // Triple images for seamless infinite loop
@@ -52,10 +91,10 @@ const InfiniteCarousel = () => {
         background: 'radial-gradient(ellipse at center, hsl(162 75% 28% / 0.12) 0%, transparent 70%)',
       }} />
       <div
-        className="flex animate-marquee"
+        ref={trackRef}
+        className="flex carousel-track"
         style={{
           animationDuration: `${duration}s`,
-          width: 'max-content',
         }}
       >
         {duplicated.map((src, i) => (
@@ -64,7 +103,8 @@ const InfiniteCarousel = () => {
             src={src}
             alt={`Portfolio ${(i % images.length) + 1}`}
             className="h-[300px] sm:h-[400px] w-auto flex-shrink-0"
-            loading="lazy"
+            loading="eager"
+            decoding="async"
             draggable={false}
           />
         ))}
