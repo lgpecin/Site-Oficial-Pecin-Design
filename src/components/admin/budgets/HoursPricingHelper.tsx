@@ -39,15 +39,16 @@ const HoursPricingHelper = ({ hours, onHoursChange, onApplySuggested }: Props) =
             <Label className="text-xs">Meu valor/hora (R$)</Label>
             <div className="flex gap-2 mt-1">
               <Input
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
                 value={draftRate}
-                onChange={(e) => setDraftRate(parseFloat(e.target.value) || 0)}
+                onChange={(e) => setDraftRate(e.target.value)}
+                placeholder="Ex: 45,50"
               />
               <Button
                 type="button"
                 size="sm"
-                onClick={() => setHourlyRate(draftRate)}
+                onClick={() => setHourlyRate(parsedDraft)}
               >
                 Salvar
               </Button>
