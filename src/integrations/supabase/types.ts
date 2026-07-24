@@ -219,6 +219,45 @@ export type Database = {
           },
         ]
       }
+      business_expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          name: string
+          recurrence: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          name: string
+          recurrence?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          name?: string
+          recurrence?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       carousel_images: {
         Row: {
           created_at: string
