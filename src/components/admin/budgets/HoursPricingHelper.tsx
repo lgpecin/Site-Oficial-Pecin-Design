@@ -18,7 +18,8 @@ type Props = {
 
 const HoursPricingHelper = ({ hours, onHoursChange, onApplySuggested }: Props) => {
   const { hourlyRate, setHourlyRate } = useHourlyRate();
-  const [draftRate, setDraftRate] = useState(hourlyRate);
+  const [draftRate, setDraftRate] = useState<string>(String(hourlyRate));
+  const parsedDraft = parseFloat(draftRate.replace(",", ".")) || 0;
   const suggested = (hours || 0) * (hourlyRate || 0);
 
   return (
